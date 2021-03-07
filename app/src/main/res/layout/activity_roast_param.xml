@@ -63,12 +63,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginTop="110dp">
+        android:layout_marginTop="110dp"
+        android:weightSum="6">
     <ScrollView
         android:id="@+id/scrollview"
-        android:layout_weight="1"
+        android:layout_weight="5"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:background="@color/grayBack"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -101,41 +102,23 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
-                <Button
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp">
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="+"
+                    android:text="Bean"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
                     android:layout_marginLeft="20dp"/>
                 <Spinner
                     android:id="@+id/bean_spinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:layout_gravity="end"
-                    />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginLeft="20dp"
-                    android:text="Farm"
-                    android:textSize="20dp"
-                    android:textColor="@color/white"/>
-                <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textSize="20dp"
-                    android:textColor="@color/lightGray"
-                    android:hint="Farm"
-                    android:gravity="end"
-                    android:layout_marginTop="10dp"/>
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    style="@style/spinnerItemStyleWhite"
+                    />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -167,6 +150,32 @@
                 android:gravity="center"
                 android:textSize="20dp"
                 android:layout_marginTop="20dp"/>
+
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/checkpointLayout"
+                android:orientation="vertical"/>
+
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+"
+                android:layout_marginLeft="20dp"
+                android:textColor="@color/white"
+                android:background="@drawable/round_shape_btn"/>
+        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -182,9 +191,10 @@
     </ScrollView>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:gravity="center"
-            android:background="@color/grayBack">
+            android:background="@color/grayBack"
+            android:layout_weight="1">
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -192,6 +202,7 @@
         android:gravity="center"
         android:textColor="@color/white"
         android:background="@drawable/round_shape_btn"
+        android:layout_marginBottom="2dp"
         />
         </LinearLayout>
 
