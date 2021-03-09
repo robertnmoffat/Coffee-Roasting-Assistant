@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BeanActivity">
+    tools:context=".CheckpointParamActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:text="Bean"
+            android:text="@string/checkpoint_text"
             android:textSize="25dp"
             android:textColor="@color/white"
             android:textStyle="bold"
@@ -102,6 +102,27 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Trigger"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        android:layout_marginLeft="20dp"/>
+                    <Spinner
+                        android:id="@+id/trigger_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        style="@style/spinnerItemStyleWhite"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:orientation="horizontal">
                     <TextView
                         android:layout_width="wrap_content"
@@ -109,7 +130,7 @@
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="20dp"
                         android:layout_marginLeft="20dp"
-                        android:text="Origin"
+                        android:text="Temperature"
                         android:textSize="20dp"
                         android:textColor="@color/white"/>
                     <EditText
@@ -117,7 +138,7 @@
                         android:layout_height="match_parent"
                         android:textSize="20dp"
                         android:textColor="@color/lightGray"
-                        android:hint="Origin"
+                        android:hint="Temp"
                         android:gravity="end"
                         android:layout_marginTop="10dp"/>
                 </LinearLayout>
@@ -131,7 +152,7 @@
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="20dp"
                         android:layout_marginLeft="20dp"
-                        android:text="Farm"
+                        android:text="Time"
                         android:textSize="20dp"
                         android:textColor="@color/white"/>
                     <EditText
@@ -139,56 +160,10 @@
                         android:layout_height="match_parent"
                         android:textSize="20dp"
                         android:textColor="@color/lightGray"
-                        android:hint="Farm"
+                        android:hint="Optional"
                         android:gravity="end"
                         android:layout_marginTop="10dp"/>
                 </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="20dp"
-                        android:layout_marginLeft="20dp"
-                        android:text="Drying Method"
-                        android:textSize="20dp"
-                        android:textColor="@color/white"/>
-                    <EditText
-                        android:id="@+id/drying_method_edittext"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textSize="20dp"
-                        android:textColor="@color/lightGray"
-                        android:hint="Drying"
-                        android:gravity="end"
-                        android:layout_marginTop="10dp"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="20dp"
-                        android:layout_marginLeft="20dp"
-                        android:text="Flavours"
-                        android:textSize="20dp"
-                        android:textColor="@color/white"/>
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textSize="20dp"
-                        android:textColor="@color/lightGray"
-                        android:hint="Flavours"
-                        android:gravity="end"
-                        android:layout_marginTop="10dp"/>
-                </LinearLayout>
-
 
             </LinearLayout>
 
@@ -201,7 +176,7 @@
             android:background="@color/grayBack"
             android:layout_weight="1">
             <Button
-                android:id="@+id/bean_add_button"
+                android:id="@+id/checkpoint_add_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Add"

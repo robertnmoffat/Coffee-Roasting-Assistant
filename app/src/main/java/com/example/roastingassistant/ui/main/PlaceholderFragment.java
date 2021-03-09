@@ -80,11 +80,8 @@ public class PlaceholderFragment extends Fragment {
         LinearLayout ll = root.findViewById(R.id.linearLayout1);
 
         Button newRoastBtn = createRoastButton(root, "New Roast", "");
-        Button btnTag = createRoastButton(root, "Brazil", "Dark \"Farm\" Temp:459"+pageNumber);
-        Button btnTag2 = createRoastButton(root, "Brazil", "Dark \"Farm\" Temp:459");
-        Button btnTag3 = createRoastButton(root, "Brazil", "Dark \"Farm\" Temp:459");
-        Button btnTag4 = createRoastButton(root, "Brazil", "Dark \"Farm\" Temp:459");
-        Button btnTag5 = createRoastButton(root, "Brazil", "Dark \"Farm\" Temp:459");
+
+        //pagenumber is which fragment you are currently on
 
         newRoastBtn.setId(R.id.fragment_button_0);
         newRoastBtn.setOnClickListener(new View.OnClickListener() {
@@ -97,11 +94,6 @@ public class PlaceholderFragment extends Fragment {
 
         //add buttons to the layout
         ll.addView(newRoastBtn);
-        ll.addView(btnTag);
-        ll.addView(btnTag2);
-        ll.addView(btnTag3);
-        ll.addView(btnTag4);
-        ll.addView(btnTag5);
     }
 
     private void setupBeanFragment(View root){

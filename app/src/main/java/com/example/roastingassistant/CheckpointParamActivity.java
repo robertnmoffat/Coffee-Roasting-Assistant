@@ -12,25 +12,19 @@ import android.widget.Spinner;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlendActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class CheckpointParamActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_blend);
+        setContentView(R.layout.activity_checkpoint_param);
 
-        Button roastAddButton = findViewById(R.id.blend_add_button);
-        roastAddButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-        Spinner spinner = findViewById(R.id.roast_for_blend_spinner);
-        Spinner checkPointSpinner = findViewById(R.id.checkpoint_spinner);
+        Spinner spinner = findViewById(R.id.trigger_spinner);
         List<String> categories = new ArrayList<String>();
-        categories.add("Roast");//TODO: add stuff from database later
+        categories.add("Trigger");//TODO: add stuff from database later
+        categories.add("Temperature");
+        categories.add("Time");
+
         //spinner click listener
         spinner.setOnItemSelectedListener(this);
         //adaptor for categories and spinner
@@ -38,6 +32,14 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
         //drop down layout style
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
+
+        Button button = findViewById(R.id.checkpoint_add_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override

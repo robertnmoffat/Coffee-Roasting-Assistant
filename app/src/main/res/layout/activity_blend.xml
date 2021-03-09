@@ -107,6 +107,27 @@
                     android:gravity="center"
                     android:textSize="20dp"
                     android:layout_marginTop="20dp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp">
+                    <Button
+                        android:id="@+id/add_checkpoint_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="+"
+                        android:layout_marginLeft="20dp"
+                        android:textColor="@color/white"
+                        android:background="@drawable/round_shape_btn"/>
+                    <Spinner
+                        android:id="@+id/roast_for_blend_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        style="@style/spinnerItemStyleWhite"
+                        />
+                </LinearLayout>
 
 
             </LinearLayout>
@@ -120,6 +141,7 @@
             android:background="@color/grayBack"
             android:layout_weight="1">
             <Button
+                android:id="@+id/blend_add_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Add"
