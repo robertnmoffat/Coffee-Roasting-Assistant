@@ -11,15 +11,25 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.swipeDown;
 import static androidx.test.espresso.action.ViewActions.swipeLeft;
 import static androidx.test.espresso.action.ViewActions.swipeRight;
 import static androidx.test.espresso.action.ViewActions.swipeUp;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withSpinnerText;
+import static androidx.test.espresso.matcher.ViewMatchers.withSubstring;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 
 @RunWith(AndroidJUnit4.class)
 public class UIEspressoTest {
@@ -31,14 +41,14 @@ public class UIEspressoTest {
 
     @Test
     public void swipeFragmentLeft(){
-        Log.i("UIT01", "Testing swiping fragment left...");
+        Log.i("Test UIT01", "Testing swiping fragment left...");
         onView(withId(R.id.view_pager)).perform(swipeLeft());
         onView(withId(R.id.fragment_button_1)).check(matches(isDisplayed()));
     }
 
     @Test
     public void swipeFragmentRight(){
-        Log.i("UIT02", "Testing swiping fragment right...");
+        Log.i("Test UIT02", "Testing swiping fragment right...");
         onView(withId(R.id.view_pager)).perform(swipeLeft());
         onView(withId(R.id.view_pager)).perform(swipeRight());
         onView(withId(R.id.fragment_button_0)).check(matches(isDisplayed()));
@@ -46,20 +56,76 @@ public class UIEspressoTest {
 
     @Test
     public void scrollUp(){
-        Log.i("UIT03", "Testing swiping fragment up...");
+        Log.i("Test UIT03", "Testing swiping fragment up...");
         onView(withId(R.id.view_pager)).perform(swipeUp());
     }
 
     @Test
     public void scrollDown(){
-        Log.i("UIT04", "Testing swiping fragment down...");
+        Log.i("Test UIT04", "Testing swiping fragment down...");
         onView(withId(R.id.view_pager)).perform(swipeUp());
         onView(withId(R.id.view_pager)).perform(swipeDown());
     }
 
     @Test
     public void openMenuDropdown(){
-        Log.i("UIT05", "Testing opening dropdown settings menu...");
+        Log.i("Test UIT05", "Testing opening dropdown settings menu...");
         onView(withId(R.id.menuSpinner)).perform(click());
+    }
+
+    @Test
+    public void createNewBeanEntry() throws InterruptedException {
+        Log.i("Test UIT06", "Testing filling out and adding new bean entry...");
+        onView(withId(R.id.view_pager)).perform(swipeLeft());
+        Thread.sleep(1000);
+        onView(withId(R.id.fragment_button_1)).perform(click());
+        Thread.sleep(1000);
+
+        onView(withId(R.id.beanactivity_name_edittext)).perform(click()).perform(typeText("Colombian Supremo"), closeSoftKeyboard());
+        onView(withId(R.id.beanactivity_origin_edittext)).perform(click()).perform(typeText("Colombia"), closeSoftKeyboard());
+        onView(withId(R.id.beanactivity_drymethod_edittext)).perform(click()).perform(typeText("Sun"), closeSoftKeyboard());
+        onView(withId(R.id.beanactivity_flavour_edittext)).perform(click()).perform(typeText("chocolate, honey, nutty"), closeSoftKeyboard());
+        onView(withId(R.id.beanactivity_process_edittext)).perform(click()).perform(typeText("natural"), closeSoftKeyboard());
+        onView(withId(R.id.beanactivity_farm_edittext)).perform(click()).perform(typeText("Anei S.N."), closeSoftKeyboard());
+        onView(withId(R.id.beanactivity_add_button)).perform(click());
+    }
+
+    @Test
+    public void createNewRoastEntry() throws InterruptedException {
+        Log.i("Test UIT07", "Testing filling out and adding new roast entry...");
+        onView(withId(R.id.fragment_button_0)).perform(click());
+        Thread.sleep(1000);
+
+        onView(withId(R.id.roastactivity_name_edittext)).perform(click()).perform(typeText("Med Colombian"),closeSoftKeyboard());
+        onView(withId(R.id.roastActivity_bean_spinner)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("Beans"))).perform(click());
+        onView(withId(R.id.roastactivity_roastlevel_edittext)).perform(click()).perform(typeText("Medium"),closeSoftKeyboard());
+        onView(withId(R.id.roastactivity_droptemp_edittext)).perform(click()).perform(typeText("430"),closeSoftKeyboard());
+        onView(withId(R.id.roastactivity_add_checkpoint_button)).perform(click());
+        Thread.sleep(1000);
+
+        onView(withId(R.id.checkpoint_name_edittext)).perform(click()).perform(typeText("Drop time"),closeSoftKeyboard());
+        onView(withId(R.id.checkpoint_trigger_spinner)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("Temperature"))).perform(click());
+        onView(withId(R.id.checkpoint_temp_edittext)).perform(click()).perform(typeText("430"),closeSoftKeyboard());
+        onView(withId(R.id.checkpoint_add_button)).perform(click());
+
+        onView(withId(R.id.roastactivity_add_button)).perform(click());
+    }
+
+    @Test
+    public void createNewBlendEntry() throws InterruptedException {
+        Log.i("Test UIT08", "Testing filling out and adding new blend entry...");
+        onView(withId(R.id.view_pager)).perform(swipeLeft()).perform(swipeLeft());
+        Thread.sleep(1000);
+        onView(withId(R.id.fragment_button_2)).perform(click());
+        Thread.sleep(1000);
+
+        onView(withId(R.id.blend_name_edittext)).perform(click()).perform(typeText("Blend"), closeSoftKeyboard());
+        onView(withId(R.id.roast_for_blend_spinner)).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is("Roast"))).perform(click());
+        Thread.sleep(1000);
+        onView(withId(R.id.blend_addroast_button)).perform(click());
+        onView(withId(R.id.blend_add_button)).perform(click());
     }
 }

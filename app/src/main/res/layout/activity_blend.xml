@@ -91,6 +91,7 @@
                         android:textSize="20dp"
                         android:textColor="@color/white"/>
                     <EditText
+                        android:id="@+id/blend_name_edittext"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:textSize="20dp"
@@ -113,7 +114,7 @@
                     android:orientation="horizontal"
                     android:layout_marginTop="10dp">
                     <Button
-                        android:id="@+id/add_checkpoint_button"
+                        android:id="@+id/blend_addroast_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="+"

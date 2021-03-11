@@ -18,7 +18,7 @@ public class BeanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bean);
 
-        Button roastAddButton = findViewById(R.id.bean_add_button);
+        Button roastAddButton = findViewById(R.id.beanactivity_add_button);
         roastAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

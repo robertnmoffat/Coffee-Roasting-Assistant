@@ -25,8 +25,16 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blend);
 
-        Button roastAddButton = findViewById(R.id.blend_add_button);
+        Button roastAddButton = findViewById(R.id.blend_addroast_button);
         roastAddButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        Button saveButton = findViewById(R.id.blend_add_button);
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
@@ -34,7 +42,7 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
         });
 
         Spinner spinner = findViewById(R.id.roast_for_blend_spinner);
-        Spinner checkPointSpinner = findViewById(R.id.checkpoint_spinner);
+        Spinner checkPointSpinner = findViewById(R.id.roastactivity_checkpoint_spinner);
         List<String> categories = new ArrayList<String>();
         categories.add("Roast");//TODO: add stuff from database later
         setupSpinner(spinner, categories);

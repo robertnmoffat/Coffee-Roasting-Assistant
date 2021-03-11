@@ -33,7 +33,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
 //        ed.setText("Brazil Dark");
 //        ed.setEnabled(false);
 
-        Spinner spinner = findViewById(R.id.bean_spinner);
+        Spinner spinner = findViewById(R.id.roastActivity_bean_spinner);
         //set spinner drop down elements
         List<String> categories = new ArrayList<String>();
         categories.add("Beans");//TODO: add stuff from database later
@@ -41,7 +41,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         categories.add("third");
         setupSpinner(spinner, categories);
 
-        Spinner checkPointSpinner = findViewById(R.id.checkpoint_spinner);
+        Spinner checkPointSpinner = findViewById(R.id.roastactivity_checkpoint_spinner);
         //set spinner drop down elements
         categories = new ArrayList<String>();
         categories.add("New "+getString(R.string.checkpoint_text));//TODO: add stuff from database later
@@ -50,7 +50,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         Context context = this;
 
         //---------Handle clicks on the button for adding the roast parameters to a new roast entry in the database.
-        Button roastAddButton = findViewById(R.id.roast_add_button);
+        Button roastAddButton = findViewById(R.id.roastactivity_add_button);
         roastAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,7 +60,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         });
 
         //-------Handle clicks on the button for adding new roast checkpoints to the current roast.
-        Button addCheckpointButton = findViewById(R.id.add_checkpoint_button);
+        Button addCheckpointButton = findViewById(R.id.roastactivity_add_checkpoint_button);
         addCheckpointButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,10 +102,10 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
      */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String name = parent.getId()==R.id.bean_spinner? "Bean":"Checkpoint";
+        String name = parent.getId()==R.id.roastActivity_bean_spinner? "Bean":"Checkpoint";
         Log.i("Spinner", "ID: "+id+" View: "+name);
 
-        if(parent.getId()==R.id.bean_spinner){
+        if(parent.getId()==R.id.roastActivity_bean_spinner){
             switch((int)id){
                 case 0:
                     Log.i("Spinner", "Bean selected.");

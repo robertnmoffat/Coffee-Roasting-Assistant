@@ -91,6 +91,7 @@
                         android:textSize="20dp"
                         android:textColor="@color/white"/>
                     <EditText
+                        android:id="@+id/beanactivity_name_edittext"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:textSize="20dp"
@@ -113,6 +114,7 @@
                         android:textSize="20dp"
                         android:textColor="@color/white"/>
                     <EditText
+                        android:id="@+id/beanactivity_origin_edittext"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:textSize="20dp"
@@ -135,6 +137,7 @@
                         android:textSize="20dp"
                         android:textColor="@color/white"/>
                     <EditText
+                        android:id="@+id/beanactivity_farm_edittext"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:textSize="20dp"
@@ -157,7 +160,7 @@
                         android:textSize="20dp"
                         android:textColor="@color/white"/>
                     <EditText
-                        android:id="@+id/drying_method_edittext"
+                        android:id="@+id/beanactivity_drymethod_edittext"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:textSize="20dp"
@@ -176,10 +179,34 @@
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="20dp"
                         android:layout_marginLeft="20dp"
+                        android:text="Process"
+                        android:textSize="20dp"
+                        android:textColor="@color/white"/>
+                    <EditText
+                        android:id="@+id/beanactivity_process_edittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textSize="20dp"
+                        android:textColor="@color/lightGray"
+                        android:hint="Process"
+                        android:gravity="end"
+                        android:layout_marginTop="10dp"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginLeft="20dp"
                         android:text="Flavours"
                         android:textSize="20dp"
                         android:textColor="@color/white"/>
                     <EditText
+                        android:id="@+id/beanactivity_flavour_edittext"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:textSize="20dp"
@@ -201,7 +228,7 @@
             android:background="@color/grayBack"
             android:layout_weight="1">
             <Button
-                android:id="@+id/bean_add_button"
+                android:id="@+id/beanactivity_add_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Add"

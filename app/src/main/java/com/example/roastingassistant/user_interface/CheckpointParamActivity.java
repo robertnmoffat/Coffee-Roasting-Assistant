@@ -24,7 +24,7 @@ public class CheckpointParamActivity extends AppCompatActivity implements Adapte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkpoint_param);
 
-        Spinner spinner = findViewById(R.id.trigger_spinner);
+        Spinner spinner = findViewById(R.id.checkpoint_trigger_spinner);
         List<String> categories = new ArrayList<String>();
         categories.add("Trigger");//TODO: add stuff from database later
         categories.add("Temperature");

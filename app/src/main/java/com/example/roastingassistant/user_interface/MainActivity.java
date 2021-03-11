@@ -17,7 +17,7 @@ import com.example.roastingassistant.user_interface.main.SectionsPagerAdapter;
 /**
  * Main menu of the app.
  * Contains a roast, bean, and blend fragment.
- * 
+ *
  */
 public class MainActivity extends AppCompatActivity {
 
