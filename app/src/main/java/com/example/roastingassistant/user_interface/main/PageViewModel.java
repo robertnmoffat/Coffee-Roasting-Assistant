@@ -1,4 +1,4 @@
-package com.example.roastingassistant.ui.main;
+package com.example.roastingassistant.user_interface.main;
 
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;

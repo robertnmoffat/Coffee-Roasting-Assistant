@@ -1,4 +1,4 @@
-package com.example.roastingassistant;
+package com.example.roastingassistant.user_interface;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,6 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.roastingassistant.R;
+
+/**
+ * Activity for displaying and handling alterations on different un-roasted green bean's information.
+ */
 public class BeanActivity extends AppCompatActivity {
 
     @Override

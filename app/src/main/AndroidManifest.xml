@@ -9,19 +9,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RoastingAssistant">
-        <activity android:name=".CheckpointParamActivity"
+        <activity android:name=".user_interface.CheckpointParamActivity"
             android:theme="@style/Theme.RoastingAssistant.NoActionBar"></activity>
         <activity
-            android:name=".BlendActivity"
+            android:name=".user_interface.BlendActivity"
             android:theme="@style/Theme.RoastingAssistant.NoActionBar" />
         <activity
-            android:name=".BeanActivity"
+            android:name=".user_interface.BeanActivity"
             android:theme="@style/Theme.RoastingAssistant.NoActionBar" />
         <activity
-            android:name=".RoastParamActivity"
+            android:name=".user_interface.RoastParamActivity"
             android:theme="@style/Theme.RoastingAssistant.NoActionBar" />
         <activity
-            android:name=".MainActivity"
+            android:name=".user_interface.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.RoastingAssistant.NoActionBar">
             <intent-filter>

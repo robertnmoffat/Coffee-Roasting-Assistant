@@ -1,4 +1,4 @@
-package com.example.roastingassistant.ui.main;
+package com.example.roastingassistant.user_interface.main;
 
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.roastingassistant.MainActivity;
+import com.example.roastingassistant.user_interface.MainActivity;
 import com.example.roastingassistant.R;
 
 /**

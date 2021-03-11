@@ -1,4 +1,4 @@
-package com.example.roastingassistant;
+package com.example.roastingassistant.user_interface;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,9 +9,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import com.example.roastingassistant.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity for setting up a checkpoint to add to the database.
+ */
 public class CheckpointParamActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     @Override

@@ -1,24 +1,24 @@
-package com.example.roastingassistant;
+package com.example.roastingassistant.user_interface;
 
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.roastingassistant.R;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.example.roastingassistant.ui.main.SectionsPagerAdapter;
+import com.example.roastingassistant.user_interface.main.SectionsPagerAdapter;
 
+/**
+ * Main menu of the app.
+ * Contains a roast, bean, and blend fragment.
+ * 
+ */
 public class MainActivity extends AppCompatActivity {
 
     @Override

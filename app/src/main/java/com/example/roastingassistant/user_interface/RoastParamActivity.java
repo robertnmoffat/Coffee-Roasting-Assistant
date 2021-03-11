@@ -1,4 +1,4 @@
-package com.example.roastingassistant;
+package com.example.roastingassistant.user_interface;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,23 +6,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.PopupMenu;
-import android.widget.PopupWindow;
 import android.widget.Spinner;
-import android.widget.TextView;
 
-import java.lang.reflect.Array;
+import com.example.roastingassistant.R;
+import com.example.roastingassistant.user_interface.CheckpointParamActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity for displaying and handling alterations on different roasts roasting parameters.
+ */
 public class RoastParamActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     int checkpointId = 0;
 
@@ -51,6 +49,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
 
         Context context = this;
 
+        //---------Handle clicks on the button for adding the roast parameters to a new roast entry in the database.
         Button roastAddButton = findViewById(R.id.roast_add_button);
         roastAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,6 +59,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
             }
         });
 
+        //-------Handle clicks on the button for adding new roast checkpoints to the current roast.
         Button addCheckpointButton = findViewById(R.id.add_checkpoint_button);
         addCheckpointButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +78,11 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         });
     }
 
+    /**
+     * Connect the passed Spinner with the itemNames array
+     * @param spinner
+     * @param itemNames
+     */
     public void setupSpinner(Spinner spinner, List<String> itemNames){
         //spinner click listener
         spinner.setOnItemSelectedListener(this);
@@ -88,6 +93,13 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         spinner.setAdapter(dataAdapter);
     }
 
+    /**
+     * Called when an item on either of the Spinner Views are selected. Checks parent id to find which spinner it was, and then handles the given selection.
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String name = parent.getId()==R.id.bean_spinner? "Bean":"Checkpoint";
