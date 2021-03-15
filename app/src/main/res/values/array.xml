@@ -8,5 +8,11 @@
     <string-array name="bean_array">
         <item>Bean</item>
     </string-array>
+    <string-array name="download_filter_array">
+        <item>None</item>
+        <item>Roasts</item>
+        <item>Beans</item>
+        <item>Blends</item>
+    </string-array>
 
 </resources>

@@ -1,5 +1,6 @@
 package com.example.roastingassistant.user_interface.main;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Html;
@@ -14,8 +15,10 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.roastingassistant.user_interface.BlendActivity;
 import com.example.roastingassistant.user_interface.MainActivity;
 import com.example.roastingassistant.R;
+import com.example.roastingassistant.user_interface.RemoteDataBrowserActivity;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -92,8 +95,20 @@ public class PlaceholderFragment extends Fragment {
             }
         });
 
+        //----Create and add button for browsing network data
+        Button dataBrowserButton = createRoastButton(root, "Download Roasts", "");
+        dataBrowserButton.setId(R.id.roast_remotedata_button);
+        dataBrowserButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity main = (MainActivity) getActivity();
+                main.startActivity(RemoteDataBrowserActivity.class);
+            }
+        });
+
         //add buttons to the layout
         ll.addView(newRoastBtn);
+        ll.addView(dataBrowserButton);
     }
 
     private void setupBeanFragment(View root){
@@ -114,6 +129,7 @@ public class PlaceholderFragment extends Fragment {
 
     private void setupBlendFragment(View root){
         LinearLayout ll = root.findViewById(R.id.linearLayout1);
+        //------Create and add button for creating a new blend
         Button newBlendBtn = createRoastButton(root, "New Blend", "");
 
         newBlendBtn.setId(R.id.fragment_button_2);
@@ -121,7 +137,8 @@ public class PlaceholderFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 MainActivity main = (MainActivity) getActivity();
-                main.startBlendViewActivity();
+                //main.startBlendViewActivity();
+                main.startActivity(BlendActivity.class);
             }
         });
 
@@ -140,7 +157,7 @@ public class PlaceholderFragment extends Fragment {
         params.setMargins(fortydp,fortydp,fortydp,fortydp/4);
         Button btnTag = new Button(root.getContext());
         btnTag.setLayoutParams(params);
-        if(title.equals("New Roast")||title.equals("New Bean")||title.equals("New Blend")){
+        if(title.equals("New Roast")||title.equals("New Bean")||title.equals("New Blend")||title.equals("Download Roasts")){
             btnTag.setText(Html.fromHtml("<b>" + title + "</b>"));
             btnTag.setTextSize(fortydp/6);
         }else {

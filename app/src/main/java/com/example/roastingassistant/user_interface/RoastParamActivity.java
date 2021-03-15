@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.example.roastingassistant.R;
@@ -22,32 +23,41 @@ import java.util.List;
  * Activity for displaying and handling alterations on different roasts roasting parameters.
  */
 public class RoastParamActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    enum mode{
+        adding,
+        viewing,
+        downloading
+    }
+
     int checkpointId = 0;
+    mode curMode = mode.adding;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_roast_param);
 
-//        EditText ed = findViewById(R.id.roast_name_edittext);
-//        ed.setText("Brazil Dark");
-//        ed.setEnabled(false);
+        context = this.context;
 
-        Spinner spinner = findViewById(R.id.roastActivity_bean_spinner);
-        //set spinner drop down elements
-        List<String> categories = new ArrayList<String>();
-        categories.add("Beans");//TODO: add stuff from database later
-        categories.add("second");
-        categories.add("third");
-        setupSpinner(spinner, categories);
+        getMode(savedInstanceState);//set the mode of the activity
 
-        Spinner checkPointSpinner = findViewById(R.id.roastactivity_checkpoint_spinner);
-        //set spinner drop down elements
-        categories = new ArrayList<String>();
-        categories.add("New "+getString(R.string.checkpoint_text));//TODO: add stuff from database later
-        setupSpinner(checkPointSpinner, categories);
+        switch (curMode){
+            case adding:
 
-        Context context = this;
+                break;
+            case viewing:
+                setupViewMode();
+                break;
+
+            case downloading:
+                setupDownloadMode();
+                break;
+        }
+
+        setupAndLoadSpinners();
+
+        setupCheckpoints();
 
         //---------Handle clicks on the button for adding the roast parameters to a new roast entry in the database.
         Button roastAddButton = findViewById(R.id.roastactivity_add_button);
@@ -59,6 +69,28 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
             }
         });
 
+
+    }
+
+    /**
+     * Get the mode which the activity is supposed to be in.
+     * Modes are either adding, viewing, or downloading.
+     * @param savedInstanceState
+     */
+    public void getMode(Bundle savedInstanceState){
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if(extras == null) {
+                curMode= mode.adding;
+            } else {
+                curMode= (mode)extras.get("Mode");
+            }
+        } else {
+            curMode = (mode) savedInstanceState.getSerializable("Mode");
+        }
+    }
+
+    public void setupCheckpoints(){
         //-------Handle clicks on the button for adding new roast checkpoints to the current roast.
         Button addCheckpointButton = findViewById(R.id.roastactivity_add_checkpoint_button);
         addCheckpointButton.setOnClickListener(new View.OnClickListener() {
@@ -76,6 +108,41 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
 
             }
         });
+    }
+
+    public void setupAndLoadSpinners(){
+        Spinner spinner = findViewById(R.id.roastActivity_bean_spinner);
+        //set spinner drop down elements
+        List<String> categories = new ArrayList<String>();
+        categories.add("Beans");//TODO: add stuff from database later
+        categories.add("second");
+        categories.add("third");
+        setupSpinner(spinner, categories);
+
+        Spinner checkPointSpinner = findViewById(R.id.roastactivity_checkpoint_spinner);
+        //set spinner drop down elements
+        categories = new ArrayList<String>();
+        categories.add("New "+getString(R.string.checkpoint_text));//TODO: add stuff from database later
+        setupSpinner(checkPointSpinner, categories);
+    }
+
+    /**
+     * Sets up the activity for viewing already existing roasts
+     */
+    public void setupViewMode(){
+        EditText ed = findViewById(R.id.roastactivity_name_edittext);
+        ed.setText("Brazil Dark");
+        ed.setEnabled(false);
+    }
+
+    /**
+     * Sets up the activity for viewing downloadable roasts from the server
+     */
+    public void setupDownloadMode(){
+        setupViewMode();
+
+        Button downloadButton = findViewById(R.id.roastactivity_add_button);
+        downloadButton.setText("Download");
     }
 
     /**

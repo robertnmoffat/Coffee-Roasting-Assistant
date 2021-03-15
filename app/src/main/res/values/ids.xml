@@ -4,4 +4,6 @@
     <item name="fragment_button_1" type="id"/>
     <item name="fragment_button_2" type="id"/>
 
+    <item name="roast_remotedata_button" type="id"/>
+
 </resources>

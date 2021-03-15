@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void startRoastParamActivity(){
         Intent intent = new Intent(this, RoastParamActivity.class);
+        intent.putExtra("Mode", RoastParamActivity.mode.adding);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivityForResult(intent, 0);
         overridePendingTransition(0,0); //0 for no animation
@@ -63,6 +64,13 @@ public class MainActivity extends AppCompatActivity {
     }
     public void startBlendViewActivity(){
         Intent intent = new Intent(this, BlendActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivityForResult(intent, 0);
+        overridePendingTransition(0,0); //0 for no animation
+    }
+
+    public void startActivity(Class c){
+        Intent intent = new Intent(this, c);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivityForResult(intent, 0);
         overridePendingTransition(0,0); //0 for no animation
