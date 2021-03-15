@@ -38,7 +38,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_roast_param);
 
-        context = this.context;
+        context = this;
 
         getMode(savedInstanceState);//set the mode of the activity
 

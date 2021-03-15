@@ -6,4 +6,6 @@
 
     <item name="roast_remotedata_button" type="id"/>
 
+    <item name="databrowser_openRoast_button" type="id"/>
+
 </resources>

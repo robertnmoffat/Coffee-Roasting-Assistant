@@ -30,6 +30,14 @@ public class RemoteDataBrowserActivity extends AppCompatActivity implements Adap
         layout = findViewById(R.id.databrowser_data_layout);
         addButton();
         setupSpinner();
+
+        Button doneButton = findViewById(R.id.databrowser_done_button);
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
 
@@ -73,6 +81,7 @@ public class RemoteDataBrowserActivity extends AppCompatActivity implements Adap
         button.setText("Brazil Dark Test");
         button.setTextColor(getResources().getColor(R.color.lightGray));
         button.setBackgroundColor(getResources().getColor(R.color.grayBack));
+        button.setId(R.id.databrowser_openRoast_button);
         //button.setMinHeight(fortydp*2+fortydp/2);
         //button.setBackground(this.getResources().getDrawable(R.drawable.round_shape_btn));
 

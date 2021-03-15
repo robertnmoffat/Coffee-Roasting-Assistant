@@ -6,6 +6,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.example.roastingassistant.user_interface.MainActivity;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -101,6 +102,8 @@ public class UIEspressoTest {
         onData(allOf(is(instanceOf(String.class)), is("Beans"))).perform(click());
         onView(withId(R.id.roastactivity_roastlevel_edittext)).perform(click()).perform(typeText("Medium"),closeSoftKeyboard());
         onView(withId(R.id.roastactivity_droptemp_edittext)).perform(click()).perform(typeText("430"),closeSoftKeyboard());
+        onView(withId(R.id.roastactivity_scrollview)).perform(swipeUp());
+        Thread.sleep(500);
         onView(withId(R.id.roastactivity_add_checkpoint_button)).perform(click());
         Thread.sleep(1000);
 
@@ -127,5 +130,17 @@ public class UIEspressoTest {
         Thread.sleep(1000);
         onView(withId(R.id.blend_addroast_button)).perform(click());
         onView(withId(R.id.blend_add_button)).perform(click());
+    }
+
+    @Test
+    public void testDataBrowser() throws InterruptedException {
+        Log.i("Test UIT09", "Testing opening browser and downloading roast...");
+        onView(withId(R.id.roast_remotedata_button)).perform(click());
+        Thread.sleep(1000);
+        onView(withId(R.id.databrowser_openRoast_button)).perform(click());
+        Thread.sleep(1000);
+        onView(withId(R.id.roastactivity_add_button));
+        Thread.sleep(1000);
+        onView(withId(R.id.databrowser_done_button));
     }
 }

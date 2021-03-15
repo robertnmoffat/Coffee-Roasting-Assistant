@@ -144,7 +144,7 @@
             android:background="@color/grayBack"
             android:layout_weight="1">
             <Button
-                android:id="@+id/databrowser_add_button"
+                android:id="@+id/databrowser_done_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Done"
