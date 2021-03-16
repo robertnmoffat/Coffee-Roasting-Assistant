@@ -75,4 +75,12 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, 0);
         overridePendingTransition(0,0); //0 for no animation
     }
+
+    public void startActivity(Class c, Intent extra){
+        Intent intent = new Intent(this, c);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        intent.putExtras(extra);
+        startActivityForResult(intent, 0);
+        overridePendingTransition(0,0); //0 for no animation
+    }
 }

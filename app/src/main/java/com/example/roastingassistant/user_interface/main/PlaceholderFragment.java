@@ -19,6 +19,10 @@ import com.example.roastingassistant.user_interface.BlendActivity;
 import com.example.roastingassistant.user_interface.MainActivity;
 import com.example.roastingassistant.R;
 import com.example.roastingassistant.user_interface.RemoteDataBrowserActivity;
+import com.example.roastingassistant.user_interface.RoastParamActivity;
+import com.example.roastingassistant.user_interface.Utils;
+
+import static com.example.roastingassistant.user_interface.Utils.*;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -96,6 +100,17 @@ public class PlaceholderFragment extends Fragment {
         });
 
         //----Create and add button for browsing network data
+        Button viewRoastButton = createRoastButton(root, "Brazil", "Dark");
+        viewRoastButton.setId(R.id.roast_viewroast_button);
+        viewRoastButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity main = (MainActivity) getActivity();
+                main.startActivity(RoastParamActivity.class, new Intent().putExtra("Mode", RoastParamActivity.mode.viewing));
+            }
+        });
+
+        //----Create and add button for browsing network data
         Button dataBrowserButton = createRoastButton(root, "Download Roasts", "");
         dataBrowserButton.setId(R.id.roast_remotedata_button);
         dataBrowserButton.setOnClickListener(new View.OnClickListener() {
@@ -108,6 +123,7 @@ public class PlaceholderFragment extends Fragment {
 
         //add buttons to the layout
         ll.addView(newRoastBtn);
+        ll.addView(viewRoastButton);
         ll.addView(dataBrowserButton);
     }
 
@@ -149,12 +165,13 @@ public class PlaceholderFragment extends Fragment {
         //set the properties for button
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         Resources r = root.getContext().getResources();
-        //convert 40dp to equivalent pixels.
-        int fortydp = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                40,
-                r.getDisplayMetrics());
-        params.setMargins(fortydp,fortydp,fortydp,fortydp/4);
+
+        //--------Converting sizes to dp----------
+        int fortydp = dp(40, getResources());
+        int tendp = dp(10, getResources());
+        int eightydp = dp(60, getResources());
+
+        params.setMargins(fortydp,fortydp,fortydp,tendp);
         Button btnTag = new Button(root.getContext());
         btnTag.setLayoutParams(params);
         if(title.equals("New Roast")||title.equals("New Bean")||title.equals("New Blend")||title.equals("Download Roasts")){
@@ -166,7 +183,7 @@ public class PlaceholderFragment extends Fragment {
         }
         btnTag.setTextColor(getResources().getColor(R.color.white));
         btnTag.setBackgroundColor(getResources().getColor(R.color.lightGray));
-        btnTag.setMinHeight(fortydp*2+fortydp/2);
+        btnTag.setMinHeight(eightydp+eightydp);
         btnTag.setBackground(this.getResources().getDrawable(R.drawable.round_shape_btn));
         //btnTag.setId("1");
         return btnTag;

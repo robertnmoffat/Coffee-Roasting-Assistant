@@ -153,17 +153,34 @@
                         android:layout_height="match_parent"
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="20dp"
+                        android:layout_marginRight="20dp"
                         android:layout_marginLeft="20dp"
                         android:text="Time"
                         android:textSize="20dp"
                         android:textColor="@color/white"/>
                     <EditText
-                        android:id="@+id/checkpoint_time_edittext"
-                        android:layout_width="match_parent"
+                        android:id="@+id/checkpoint_timeminute_edittext"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:textSize="20dp"
                         android:textColor="@color/lightGray"
-                        android:hint="Optional"
+                        android:hint="Minutes"
+                        android:gravity="end"
+                        android:layout_marginTop="10dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text=":"
+                        android:layout_marginTop="25dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"/>
+                    <EditText
+                        android:id="@+id/checkpoint_timesecond_edittext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:textSize="20dp"
+                        android:textColor="@color/lightGray"
+                        android:hint="Seconds"
                         android:gravity="end"
                         android:layout_marginTop="10dp"/>
                 </LinearLayout>

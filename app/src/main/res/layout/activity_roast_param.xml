@@ -223,21 +223,24 @@
 
     </ScrollView>
         <LinearLayout
+            android:id="@+id/roastactivity_buttonsarea_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:gravity="center"
             android:background="@color/grayBack"
-            android:layout_weight="1">
-    <Button
-        android:id="@+id/roastactivity_add_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:background="@drawable/round_shape_btn"
-        android:layout_marginBottom="2dp"
-        />
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/roastactivity_add_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:background="@drawable/round_shape_btn"
+                android:layout_marginBottom="2dp"
+            />
+
         </LinearLayout>
 
     </LinearLayout>

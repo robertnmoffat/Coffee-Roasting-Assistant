@@ -135,6 +135,7 @@ public class UIEspressoTest {
     @Test
     public void testDataBrowser() throws InterruptedException {
         Log.i("Test UIT09", "Testing opening browser and downloading roast...");
+        onView(withId(R.id.view_pager)).perform(swipeUp());
         onView(withId(R.id.roast_remotedata_button)).perform(click());
         Thread.sleep(1000);
         onView(withId(R.id.databrowser_openRoast_button)).perform(click());

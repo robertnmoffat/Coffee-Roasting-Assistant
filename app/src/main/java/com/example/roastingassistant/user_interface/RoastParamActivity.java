@@ -4,13 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.example.roastingassistant.R;
@@ -23,7 +28,7 @@ import java.util.List;
  * Activity for displaying and handling alterations on different roasts roasting parameters.
  */
 public class RoastParamActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    enum mode{
+    public enum mode{
         adding,
         viewing,
         downloading
@@ -44,10 +49,10 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
 
         switch (curMode){
             case adding:
-
+                //Default layout
                 break;
             case viewing:
-                setupViewMode();
+                setupViewMode(true);
                 break;
 
             case downloading:
@@ -128,18 +133,43 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
 
     /**
      * Sets up the activity for viewing already existing roasts
+     * @param startButton Whether or not to display the button to start the roast.
      */
-    public void setupViewMode(){
+    public void setupViewMode(boolean startButton){
         EditText ed = findViewById(R.id.roastactivity_name_edittext);
         ed.setText("Brazil Dark");
         ed.setEnabled(false);
+
+        Button downloadButton = findViewById(R.id.roastactivity_add_button);
+        downloadButton.setText("Done");
+
+        if(startButton){
+            Button startRoastButton = new Button(this);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            //convert 40dp to equivalent pixels.
+
+            //--------Converting sizes to dp----------
+            int fortydp = Utils.dp(40, getResources());
+            int tendp = Utils.dp(10, getResources());
+
+            params.setMargins(fortydp,0,0,0);
+            startRoastButton.setLayoutParams(params);
+            startRoastButton.setText("Roast");
+            startRoastButton.setTextColor(getResources().getColor(R.color.white));
+            startRoastButton.setBackgroundColor(getResources().getColor(R.color.lightGray));
+            startRoastButton.setBackground(this.getResources().getDrawable(R.drawable.round_shape_btn));
+            startRoastButton.setGravity(Gravity.CENTER);
+
+            LinearLayout ll = findViewById(R.id.roastactivity_buttonsarea_layout);
+            ll.addView(startRoastButton);
+        }
     }
 
     /**
      * Sets up the activity for viewing downloadable roasts from the server
      */
     public void setupDownloadMode(){
-        setupViewMode();
+        setupViewMode(false);
 
         Button downloadButton = findViewById(R.id.roastactivity_add_button);
         downloadButton.setText("Download");
