@@ -9,9 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RoastingAssistant">
+        <activity android:name=".user_interface.RoastActivity"></activity>
         <activity
             android:name=".user_interface.RemoteDataBrowserActivity"
-            android:theme="@style/Theme.RoastingAssistant.NoActionBar"></activity>
+            android:theme="@style/Theme.RoastingAssistant.NoActionBar" />
         <activity
             android:name=".user_interface.CheckpointParamActivity"
             android:theme="@style/Theme.RoastingAssistant.NoActionBar" />

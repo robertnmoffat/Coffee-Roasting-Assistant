@@ -97,14 +97,14 @@ public class UIEspressoTest {
         onView(withId(R.id.fragment_button_0)).perform(click());
         Thread.sleep(1000);
 
-        onView(withId(R.id.roastactivity_name_edittext)).perform(click()).perform(typeText("Med Colombian"),closeSoftKeyboard());
-        onView(withId(R.id.roastActivity_bean_spinner)).perform(click());
+        onView(withId(R.id.roastparamactivity_name_edittext)).perform(click()).perform(typeText("Med Colombian"),closeSoftKeyboard());
+        onView(withId(R.id.roastparamactivity_bean_spinner)).perform(click());
         onData(allOf(is(instanceOf(String.class)), is("Beans"))).perform(click());
-        onView(withId(R.id.roastactivity_roastlevel_edittext)).perform(click()).perform(typeText("Medium"),closeSoftKeyboard());
-        onView(withId(R.id.roastactivity_droptemp_edittext)).perform(click()).perform(typeText("430"),closeSoftKeyboard());
-        onView(withId(R.id.roastactivity_scrollview)).perform(swipeUp());
+        onView(withId(R.id.roastparamactivity_roastlevel_edittext)).perform(click()).perform(typeText("Medium"),closeSoftKeyboard());
+        onView(withId(R.id.roastparamactivity_droptemp_edittext)).perform(click()).perform(typeText("430"),closeSoftKeyboard());
+        onView(withId(R.id.roastparamactivity_scrollview)).perform(swipeUp());
         Thread.sleep(500);
-        onView(withId(R.id.roastactivity_add_checkpoint_button)).perform(click());
+        onView(withId(R.id.roastparamactivity_add_checkpoint_button)).perform(click());
         Thread.sleep(1000);
 
         onView(withId(R.id.checkpoint_name_edittext)).perform(click()).perform(typeText("Drop time"),closeSoftKeyboard());
@@ -113,7 +113,7 @@ public class UIEspressoTest {
         onView(withId(R.id.checkpoint_temp_edittext)).perform(click()).perform(typeText("430"),closeSoftKeyboard());
         onView(withId(R.id.checkpoint_add_button)).perform(click());
 
-        onView(withId(R.id.roastactivity_add_button)).perform(click());
+        onView(withId(R.id.roastparamactivity_add_button)).perform(click());
     }
 
     @Test
@@ -140,7 +140,7 @@ public class UIEspressoTest {
         Thread.sleep(1000);
         onView(withId(R.id.databrowser_openRoast_button)).perform(click());
         Thread.sleep(1000);
-        onView(withId(R.id.roastactivity_add_button));
+        onView(withId(R.id.roastparamactivity_add_button));
         Thread.sleep(1000);
         onView(withId(R.id.databrowser_done_button));
     }

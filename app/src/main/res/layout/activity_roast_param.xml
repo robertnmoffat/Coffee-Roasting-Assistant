@@ -66,7 +66,7 @@
         android:layout_marginTop="110dp"
         android:weightSum="6">
     <ScrollView
-        android:id="@+id/roastactivity_scrollview"
+        android:id="@+id/roastparamactivity_scrollview"
         android:layout_weight="5"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -91,7 +91,7 @@
                 android:textSize="20dp"
                 android:textColor="@color/white"/>
             <EditText
-                android:id="@+id/roastactivity_name_edittext"
+                android:id="@+id/roastparamactivity_name_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="20dp"
@@ -114,7 +114,7 @@
                     android:textSize="20dp"
                     android:layout_marginLeft="20dp"/>
                 <Spinner
-                    android:id="@+id/roastActivity_bean_spinner"
+                    android:id="@+id/roastparamactivity_bean_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="right"
@@ -135,7 +135,7 @@
                     android:textSize="20dp"
                     android:textColor="@color/white"/>
                 <EditText
-                    android:id="@+id/roastactivity_roastlevel_edittext"
+                    android:id="@+id/roastparamactivity_roastlevel_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textSize="20dp"
@@ -158,7 +158,7 @@
                     android:textSize="20dp"
                     android:textColor="@color/white"/>
                 <EditText
-                    android:id="@+id/roastactivity_droptemp_edittext"
+                    android:id="@+id/roastparamactivity_droptemp_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textSize="20dp"
@@ -182,7 +182,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/checkpointLayout"
+                android:id="@+id/roastparamactivity_checkpoints_layout"
                 android:orientation="vertical"/>
 
 
@@ -194,7 +194,7 @@
             android:orientation="horizontal"
             android:layout_marginTop="10dp">
             <Button
-                android:id="@+id/roastactivity_add_checkpoint_button"
+                android:id="@+id/roastparamactivity_add_checkpoint_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="+"
@@ -202,7 +202,7 @@
                 android:textColor="@color/white"
                 android:background="@drawable/round_shape_btn"/>
             <Spinner
-                android:id="@+id/roastactivity_checkpoint_spinner"
+                android:id="@+id/roastparamactivity_checkpoint_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="right"
@@ -223,7 +223,7 @@
 
     </ScrollView>
         <LinearLayout
-            android:id="@+id/roastactivity_buttonsarea_layout"
+            android:id="@+id/roastparamactivity_buttonsarea_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:gravity="center"
@@ -231,7 +231,7 @@
             android:layout_weight="1"
             android:orientation="horizontal">
             <Button
-                android:id="@+id/roastactivity_add_button"
+                android:id="@+id/roastparamactivity_add_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Add"

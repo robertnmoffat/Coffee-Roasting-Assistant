@@ -42,7 +42,7 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
         });
 
         Spinner spinner = findViewById(R.id.roast_for_blend_spinner);
-        Spinner checkPointSpinner = findViewById(R.id.roastactivity_checkpoint_spinner);
+        Spinner checkPointSpinner = findViewById(R.id.roastparamactivity_checkpoint_spinner);
         List<String> categories = new ArrayList<String>();
         categories.add("Roast");//TODO: add stuff from database later
         setupSpinner(spinner, categories);
