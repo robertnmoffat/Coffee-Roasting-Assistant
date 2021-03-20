@@ -101,7 +101,7 @@ public class PlaceholderFragment extends Fragment {
 
         //----Create and add button for browsing network data
         Button viewRoastButton = createRoastButton(root, "Brazil", "Dark");
-        viewRoastButton.setId(R.id.roast_viewroast_button);
+        viewRoastButton.setId(R.id.menu_viewroast_button);
         viewRoastButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

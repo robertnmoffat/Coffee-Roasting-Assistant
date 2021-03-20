@@ -144,4 +144,5 @@ public class UIEspressoTest {
         Thread.sleep(1000);
         onView(withId(R.id.databrowser_done_button));
     }
+
 }

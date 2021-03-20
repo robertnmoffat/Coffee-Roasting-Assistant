@@ -213,6 +213,20 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
             startRoastButton.setBackgroundColor(getResources().getColor(R.color.lightGray));
             startRoastButton.setBackground(this.getResources().getDrawable(R.drawable.round_shape_btn));
             startRoastButton.setGravity(Gravity.CENTER);
+            startRoastButton.setId(R.id.roastparamactivity_startroast_button);
+
+            startRoastButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO:open roast activity
+                    Intent intent = new Intent(context, RoastActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    //intent.putExtras(extra);
+                    //startActivityForResult(intent, 0);
+                    startActivity(intent);
+                    overridePendingTransition(0,0); //0 for no animation
+                }
+            });
 
             LinearLayout ll = findViewById(R.id.roastparamactivity_buttonsarea_layout);
             ll.addView(startRoastButton);

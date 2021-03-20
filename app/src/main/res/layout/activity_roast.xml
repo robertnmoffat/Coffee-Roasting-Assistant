@@ -4,6 +4,113 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
     tools:context=".user_interface.RoastActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/grayBack"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/camerastandin"
+                android:layout_weight="0"
+                />
+
+            <TextView
+                android:id="@+id/roastactivity_temp_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Current Temp:"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textColor="@color/lightGray"
+                />
+
+            <ImageView
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/roastgraph"
+                android:layout_weight="0"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
+
+            <Button
+                android:id="@+id/roastactivity_stop_button"
+                android:layout_width="wrap_content"
+                android:layout_height="80dp"
+                android:text="Stop"
+                android:textColor="@color/white"
+                android:background="@drawable/round_shape_btn"
+                android:layout_weight="0"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"/>
+            <TextView
+                android:id="@+id/roastactivity_time_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time"
+                android:textColor="@color/lightGray"
+                android:layout_gravity="center"/>
+            <LinearLayout
+                android:id="@+id/roastactivity_checkpoint_linearlayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="next checkpoint"
+                    android:textColor="@color/lightGray"
+                    android:layout_gravity="center"
+                    />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/roastactivity_undocheckpoint_button"
+                android:layout_width="150dp"
+                android:layout_height="80dp"
+                android:text="undo checkpoint"
+                android:textColor="@color/white"
+                android:background="@drawable/round_shape_btn"
+                android:layout_weight="0"
+                />
+            <Button
+                android:id="@+id/roastactivity_checkpoint_button"
+                android:layout_width="100dp"
+                android:layout_height="80dp"
+                android:text="Start"
+                android:textColor="@color/white"
+                android:background="@drawable/round_shape_btn"
+                android:layout_weight="0"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
