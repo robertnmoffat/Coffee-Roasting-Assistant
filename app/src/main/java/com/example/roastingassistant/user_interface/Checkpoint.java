@@ -1,5 +1,7 @@
 package com.example.roastingassistant.user_interface;
 
+import android.widget.TextView;
+
 import java.io.Serializable;
 
 public class Checkpoint implements Serializable {
@@ -15,4 +17,12 @@ public class Checkpoint implements Serializable {
     public int temperature;
     public int minutes;
     public int seconds;
+
+    Checkpoint(){
+        name="";
+        trigger=trig.Temperature;
+        temperature=0;
+        minutes=0;
+        seconds=0;
+    }
 }

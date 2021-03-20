@@ -2,18 +2,12 @@ package com.example.roastingassistant.user_interface;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.core.view.ViewCompat;
-import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,7 +19,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.roastingassistant.R;
-import com.example.roastingassistant.user_interface.CheckpointParamActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +53,15 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
                 //Default layout
                 break;
             case viewing:
-                setupViewMode(true);
+                Roast roast = new Roast();
+                roast.name = "Brazil Dark";
+                roast.roastLevel = "Dark";
+                roast.dropTemp = 459;
+                Checkpoint check = new Checkpoint();
+                check.name = "Heat to 3.5";
+                check.temperature = 300;
+                roast.checkpoints.add(check);
+                setupViewMode(true, roast);
                 break;
 
             case downloading:
@@ -108,7 +109,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
      * @param name
      * @param description
      */
-    public void addCheckPoint(String name, String description){
+    public void createCheckPoint(String name, String description){
         LinearLayout checkLayout = findViewById(R.id.roastparamactivity_checkpoints_layout);
         TextView checkDescription = new TextView(this);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -120,19 +121,6 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         checkDescription.setTextSize(Utils.dp(7, getResources()));
         checkDescription.setGravity(Gravity.CENTER);
 
-        Button removeButton = new Button(this);
-        LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params3.gravity = Gravity.CENTER;
-        removeButton.setLayoutParams(params3);
-        removeButton.setMaxWidth(Utils.dp(10, getResources()));
-        removeButton.setMaxHeight(Utils.dp(10, getResources()));
-        removeButton.setText("-");
-        removeButton.setTextColor(getResources().getColor(R.color.white));
-        removeButton.setBackgroundColor(getResources().getColor(R.color.lightGray));
-        removeButton.setBackground(this.getResources().getDrawable(R.drawable.round_shape_btn));
-        removeButton.setGravity(Gravity.CENTER);
-
-
         LinearLayout textAndButton = new LinearLayout(this);
         LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params2.setMargins(0,Utils.dp(20,getResources()), 0, 0);
@@ -142,8 +130,23 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         int id = ViewCompat.generateViewId();//TODO:Store id in array
         textAndButton.setId(id);//set to generated id
         textAndButton.addView(checkDescription);
-        textAndButton.addView(removeButton);
         textAndButton.setGravity(Gravity.CENTER);
+
+        if(curMode==mode.adding) {
+            Button removeButton = new Button(this);
+            LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params3.gravity = Gravity.CENTER;
+            removeButton.setLayoutParams(params3);
+            removeButton.setMaxWidth(Utils.dp(10, getResources()));
+            removeButton.setMaxHeight(Utils.dp(10, getResources()));
+            removeButton.setText("-");
+            removeButton.setTextColor(getResources().getColor(R.color.white));
+            removeButton.setBackgroundColor(getResources().getColor(R.color.lightGray));
+            removeButton.setBackground(this.getResources().getDrawable(R.drawable.round_shape_btn));
+            removeButton.setGravity(Gravity.CENTER);
+
+            textAndButton.addView(removeButton);
+        }
 
         checkLayout.addView(textAndButton);
     }
@@ -189,13 +192,34 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
      * Sets up the activity for viewing already existing roasts
      * @param startButton Whether or not to display the button to start the roast.
      */
-    public void setupViewMode(boolean startButton){
-        EditText ed = findViewById(R.id.roastparamactivity_name_edittext);
-        ed.setText("Brazil Dark");
-        ed.setEnabled(false);
+    public void setupViewMode(boolean startButton, Roast roast){
+        EditText nameEd = findViewById(R.id.roastparamactivity_name_edittext);
+        nameEd.setText(roast.name);
+        nameEd.setEnabled(false);
+
+        Spinner beanSpinner = findViewById(R.id.roastparamactivity_bean_spinner);
+        beanSpinner.setEnabled(false);
+        beanSpinner.setClickable(false);
+
+        EditText lvlEd = findViewById(R.id.roastparamactivity_roastlevel_edittext);
+        lvlEd.setText(roast.roastLevel);
+        lvlEd.setEnabled(false);
+
+        EditText dropEd = findViewById(R.id.roastparamactivity_droptemp_edittext);
+        dropEd.setText(""+roast.dropTemp);
+        dropEd.setEnabled(false);
 
         Button downloadButton = findViewById(R.id.roastparamactivity_add_button);
         downloadButton.setText("Done");
+
+        for (Checkpoint check: roast.checkpoints) {
+            addCheckPoint(check);
+        }
+
+        Button addCheck = findViewById(R.id.roastparamactivity_add_checkpoint_button);
+        addCheck.setVisibility(View.GONE);
+        Spinner checkSpin = findViewById(R.id.roastparamactivity_checkpoint_spinner);
+        checkSpin.setVisibility(View.GONE);
 
         if(startButton){
             Button startRoastButton = new Button(this);
@@ -237,7 +261,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
      * Sets up the activity for viewing downloadable roasts from the server
      */
     public void setupDownloadMode(){
-        setupViewMode(false);
+        setupViewMode(false, new Roast());
 
         Button downloadButton = findViewById(R.id.roastparamactivity_add_button);
         downloadButton.setText("Download");
@@ -301,24 +325,28 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
             if(resultCode==RESULT_OK) {
                 Log.i("poop", "Callback received!");
                 Checkpoint checkpoint = (Checkpoint) (Checkpoint)data.getExtras().getSerializable("Checkpoint");
-                switch (checkpoint.trigger){
-                    case Temperature:
-                        addCheckPoint(checkpoint.name, "Temp: "+checkpoint.temperature);
-                        break;
-                    case Time:
-                        addCheckPoint(checkpoint.name, "Time: "+checkpoint.minutes+":"+checkpoint.seconds);
-                        break;
-                    case TurnAround:
-                        addCheckPoint(checkpoint.name, "Turnaround");
-                        break;
-                    case PromptAtTemp:
-                        addCheckPoint(checkpoint.name, "Promp at "+checkpoint.temperature);
-                        break;
-                    default:
-                        addCheckPoint(checkpoint.name, "");
-                        break;
-                }
+                addCheckPoint(checkpoint);
             }
+        }
+    }
+
+    private void addCheckPoint(Checkpoint checkpoint) {
+        switch (checkpoint.trigger){
+            case Temperature:
+                createCheckPoint(checkpoint.name, "Temp: "+checkpoint.temperature);
+                break;
+            case Time:
+                createCheckPoint(checkpoint.name, "Time: "+checkpoint.minutes+":"+checkpoint.seconds);
+                break;
+            case TurnAround:
+                createCheckPoint(checkpoint.name, "Turnaround");
+                break;
+            case PromptAtTemp:
+                createCheckPoint(checkpoint.name, "Promp at "+checkpoint.temperature);
+                break;
+            default:
+                createCheckPoint(checkpoint.name, "");
+                break;
         }
     }
 }
