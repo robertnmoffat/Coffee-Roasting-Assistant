@@ -31,6 +31,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
 public class UIEspressoTest {
@@ -145,4 +146,24 @@ public class UIEspressoTest {
         onView(withId(R.id.databrowser_done_button));
     }
 
+    @Test
+    public void testOpenRoastingActivity() throws InterruptedException {
+        Log.i("Test UIT10", "Testing opening roast activity...");
+        onView(withId(R.id.menu_viewroast_button)).perform(click());
+        Thread.sleep(1000);
+        onView(withId(R.id.roastparamactivity_startroast_button)).perform(click());
+        Thread.sleep(1000);
+
+    }
+
+    @Test
+    public void testStartAndStopRoast() throws InterruptedException {
+        testOpenRoastingActivity();
+        String initialTime = "Time:0.0";
+        onView(withId(R.id.roastactivity_time_textview)).check(matches(withText(initialTime)));
+        onView(withId(R.id.roastactivity_checkpoint_button)).perform(click());
+        Thread.sleep(1000);
+        onView(withId(R.id.roastactivity_time_textview)).check(matches(not(withText(initialTime))));
+
+    }
 }
