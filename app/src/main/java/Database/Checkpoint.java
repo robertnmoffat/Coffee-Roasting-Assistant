@@ -1,4 +1,4 @@
-package com.example.roastingassistant.user_interface;
+package Database;
 
 import android.widget.TextView;
 
@@ -18,7 +18,7 @@ public class Checkpoint implements Serializable {
     public int minutes;
     public int seconds;
 
-    Checkpoint(){
+    public Checkpoint(){
         name="";
         trigger=trig.Temperature;
         temperature=0;

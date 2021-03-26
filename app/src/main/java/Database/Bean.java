@@ -1,4 +1,4 @@
-package com.example.roastingassistant.user_interface;
+package Database;
 
 import java.io.Serializable;
 

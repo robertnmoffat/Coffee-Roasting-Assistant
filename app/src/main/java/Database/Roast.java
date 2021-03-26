@@ -1,9 +1,11 @@
-package com.example.roastingassistant.user_interface;
+package Database;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+
+import Database.Bean;
+import Database.Checkpoint;
 
 public class Roast implements Serializable {
     public String name;

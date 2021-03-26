@@ -23,6 +23,9 @@ import com.example.roastingassistant.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import Database.Checkpoint;
+import Database.Roast;
+
 /**
  * Activity for displaying and handling alterations on different roasts roasting parameters.
  */
