@@ -9,10 +9,18 @@ import com.google.android.material.tabs.TabLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.example.roastingassistant.user_interface.main.SectionsPagerAdapter;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
+import Database.Bean;
+import Database.DatabaseHelper;
 
 /**
  * Main menu of the app.
@@ -38,15 +46,26 @@ public class MainActivity extends AppCompatActivity {
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
-//        FloatingActionButton fab = findViewById(R.id.fab);
-//
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+        deleteDatabase("coffeeDatabase");//For testing purposes, delete database before use so that there is a fresh db.
+
+        DatabaseHelper db = DatabaseHelper.getInstance(this.getApplicationContext());
+        Bean bean = new Bean();
+        bean.name = "Brazil";
+        db.addBean(bean);
+        Bean bean2 = new Bean();
+        bean2.name = "Colombia";
+        db.addBean(bean2);
+        Bean bean3 = new Bean();
+        bean3.name = "Peru";
+        db.addBean(bean3);
+        Bean bean4 = new Bean();
+        bean4.name = "Ethiopia";
+        db.addBean(bean4);
+
+        ArrayList<Bean> beans = (ArrayList<Bean>) db.getAllBeans();
+        for(Bean b: beans){
+            Log.d("Database", b.name);
+        }
     }
 
     public void startRoastParamActivity(){

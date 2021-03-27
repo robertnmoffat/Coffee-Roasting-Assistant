@@ -14,7 +14,7 @@ public class Roast implements Serializable {
     public int dropTemp;
     public List<Checkpoint> checkpoints;
 
-    Roast(){
+    public Roast(){
         name="";
         bean=null;
         roastLevel="";
