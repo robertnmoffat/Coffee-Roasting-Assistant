@@ -3,6 +3,7 @@ package Database;
 import java.io.Serializable;
 
 public class Bean implements Serializable {
+    public int id;
     public String name;
     public String origin;
     public String farm;
@@ -15,6 +16,7 @@ public class Bean implements Serializable {
     public float pricePerPound;
 
     public Bean(){
+        id = 0;
         name="";
         origin="";
         farm="";

@@ -2,6 +2,7 @@ package com.example.roastingassistant.user_interface;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Database.Checkpoint;
+import Database.DatabaseHelper;
 
 /**
  * Activity for setting up a checkpoint to add to the database.
@@ -48,6 +50,9 @@ public class CheckpointParamActivity extends AppCompatActivity implements Adapte
             @Override
             public void onClick(View v) {
                 Checkpoint checkObj = createCheckpoint();//create a checkpoint obj based on the current user fields.
+
+                long checkId = DatabaseHelper.getInstance(getContext().getApplicationContext()).addCheckpoint(checkObj);//Add checkpoint to db for re-usability
+                checkObj.id = (int)checkId;
 
                 //TODO: need to return a Checkpoint object somehow to parent activity.
 
@@ -94,5 +99,9 @@ public class CheckpointParamActivity extends AppCompatActivity implements Adapte
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    public Context getContext(){
+        return this;
     }
 }

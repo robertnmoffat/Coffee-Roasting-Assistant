@@ -7,9 +7,11 @@ import androidx.core.view.ViewCompat;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -17,14 +19,19 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.roastingassistant.R;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import Database.Bean;
 import Database.Checkpoint;
+import Database.DatabaseHelper;
 import Database.Roast;
+import Utilities.IntList;
 
 /**
  * Activity for displaying and handling alterations on different roasts roasting parameters.
@@ -42,28 +49,36 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
     mode curMode = mode.adding;
     Context context;
 
+    int beanSpinnerSelection = 0;
+
+    //Models from database
+    ArrayList<Bean> beans;
+    ArrayList<Checkpoint> checkpoints;
+    ArrayList<Checkpoint> checkpointsAdded;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_roast_param);
 
         context = this;
+        checkpointsAdded = new ArrayList<Checkpoint>();
+        checkpoints = new ArrayList<Checkpoint>();
 
         getMode(savedInstanceState);//set the mode of the activity
+
+        setupAndLoadSpinners();
 
         switch (curMode){
             case adding:
                 //Default layout
                 break;
             case viewing:
-                Roast roast = new Roast();
-                roast.name = "Brazil Dark";
-                roast.roastLevel = "Dark";
-                roast.dropTemp = 459;
-                Checkpoint check = new Checkpoint();
-                check.name = "Heat to 3.5";
-                check.temperature = 300;
-                roast.checkpoints.add(check);
+                Intent intent = getIntent();
+                int id = intent.getIntExtra("Id",-1);
+                DatabaseHelper db = DatabaseHelper.getInstance(this.getApplicationContext());
+                Roast roast = db.getRoast(id);
+
                 setupViewMode(true, roast);
                 break;
 
@@ -72,8 +87,6 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
                 break;
         }
 
-        setupAndLoadSpinners();
-
         setupCheckpoints();
 
         //---------Handle clicks on the button for adding the roast parameters to a new roast entry in the database.
@@ -81,12 +94,42 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         roastAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                if(curMode==mode.adding){
+                    Log.d("Database", "bean selection:"+beanSpinnerSelection);
+                    String nameText = ((EditText)(findViewById(R.id.roastparamactivity_name_edittext))).getText().toString();
+                    if(nameText.equals("")){
+                        Toast.makeText(getContext().getApplicationContext(), "Roast name cannot be blank.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if(beanSpinnerSelection==0){
+                        Toast.makeText(getContext().getApplicationContext(), "Bean type must be selected.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
+                    Roast thisRoast = getRoast();
+                    DatabaseHelper db = DatabaseHelper.getInstance(getContext().getApplicationContext());
+                    db.addRoast(thisRoast);
+                }
+
+                finish();
             }
         });
 
 
+    }
+
+    public Roast getRoast(){
+        Roast roast = new Roast();
+        roast.name = ((EditText)findViewById(R.id.roastparamactivity_name_edittext)).getText().toString();
+        roast.bean = beans.get(beanSpinnerSelection-1);
+        roast.roastLevel = ((EditText)findViewById(R.id.roastparamactivity_roastlevel_edittext)).getText().toString();
+        //TODO: roast.charge_temp
+        String dropText = ((EditText)findViewById(R.id.roastparamactivity_droptemp_edittext)).getText().toString();
+        roast.dropTemp = dropText.equals("")?0 : Integer.parseInt(dropText);
+        //TODO: roast.flavour
+        roast.checkpoints = new ArrayList<>(checkpointsAdded);
+
+        return roast;
     }
 
     /**
@@ -112,7 +155,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
      * @param name
      * @param description
      */
-    public void createCheckPoint(String name, String description){
+    public void createCheckPoint(String name, String description, int dbId){
         LinearLayout checkLayout = findViewById(R.id.roastparamactivity_checkpoints_layout);
         TextView checkDescription = new TextView(this);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -147,6 +190,14 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
             removeButton.setBackgroundColor(getResources().getColor(R.color.lightGray));
             removeButton.setBackground(this.getResources().getDrawable(R.drawable.round_shape_btn));
             removeButton.setGravity(Gravity.CENTER);
+            removeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {//Remove checkpoint button
+                    checkpointsAdded.remove(dbId-1);
+                    ((ViewGroup)textAndButton).removeView(checkDescription);
+                    ((ViewGroup)textAndButton).removeView(removeButton);
+                }
+            });
 
             textAndButton.addView(removeButton);
         }
@@ -160,15 +211,15 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         addCheckpointButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switch(checkpointId){
-                    case 0:
-                        Intent intent = new Intent(context, CheckpointParamActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        startActivityForResult(intent, CHECKPOINT_REQUEST);
-                        overridePendingTransition(0,0); //0 for no animation
+                if(checkpointId==0){
+                    Intent intent = new Intent(context, CheckpointParamActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivityForResult(intent, CHECKPOINT_REQUEST);
+                    overridePendingTransition(0,0); //0 for no animation
 
-                        break;
-
+                }else{
+                    Checkpoint checkpoint = checkpoints.get(checkpointId-1);
+                    addCheckPoint(checkpoint);
                 }
 
             }
@@ -179,15 +230,26 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         Spinner spinner = findViewById(R.id.roastparamactivity_bean_spinner);
         //set spinner drop down elements
         List<String> categories = new ArrayList<String>();
-        categories.add("Beans");//TODO: add stuff from database later
-        categories.add("second");
-        categories.add("third");
+        categories.add("Beans");
+
+        //Get beans from database
+        DatabaseHelper db = DatabaseHelper.getInstance(this.getApplicationContext());
+        beans = (ArrayList<Bean>) db.getAllBeans();
+        for(Bean bean: beans) {
+            categories.add(bean.name);
+        }
         setupSpinner(spinner, categories);
 
         Spinner checkPointSpinner = findViewById(R.id.roastparamactivity_checkpoint_spinner);
         //set spinner drop down elements
         categories = new ArrayList<String>();
-        categories.add("New "+getString(R.string.checkpoint_text));//TODO: add stuff from database later
+        categories.add("New " + getString(R.string.checkpoint_text));//TODO: add stuff from database later
+
+        //Get checkpoints from Database
+        checkpoints = (ArrayList<Checkpoint>) db.getAllCheckpoints();
+        for(Checkpoint checkpoint: checkpoints) {
+            categories.add(checkpoint.name);
+        }
         setupSpinner(checkPointSpinner, categories);
     }
 
@@ -201,6 +263,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         nameEd.setEnabled(false);
 
         Spinner beanSpinner = findViewById(R.id.roastparamactivity_bean_spinner);
+        beanSpinner.setSelection(roast.bean.id);
         beanSpinner.setEnabled(false);
         beanSpinner.setClickable(false);
 
@@ -297,7 +360,9 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         String name = parent.getId()==R.id.roastparamactivity_bean_spinner? "Bean":"Checkpoint";
         Log.i("Spinner", "ID: "+id+" View: "+name);
 
-        if(parent.getId()==R.id.roastparamactivity_bean_spinner){
+        if(name.equals("Bean")){
+            beanSpinnerSelection = (int)id;
+
             switch((int)id){
                 case 0:
                     Log.i("Spinner", "Bean selected.");
@@ -326,30 +391,36 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
 
         if(requestCode==CHECKPOINT_REQUEST){
             if(resultCode==RESULT_OK) {
-                Log.i("poop", "Callback received!");
+                Log.i("callback", "Callback received!");
                 Checkpoint checkpoint = (Checkpoint) (Checkpoint)data.getExtras().getSerializable("Checkpoint");
                 addCheckPoint(checkpoint);
+                checkpointsAdded.add(checkpoint);
             }
         }
     }
 
     private void addCheckPoint(Checkpoint checkpoint) {
+        checkpoints.add(checkpoint);
         switch (checkpoint.trigger){
             case Temperature:
-                createCheckPoint(checkpoint.name, "Temp: "+checkpoint.temperature);
+                createCheckPoint(checkpoint.name, "Temp: "+checkpoint.temperature, checkpoint.id);
                 break;
             case Time:
-                createCheckPoint(checkpoint.name, "Time: "+checkpoint.minutes+":"+checkpoint.seconds);
+                createCheckPoint(checkpoint.name, "Time: "+checkpoint.minutes+":"+checkpoint.seconds, checkpoint.id);
                 break;
             case TurnAround:
-                createCheckPoint(checkpoint.name, "Turnaround");
+                createCheckPoint(checkpoint.name, "Turnaround", checkpoint.id);
                 break;
             case PromptAtTemp:
-                createCheckPoint(checkpoint.name, "Promp at "+checkpoint.temperature);
+                createCheckPoint(checkpoint.name, "Prompt at "+checkpoint.temperature, checkpoint.id);
                 break;
             default:
-                createCheckPoint(checkpoint.name, "");
+                createCheckPoint(checkpoint.name, "", checkpoint.id);
                 break;
         }
+    }
+
+    public Context getContext(){
+        return this;
     }
 }

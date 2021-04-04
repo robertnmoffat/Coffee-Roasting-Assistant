@@ -12,6 +12,7 @@ public class Checkpoint implements Serializable {
         PromptAtTemp //User must give input at checkpoint. Example would be first or second crack.
     }
 
+    public int id;
     public String name;
     public trig trigger;
     public int temperature;
@@ -19,6 +20,7 @@ public class Checkpoint implements Serializable {
     public int seconds;
 
     public Checkpoint(){
+        id=0;
         name="";
         trigger=trig.Temperature;
         temperature=0;

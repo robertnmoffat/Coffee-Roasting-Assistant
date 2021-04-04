@@ -4,6 +4,7 @@
         <item>Units</item>
         <item>Language</item>
         <item>Username</item>
+        <item>Delete DB</item>
     </string-array>
     <string-array name="bean_array">
         <item>Bean</item>
