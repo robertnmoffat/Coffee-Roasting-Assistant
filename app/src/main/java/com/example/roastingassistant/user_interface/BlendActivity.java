@@ -164,16 +164,13 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
         LinearLayout textAndButton = new LinearLayout(this);
         LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params2.setMargins(0, Utils.dp(10, this.getResources()), 0, 0);
-        //params2.gravity = Gravity.CENTER;
         textAndButton.setLayoutParams(params2);
         textAndButton.setOrientation(LinearLayout.HORIZONTAL);
         int id = ViewCompat.generateViewId();//TODO:Store id in array
         textAndButton.setId(id);//set to generated id
-        //textAndButton.setGravity(Gravity.CENTER);
 
         Button removeButton = new Button(this);
         LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        //params3.gravity = Gravity.CENTER;
         params3.setMargins(Utils.dp(20,this.getResources()),0,0,0);
         removeButton.setLayoutParams(params3);
         removeButton.setMaxWidth(Utils.dp(10, getResources()));
@@ -182,7 +179,6 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
         removeButton.setTextColor(getResources().getColor(R.color.white));
         removeButton.setBackgroundColor(getResources().getColor(R.color.lightGray));
         removeButton.setBackground(this.getResources().getDrawable(R.drawable.round_shape_btn));
-        //removeButton.setGravity(Gravity.CENTER);
         removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {//Remove checkpoint button

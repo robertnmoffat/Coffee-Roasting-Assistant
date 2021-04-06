@@ -158,30 +158,28 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
     public void createCheckPoint(String name, String description, int dbId){
         LinearLayout checkLayout = findViewById(R.id.roastparamactivity_checkpoints_layout);
         TextView checkDescription = new TextView(this);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0,Utils.dp(10,getResources()), Utils.dp(10,getResources()), Utils.dp(10,getResources()));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0,Utils.dp(10,getResources()), Utils.dp(40,getResources()), Utils.dp(10,getResources()));
+        params.gravity = Gravity.RIGHT;
         checkDescription.setLayoutParams(params);
         checkDescription.setText(name+" "+description);
         checkDescription.setTextColor(getResources().getColor(R.color.lightGray));
         checkDescription.setBackgroundColor(getResources().getColor(R.color.grayBack));
         checkDescription.setTextSize(Utils.dp(7, getResources()));
-        checkDescription.setGravity(Gravity.CENTER);
+        checkDescription.setGravity(Gravity.RIGHT);
 
         LinearLayout textAndButton = new LinearLayout(this);
         LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params2.setMargins(0,Utils.dp(20,getResources()), 0, 0);
-        params2.gravity = Gravity.CENTER;
+        params2.setMargins(0, Utils.dp(10, this.getResources()), 0, 0);
         textAndButton.setLayoutParams(params2);
         textAndButton.setOrientation(LinearLayout.HORIZONTAL);
         int id = ViewCompat.generateViewId();//TODO:Store id in array
         textAndButton.setId(id);//set to generated id
-        textAndButton.addView(checkDescription);
-        textAndButton.setGravity(Gravity.CENTER);
 
         if(curMode==mode.adding) {
             Button removeButton = new Button(this);
             LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params3.gravity = Gravity.CENTER;
+            params3.setMargins(Utils.dp(20,this.getResources()),0,0,0);
             removeButton.setLayoutParams(params3);
             removeButton.setMaxWidth(Utils.dp(10, getResources()));
             removeButton.setMaxHeight(Utils.dp(10, getResources()));
@@ -189,7 +187,6 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
             removeButton.setTextColor(getResources().getColor(R.color.white));
             removeButton.setBackgroundColor(getResources().getColor(R.color.lightGray));
             removeButton.setBackground(this.getResources().getDrawable(R.drawable.round_shape_btn));
-            removeButton.setGravity(Gravity.CENTER);
             removeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {//Remove checkpoint button
@@ -202,6 +199,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
             textAndButton.addView(removeButton);
         }
 
+        textAndButton.addView(checkDescription);
         checkLayout.addView(textAndButton);
     }
 
