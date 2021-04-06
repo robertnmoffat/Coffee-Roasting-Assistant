@@ -277,10 +277,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put(KEY_BEAN_FLAVOUR, bean.flavours);
             values.put(KEY_BEAN_BODY, bean.body);
             values.put(KEY_BEAN_ACIDITY, bean.acidity);
+            values.put(KEY_BEAN_DRYING_METHOD, bean.dryingMethod);
             values.put(KEY_BEAN_PRICE_PER_POUND, bean.pricePerPound);
 
             beanId = (int)db.insertOrThrow(TABLE_BEAN, null, values);
             db.setTransactionSuccessful();
+            Log.i("Database", "Bean entry successfully added.");
         }catch (Exception e){
             Log.d("Database", "Error adding bean entry to database. "+e.getMessage());
         }finally {
@@ -316,10 +318,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return checkpointId;
     }
 
-    public void addRoast(Roast roast){
+    public int addRoast(Roast roast){
         Log.i("Database", "Adding roast entry to database...");
         //Create or open database for writing
         SQLiteDatabase db = getWritableDatabase();
+
+        int roastId=-1;
 
         db.beginTransaction();
         try{
@@ -331,10 +335,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put(KEY_ROAST_PROFILE_DROP_TEMP, roast.dropTemp);
             values.put(KEY_ROAST_PROFILE_FLAVOUR, roast.flavour);
 
-            long roastId = db.insertOrThrow(TABLE_ROAST_PROFILE, null, values);
+            roastId = (int)db.insertOrThrow(TABLE_ROAST_PROFILE, null, values);
             if(roastId==-1){
                 Log.d("Database", "Roast insertion failed.");
-                return;
+                return -1;
             }
             int checkpointCount = roast.checkpoints.size();
             if(checkpointCount>0) {
@@ -349,7 +353,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     long checkTableId = db.insertOrThrow(TABLE_CHECKPOINTS, null, cValues);
                     if (checkTableId == -1) {
                         Log.d("Database", "Checkpoints table insertion failed.");
-                        return;
+                        return -1;
                     }
                     Log.d("Database", "Checkpoints table successfully added to database.");
                 }
@@ -361,6 +365,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }finally {
             db.endTransaction();
         }
+
+        return roastId;
     }
 
     public int addBlend(Blend blend){
@@ -751,5 +757,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return bean;
+    }
+
+    public void triggerDbBuild(){
+        getReadableDatabase();
     }
 }

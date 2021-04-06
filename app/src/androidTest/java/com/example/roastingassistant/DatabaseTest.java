@@ -47,7 +47,6 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
 public class DatabaseTest {
-    DatabaseHelper db;
 
     @Rule
     public ActivityScenarioRule<DatabaseTestActivity> activityRule
@@ -55,10 +54,34 @@ public class DatabaseTest {
 
 
     @Test
-   public void startDb(){
-        InstrumentationTestRunner instrumentationTestRunner = new InstrumentationTestRunner();
-        Context context = instrumentationTestRunner.getContext();
+   public void DBT01() throws InterruptedException {
+        Thread.sleep(1000);
+        onView(withId(R.id.DBT01button)).perform(click());
+        Thread.sleep(1000);
     }
+
+    @Test
+    public void DBT02() throws InterruptedException {
+        Thread.sleep(1000);
+        onView(withId(R.id.DBT02button)).perform(click());
+        Thread.sleep(1000);
+    }
+
+    @Test
+    public void DBT03() throws InterruptedException {
+        Thread.sleep(1000);
+        onView(withId(R.id.DBT03button)).perform(click());
+        Thread.sleep(1000);
+    }
+
+    @Test
+    public void DBT04() throws InterruptedException {
+        Thread.sleep(1000);
+        onView(withId(R.id.DBT04button)).perform(click());
+        Thread.sleep(1000);
+    }
+
+
 
 
 }
