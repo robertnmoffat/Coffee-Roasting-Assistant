@@ -3,8 +3,12 @@ package Database;
 import android.widget.TextView;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 
-public class Checkpoint implements Serializable {
+import Utilities.ObjectToStringConverter;
+
+public class Checkpoint extends DbData implements Serializable {
     public enum trig{
         Temperature,
         Time,
@@ -26,5 +30,15 @@ public class Checkpoint implements Serializable {
         temperature=0;
         minutes=0;
         seconds=0;
+    }
+
+    public HashMap<String, String> toMap(){
+        HashMap<String, String> map = new HashMap<>();
+        map.put("name", name);
+        map.put("trigger", trigger.toString());
+        map.put("temperature", ""+temperature);
+        map.put("minutes", ""+minutes);
+        map.put("seconds", ""+seconds);
+        return map;
     }
 }

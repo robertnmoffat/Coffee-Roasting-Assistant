@@ -331,7 +331,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put(KEY_ROAST_PROFILE_NAME, roast.name);
             values.put(KEY_ROAST_PROFILE_ROAST, roast.roastLevel);
             values.put(KEY_ROAST_PROFILE_BEAN_ID_FK, roast.bean.id);
-            values.put(KEY_ROAST_PROFILE_CHARGE_TEMP, roast.charge_temp);
+            values.put(KEY_ROAST_PROFILE_CHARGE_TEMP, roast.chargeTemp);
             values.put(KEY_ROAST_PROFILE_DROP_TEMP, roast.dropTemp);
             values.put(KEY_ROAST_PROFILE_FLAVOUR, roast.flavour);
 
@@ -523,7 +523,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 String beanIdString = cursor.getString(cursor.getColumnIndex(KEY_ROAST_PROFILE_BEAN_ID_FK));
                 roast.bean = getBean(Integer.parseInt(beanIdString));
                 String chargeTempString = cursor.getString(cursor.getColumnIndex(KEY_ROAST_PROFILE_CHARGE_TEMP));
-                roast.charge_temp = Integer.parseInt(chargeTempString);
+                roast.chargeTemp = Integer.parseInt(chargeTempString);
                 String dropTempString = cursor.getString(cursor.getColumnIndex(KEY_ROAST_PROFILE_DROP_TEMP));
                 roast.dropTemp = Integer.parseInt(dropTempString);
                 roast.flavour = cursor.getString(cursor.getColumnIndex(KEY_ROAST_PROFILE_FLAVOUR));
@@ -634,7 +634,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         String beanIdString = cursor.getString(cursor.getColumnIndex(KEY_ROAST_PROFILE_BEAN_ID_FK));
                         roastArray[roastId-1].bean = getBean(Integer.parseInt(beanIdString));
                         String chargeTempString = cursor.getString(cursor.getColumnIndex(KEY_ROAST_PROFILE_CHARGE_TEMP));
-                        roastArray[roastId-1].charge_temp = Integer.parseInt(chargeTempString);
+                        roastArray[roastId-1].chargeTemp = Integer.parseInt(chargeTempString);
                         String dropTempString = cursor.getString(cursor.getColumnIndex(KEY_ROAST_PROFILE_DROP_TEMP));
                         roastArray[roastId-1].dropTemp = Integer.parseInt(dropTempString);
                         roastArray[roastId-1].flavour = cursor.getString(cursor.getColumnIndex(KEY_ROAST_PROFILE_FLAVOUR));

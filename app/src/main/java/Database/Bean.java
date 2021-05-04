@@ -1,8 +1,12 @@
 package Database;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 
-public class Bean implements Serializable {
+import Utilities.ObjectToStringConverter;
+
+public class Bean extends DbData implements Serializable  {
     public int id;
     public String name;
     public String origin;
@@ -27,5 +31,20 @@ public class Bean implements Serializable {
         body="";
         acidity="";
         pricePerPound=0.0f;
+    }
+
+    public HashMap<String, String> toMap(){
+        HashMap<String, String> map = new HashMap<>();
+        map.put("name", name);
+        map.put("origin", origin);
+        map.put("farm", farm);
+        map.put("dryingMethod", dryingMethod);
+        map.put("process", process);
+        map.put("flavours", flavours);
+        map.put("altitude", altitude);
+        map.put("body", body);
+        map.put("acidity", acidity);
+        map.put("pricePerPound", ""+pricePerPound);
+        return map;
     }
 }

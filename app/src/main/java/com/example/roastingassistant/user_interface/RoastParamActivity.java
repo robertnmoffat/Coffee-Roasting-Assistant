@@ -107,6 +107,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
                     }
 
                     Roast thisRoast = getRoast();
+
                     DatabaseHelper db = DatabaseHelper.getInstance(getContext().getApplicationContext());
                     db.addRoast(thisRoast);
                 }
@@ -256,6 +257,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
      * @param startButton Whether or not to display the button to start the roast.
      */
     public void setupViewMode(boolean startButton, Roast roast){
+        String roastString = roast.toString();
         EditText nameEd = findViewById(R.id.roastparamactivity_name_edittext);
         nameEd.setText(roast.name);
         nameEd.setEnabled(false);

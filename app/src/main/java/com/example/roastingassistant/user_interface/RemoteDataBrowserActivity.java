@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,13 +20,25 @@ import com.example.roastingassistant.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import Networking.HttpClient;
+
 public class RemoteDataBrowserActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     LinearLayout layout;
+    HttpClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remote_data_browser);
+
+        if (android.os.Build.VERSION.SDK_INT > 9)
+        {
+            StrictMode.ThreadPolicy policy = new
+                    StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+        client = new HttpClient();
+        client.execute();
 
         layout = findViewById(R.id.databrowser_data_layout);
         addButton();
