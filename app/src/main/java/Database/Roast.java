@@ -33,7 +33,7 @@ public class Roast extends DbData implements Serializable {
     public HashMap<String, String> toMap() {
         HashMap<String, String> map = new HashMap<>();
         map.put("name", name);
-        map.put("bean", bean.toString());
+        map.put("bean", ""+bean.serverId);
         map.put("roastLevel", roastLevel);
         map.put("chargeTemp", ""+chargeTemp);
         map.put("dropTemp", ""+dropTemp);
@@ -42,7 +42,7 @@ public class Roast extends DbData implements Serializable {
         for(Checkpoint check : checkpoints) {
             sb.append(check.toString());
         }
-        map.put("checkpoints" , sb.toString());
+        //map.put("checkpoints" , sb.toString());
 
         return map;
     }

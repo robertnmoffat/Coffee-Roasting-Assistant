@@ -8,6 +8,7 @@ import Utilities.ObjectToStringConverter;
 
 public class Bean extends DbData implements Serializable  {
     public int id;
+    public int serverId;
     public String name;
     public String origin;
     public String farm;

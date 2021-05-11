@@ -32,13 +32,16 @@ public class Checkpoint extends DbData implements Serializable {
         seconds=0;
     }
 
+    public int timeTotalToSeconds(){
+        return minutes*60+seconds;
+    };
+
     public HashMap<String, String> toMap(){
         HashMap<String, String> map = new HashMap<>();
         map.put("name", name);
         map.put("trigger", trigger.toString());
         map.put("temperature", ""+temperature);
-        map.put("minutes", ""+minutes);
-        map.put("seconds", ""+seconds);
+        map.put("time", ""+timeTotalToSeconds());
         return map;
     }
 }

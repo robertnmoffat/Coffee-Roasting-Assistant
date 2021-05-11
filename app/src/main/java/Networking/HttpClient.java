@@ -19,7 +19,9 @@ import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
 
 import Database.Bean;
+import Database.Checkpoint;
 import Database.DatabaseHelper;
+import Database.Roast;
 
 /**
  * To use:
@@ -42,11 +44,25 @@ public class HttpClient extends AsyncTask<Void, Void, String> {
 
         Log.d("Server", "Starting server thread.");
 
+
+        Checkpoint testPoint = new Checkpoint();
+        testPoint.name = "Test Checkpoint";
+        testPoint.temperature = 250;
+        //result = checkPointPostRequest(testPoint);
+
         Bean testBean = new Bean();
         testBean.name = "Test Bean";
         testBean.flavours = "Testalicious";
+        testBean.serverId = 1;
 
-        result = beanPostRequest(testBean);
+        Roast testRoast = new Roast();
+        testRoast.name = "Test Roast";
+        testRoast.bean = testBean;
+        testRoast.dropTemp = 436;
+        result = roastPostRequest(testRoast);
+
+
+        //result = beanPostRequest(testBean);
 
         Log.d("Server", result);
 
@@ -79,6 +95,98 @@ public class HttpClient extends AsyncTask<Void, Void, String> {
             OutputStream os = connection.getOutputStream();
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
             String dataString = bean.toString();
+            Log.d("Server", dataString);
+            writer.write(dataString);
+
+            writer.flush();
+            writer.close();
+            os.close();
+            int responseCode = connection.getResponseCode();
+
+            if(responseCode== HttpURLConnection.HTTP_OK){
+                String line;
+                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                while((line=br.readLine())!=null)
+                    result+=line;
+            }else{
+                result="Error responseCode:"+responseCode;
+            }
+
+
+        }catch (IOException e){
+            e.printStackTrace();
+            result = "Error exception:"+e.getMessage();
+        }
+
+        return result;
+    }
+
+    public String checkPointPostRequest(Checkpoint checkpoint){
+        String result="";
+        String inputLine;
+
+        try{
+            //Connect to server
+            URL myUrl = new URL(SERVER+"checkpoint");
+            HttpURLConnection connection = (HttpURLConnection)myUrl.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setReadTimeout(READ_TIMEOUT);
+            connection.setConnectTimeout(CONNECTION_TIMEOUT);
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+            Log.d("Server", "Trying connection.");
+            connection.connect();
+            Log.d("Server", "Checkpoint connection.");
+
+            OutputStream os = connection.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+            String dataString = checkpoint.toString();
+            Log.d("Server", dataString);
+            writer.write(dataString);
+
+            writer.flush();
+            writer.close();
+            os.close();
+            int responseCode = connection.getResponseCode();
+
+            if(responseCode== HttpURLConnection.HTTP_OK){
+                String line;
+                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                while((line=br.readLine())!=null)
+                    result+=line;
+            }else{
+                result="Error responseCode:"+responseCode;
+            }
+
+
+        }catch (IOException e){
+            e.printStackTrace();
+            result = "Error exception:"+e.getMessage();
+        }
+
+        return result;
+    }
+
+    public String roastPostRequest(Roast roast){
+        String result="";
+        String inputLine;
+
+        try{
+            //Connect to server
+            URL myUrl = new URL(SERVER+"roast");
+            HttpURLConnection connection = (HttpURLConnection)myUrl.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setReadTimeout(READ_TIMEOUT);
+            connection.setConnectTimeout(CONNECTION_TIMEOUT);
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+            Log.d("Server", "Trying connection.");
+            connection.connect();
+            Log.d("Server", "Checkpoint connection.");
+
+            OutputStream os = connection.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+            String dataString = roast.toString();
             Log.d("Server", dataString);
             writer.write(dataString);
 
