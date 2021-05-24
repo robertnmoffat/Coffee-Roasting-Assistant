@@ -26,19 +26,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Database.Blend;
+import Database.Checkpoint;
 import Database.DatabaseHelper;
 import Database.Roast;
+import Networking.HttpClient;
 
 /**
  * Activity for displaying and handling alterations on different coffee blend information.
  * Main functionality is to add different roasts and the percentage the blend is made up of each roast.
  */
-public class BlendActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class BlendActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, HttpCallback {
     ArrayList<Roast> roasts;
     ArrayList<Roast> roastsAdded;
-    int roastSelected=0;
+    int roastSelected = 0;
 
     boolean viewing = false;
+
+    HttpClient client;
+    int serverId=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,33 +55,41 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
         roastsAdded = new ArrayList<Roast>();
 
         Intent intent = getIntent();
-        int id = intent.getIntExtra("Id",-1);
-        if(id!=-1&&id!=0){
+        int id = intent.getIntExtra("Id", -1);
+        if (id != -1 && id != 0) {
             viewing = true;
             Blend blend = db.getBlend(id);
             setupForViewing(blend);
+        }
+        serverId = intent.getIntExtra("serverId", -1);
+        if (serverId != -1 && serverId != 0) {
+            setupForDownloading(serverId);
         }
 
         Button roastAddButton = findViewById(R.id.blend_addroast_button);
         roastAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(roastSelected==0){
+                if (roastSelected == 0) {
                     Toast.makeText(getContext().getApplicationContext(), "Roast type must be selected.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                roastsAdded.add(roasts.get(roastSelected-1));
-                createRoastUI(roasts.get(roastSelected-1));
+                roastsAdded.add(roasts.get(roastSelected - 1));
+                createRoastUI(roasts.get(roastSelected - 1));
             }
         });
 
         Button saveButton = findViewById(R.id.blend_add_button);
-        if(viewing)
-            saveButton.setText("Done");
+        if (viewing) {
+            if (serverId > 0)
+                saveButton.setText("Download");
+            else
+                saveButton.setText("Done");
+        }
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!viewing) {
+                if (!viewing) {
                     Blend blend = getBlendFromActivity();
                     int blendId = db.addBlend(blend);
                 }
@@ -89,34 +102,47 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
         Spinner checkPointSpinner = findViewById(R.id.roastparamactivity_checkpoint_spinner);
         List<String> categories = new ArrayList<String>();
         categories.add("Roast");
-        for(Roast roast: roasts){
-            if(roast.name.contains(" "))
+        for (Roast roast : roasts) {
+            if (roast.name.contains(" "))
                 categories.add(roast.name);
             else
-                categories.add(roast.name+": "+roast.roastLevel+" "+roast.dropTemp);
+                categories.add(roast.name + ": " + roast.roastLevel + " " + roast.dropTemp);
         }
 
         setupSpinner(spinner, categories);
     }
 
-    public void setupForViewing(Blend blend){
+    public void setupForDownloading(int serverId) {
+        client = new HttpClient();
+        client.idToGet = serverId;
+        client.functionToPerform = HttpClient.HttpFunction.getBlend;
+        client.setLoadedCallback(this);
+        client.execute();
+    }
+
+    public void setupForViewing(Blend blend) {
         EditText nameET = findViewById(R.id.blend_name_edittext);
         nameET.setText(blend.name);
+        nameET.setEnabled(false);
         EditText descriptionET = findViewById(R.id.blend_description_edittext);
         descriptionET.setText(blend.description);
-        if(blend.roasts!=null) {
+        descriptionET.setEnabled(false);
+        if (blend.roasts != null) {
             for (Roast roast : blend.roasts) {
                 createRoastUI(roast);
             }
         }
+        findViewById(R.id.blend_addroast_button).setVisibility(View.GONE);
+        findViewById(R.id.roast_for_blend_spinner).setVisibility(View.GONE);
     }
 
     /**
      * Connects a Spinner View with the List of names to attach to it's dropdown menu.
+     *
      * @param spinner
      * @param itemNames
      */
-    public void setupSpinner(Spinner spinner, List<String> itemNames){
+    public void setupSpinner(Spinner spinner, List<String> itemNames) {
         //spinner click listener
         spinner.setOnItemSelectedListener(this);
         //adaptor for categories and spinner
@@ -128,6 +154,7 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
 
     /**
      * Called when an item has been selected from the dropdown menu.
+     *
      * @param parent
      * @param view
      * @param position
@@ -135,27 +162,27 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
      */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        roastSelected=(int)id;
+        roastSelected = (int) id;
     }
 
-    
+
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
 
-    public void createRoastUI(Roast roast){
+    public void createRoastUI(Roast roast) {
         String name = roast.name;
-        String description = roast.roastLevel+" "+roast.dropTemp;
+        String description = roast.roastLevel + " " + roast.dropTemp;
         int dbId = roast.id;
 
         LinearLayout roastLayout = findViewById(R.id.blend_roast_layout);
         TextView checkDescription = new TextView(this);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0,Utils.dp(10,getResources()), Utils.dp(40,getResources()), Utils.dp(10,getResources()));
+        params.setMargins(0, Utils.dp(10, getResources()), Utils.dp(40, getResources()), Utils.dp(10, getResources()));
         params.gravity = Gravity.RIGHT;
         checkDescription.setLayoutParams(params);
-        checkDescription.setText(name+" "+description);
+        checkDescription.setText(name + " " + description);
         checkDescription.setTextColor(getResources().getColor(R.color.lightGray));
         checkDescription.setBackgroundColor(getResources().getColor(R.color.grayBack));
         checkDescription.setTextSize(Utils.dp(7, getResources()));
@@ -171,7 +198,7 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
 
         Button removeButton = new Button(this);
         LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params3.setMargins(Utils.dp(20,this.getResources()),0,0,0);
+        params3.setMargins(Utils.dp(20, this.getResources()), 0, 0, 0);
         removeButton.setLayoutParams(params3);
         removeButton.setMaxWidth(Utils.dp(10, getResources()));
         removeButton.setMaxHeight(Utils.dp(10, getResources()));
@@ -195,16 +222,47 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
 
     }
 
-    public Blend getBlendFromActivity(){
+    public Blend getBlendFromActivity() {
         Blend blend = new Blend();
-        blend.name = ((EditText)findViewById(R.id.blend_name_edittext)).getText().toString();
-        blend.description = ((EditText)findViewById(R.id.blend_description_edittext)).getText().toString();
+        blend.name = ((EditText) findViewById(R.id.blend_name_edittext)).getText().toString();
+        blend.description = ((EditText) findViewById(R.id.blend_description_edittext)).getText().toString();
         blend.roasts = new ArrayList<>(roastsAdded);
 
         return blend;
     }
 
-    public Context getContext(){
+    public Context getContext() {
         return this;
+    }
+
+    @Override
+    public void onDataLoaded() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setupForViewing(client.blend);
+
+                Button saveButton = findViewById(R.id.blend_add_button);
+                saveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DatabaseHelper db = DatabaseHelper.getInstance(getContext().getApplicationContext());
+                        for(Roast roast: client.blend.roasts){
+                            for(Checkpoint checkpoint: roast.checkpoints){
+                                int checkId = db.addCheckpoint(checkpoint);
+                                checkpoint.id = checkId;
+                            }
+                            int beanId = db.addBean(roast.bean);
+                            roast.bean.id = beanId;
+                            int roastId = db.addRoast(roast);
+                            roast.id = roastId;
+                        }
+                        int blendId = db.addBlend(client.blend);
+
+                        finish();
+                    }
+                });
+            }
+        });
     }
 }

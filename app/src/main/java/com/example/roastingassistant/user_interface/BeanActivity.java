@@ -16,12 +16,14 @@ import com.example.roastingassistant.R;
 import Database.Bean;
 import Database.Blend;
 import Database.DatabaseHelper;
+import Networking.HttpClient;
 
 /**
  * Activity for displaying and handling alterations on different un-roasted green bean's information.
  */
-public class BeanActivity extends AppCompatActivity {
+public class BeanActivity extends AppCompatActivity implements HttpCallback{
     boolean viewing = false;
+    HttpClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,15 @@ public class BeanActivity extends AppCompatActivity {
             viewing = true;
             Bean bean = db.getBean(id);
             setupForViewing(bean);
+        }
+        int serverId = intent.getIntExtra("serverId",-1);
+        if(serverId!=-1&&serverId!=0){
+            //viewing = true;
+            client = new HttpClient();
+            client.idToGet = serverId;
+            client.functionToPerform = HttpClient.HttpFunction.getBean;
+            client.setLoadedCallback(this);
+            client.execute();
         }
 
         Button roastAddButton = findViewById(R.id.beanactivity_add_button);
@@ -65,19 +76,37 @@ public class BeanActivity extends AppCompatActivity {
     private void setupForViewing(Bean bean) {
         EditText nameET = findViewById(R.id.beanactivity_name_edittext);
         nameET.setText(bean.name);
+        nameET.setEnabled(false);
         EditText originET = findViewById(R.id.beanactivity_origin_edittext);
         originET.setText(bean.origin);
+        originET.setEnabled(false);
         EditText farmET = findViewById(R.id.beanactivity_farm_edittext);
         farmET.setText(bean.farm);
+        farmET.setEnabled(false);
         EditText dryingET = findViewById(R.id.beanactivity_drymethod_edittext);
         dryingET.setText(bean.dryingMethod);
+        dryingET.setEnabled(false);
         EditText processET = findViewById(R.id.beanactivity_process_edittext);
         processET.setText(bean.process);
+        processET.setEnabled(false);
         EditText flavoursET = findViewById(R.id.beanactivity_flavour_edittext);
         flavoursET.setText(bean.flavours);
+        flavoursET.setEnabled(false);
     }
 
     public Context getContext(){
         return this;
+    }
+
+    @Override
+    public void onDataLoaded() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setupForViewing(client.bean);
+                Button downloadBut = findViewById(R.id.beanactivity_add_button);
+                downloadBut.setText("Download");
+            }
+        });
     }
 }

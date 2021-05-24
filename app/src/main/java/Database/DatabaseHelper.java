@@ -292,7 +292,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return beanId;
     }
 
-    public long addCheckpoint(Checkpoint checkpoint){
+    public int addCheckpoint(Checkpoint checkpoint){
         Log.i("Database", "Adding checkpoint entry to database...");
         //Create or open database for writing
         long checkpointId=-1;
@@ -315,7 +315,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.endTransaction();
         }
 
-        return checkpointId;
+        return (int)checkpointId;
     }
 
     public int addRoast(Roast roast){
@@ -449,7 +449,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         for(int i=1; i<=blendCount; i++){
-            blends.add(getBlend(i));
+            Blend blend = getBlend(i);
+            if(blend!=null)
+                blends.add(blend);
         }
 
         return blends;

@@ -31,17 +31,20 @@ import Database.Bean;
 import Database.Checkpoint;
 import Database.DatabaseHelper;
 import Database.Roast;
+import Networking.HttpClient;
 import Utilities.IntList;
 
 /**
  * Activity for displaying and handling alterations on different roasts roasting parameters.
  */
-public class RoastParamActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class RoastParamActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, HttpCallback {
     public enum mode{
         adding,
         viewing,
         downloading
     }
+
+    HttpClient client;
 
     public static final int CHECKPOINT_REQUEST = 1;
 
@@ -327,10 +330,18 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
      * Sets up the activity for viewing downloadable roasts from the server
      */
     public void setupDownloadMode(){
-        setupViewMode(false, new Roast());
+        client = new HttpClient();
+
+        Intent intent = getIntent();
+        int id = intent.getIntExtra("serverId",-1);
 
         Button downloadButton = findViewById(R.id.roastparamactivity_add_button);
         downloadButton.setText("Download");
+
+        client.idToGet = id;
+        client.functionToPerform = HttpClient.HttpFunction.getRoast;
+        client.setLoadedCallback(this);
+        client.execute();
     }
 
     /**
@@ -422,5 +433,37 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
 
     public Context getContext(){
         return this;
+    }
+
+    @Override
+    public void onDataLoaded() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setupViewMode(false, client.roast);
+                Spinner spinner = findViewById(R.id.roastparamactivity_bean_spinner);
+                //set spinner drop down elements
+                List<String> categories = new ArrayList<String>();
+                categories.add(client.bean.name);
+                setupSpinner(spinner, categories);
+                Button downloadBut = findViewById(R.id.roastparamactivity_add_button);
+                downloadBut.setText("Download");
+                downloadBut.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DatabaseHelper db = DatabaseHelper.getInstance(getContext().getApplicationContext());
+                        int beanid = db.addBean(client.roast.bean);
+                        client.roast.bean.id = beanid;
+                        for(Checkpoint check: client.roast.checkpoints){
+                            int checkId = db.addCheckpoint(check);
+                            check.id = checkId;
+                        }
+                        db.addRoast(client.roast);
+
+                        finish();
+                    }
+                });
+            }
+        });
     }
 }

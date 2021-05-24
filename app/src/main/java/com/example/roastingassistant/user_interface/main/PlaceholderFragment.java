@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -111,6 +112,13 @@ public class PlaceholderFragment extends Fragment {
         if(roasts!=null) {
             for (Roast roast : roasts) {
                 Button viewRoastButton = createMenuButton(root, roast.name, roast.roastLevel+" "+roast.dropTemp);
+                viewRoastButton.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        Toast.makeText(getContext(), "long press!", Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                });
                 viewRoastButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
