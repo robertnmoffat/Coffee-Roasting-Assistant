@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         //-----------------Temporary db setup------------------------------
-        deleteDatabase("coffeeDatabase");//For testing purposes, delete database before use so that there is a fresh db.
+        //deleteDatabase("coffeeDatabase");//For testing purposes, delete database before use so that there is a fresh db.
 
         //DBThread dbt = new DBThread(this.getApplicationContext());
         //dbt.start();

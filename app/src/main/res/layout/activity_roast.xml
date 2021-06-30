@@ -23,12 +23,13 @@
             android:layout_gravity="center"
             android:layout_marginBottom="20dp">
 
-            <ImageView
+            <LinearLayout
+                android:id="@+id/roastactivity_camera_Layout"
                 android:layout_width="250dp"
-                android:layout_height="wrap_content"
+                android:layout_height="185dp"
                 android:background="@drawable/camerastandin"
                 android:layout_weight="0"
-                />
+                android:orientation="horizontal" />
 
             <TextView
                 android:id="@+id/roastactivity_temp_textview"
@@ -42,8 +43,9 @@
                 />
 
             <ImageView
+                android:id="@+id/roastactivity_graph_imageView"
                 android:layout_width="250dp"
-                android:layout_height="wrap_content"
+                android:layout_height="185dp"
                 android:background="@drawable/roastgraph"
                 android:layout_weight="0"/>
 
