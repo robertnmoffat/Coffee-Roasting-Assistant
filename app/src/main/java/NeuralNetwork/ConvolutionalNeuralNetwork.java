@@ -22,10 +22,11 @@ public class ConvolutionalNeuralNetwork {
         public float[] values;
     };
 
-    class Square{
+    static class Square{
         public int width;
         public float[][] values;
         public float[][] biases;
+        public Square(){}
         public void applyBiases() {
             for (int y = 0; y < values[0].length; y++) {
                 for (int x = 0; x < values.length; x++){
@@ -35,12 +36,13 @@ public class ConvolutionalNeuralNetwork {
         }
     };
 
-    class SquareLayer{
+    static class SquareLayer{
         public Square[] squares;
+        public SquareLayer(){}
     }
 
     public ConvolutionalNeuralNetwork(){}
 
 
-    
+
 }

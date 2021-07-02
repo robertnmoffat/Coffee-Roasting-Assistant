@@ -1,11 +1,15 @@
 package com.example.roastingassistant.user_interface;
 
+import NeuralNetwork.ConvolutionalNeuralNetwork;
+import NeuralNetwork.NetworkFileLoader;
+import NeuralNetwork.NetworkInitializer;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
