@@ -5,4 +5,8 @@
     <dimen name="appbar_padding">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
+    <dimen name="roastactivity_camerapreview_width">250dp</dimen>
+    <dimen name="roastactivity_camerapreview_height">185dp</dimen>
+    <dimen name="roastactivity_hightlight_width">60dp</dimen>
+    <dimen name="roastactivity_hightlight_height">40dp</dimen>
 </resources>

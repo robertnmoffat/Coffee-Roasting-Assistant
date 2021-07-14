@@ -2,9 +2,9 @@ package NeuralNetwork;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import NeuralNetwork.ConvolutionalNeuralNetwork.Square;
-import NeuralNetwork.ConvolutionalNeuralNetwork.SquareLayer;
-import NeuralNetwork.ConvolutionalNeuralNetwork.SingleDimension;
+import NeuralNetwork.Square;
+import NeuralNetwork.SquareLayer;
+import NeuralNetwork.SingleDimension;
 
 import java.util.Random;
 
@@ -47,6 +47,7 @@ public class NetworkInitializer {
      * @param input The bitmap to be converted to inputs.
      */
     public static void setInputs(ConvolutionalNeuralNetwork network, Bitmap input) {
+        network.input = new Square();
         network.input.width = input.getWidth();
         network.input.values = new float[input.getWidth()][input.getHeight()];
 
@@ -157,23 +158,35 @@ public class NetworkInitializer {
         network.hiddenNeurons = new SingleDimension[hiddenLayerCount];
         network.activatedHiddenNeurons = new SingleDimension[hiddenLayerCount];
         network.biases = new SingleDimension[hiddenLayerCount+1];
+        network.biases[0] = new SingleDimension();
         network.biases[0].values = new float[firstHiddenLayerNeuronCount];
+        network.hiddenNeurons[0] = new SingleDimension();
         network.hiddenNeurons[0].values = new float[firstHiddenLayerNeuronCount];
+        network.activatedHiddenNeurons[0] = new SingleDimension();
         network.activatedHiddenNeurons[0].values = new float[firstHiddenLayerNeuronCount];
         network.weights = new SingleDimension[hiddenLayerCount+1];
+        network.weights[0] = new SingleDimension();
         network.weights[0].values = new float[firstWeightCount];
 
 
         //second fully connected
+        network.biases[1] = new SingleDimension();
         network.biases[1].values = new float[secondHiddenLayerNeuronCount];
+        network.hiddenNeurons[1] = new SingleDimension();
         network.hiddenNeurons[1].values = new float[secondHiddenLayerNeuronCount];
+        network.activatedHiddenNeurons[1] = new SingleDimension();
         network.activatedHiddenNeurons[1].values = new float[secondHiddenLayerNeuronCount];
+        network.weights[1] = new SingleDimension();
         network.weights[1].values = new float[secondWeightCount];
 
         //output layer and weights
+        network.biases[2] = new SingleDimension();
         network.biases[2].values = new float[outputNeuronCount];
+        network.outputs = new SingleDimension();
         network.outputs.values = new float[outputNeuronCount];
+        network.activatedOutputs = new SingleDimension();
         network.activatedOutputs.values = new float[outputNeuronCount];
+        network.weights[2] = new SingleDimension();
         network.weights[2].values = new float[thirdWeightCount];
     }
 
@@ -258,5 +271,55 @@ public class NetworkInitializer {
                 return true;
         }
         return false;
+    }
+
+    public static void resetNetworkNeurons(ConvolutionalNeuralNetwork network)
+    {
+        //convolved post filter
+        for (int i = 0; i < firstFilterLayerCount; i++)
+        {
+            network.convolutedLayers[0].squares[i].values = new float[firstConvolutionWidth][firstConvolutionWidth];
+
+            network.activatedConvolutedLayers[0].squares[i].values = new float[firstConvolutionWidth][firstConvolutionWidth];
+        }
+
+        //first downsample
+        for (int i = 0; i < firstFilterLayerCount; i++)
+        {
+            network.downsampledLayers[0].squares[i].values = new float[firstDownsampleWidth][firstDownsampleWidth];
+        }
+
+        //second convolved post filter
+        for (int i = 0; i < secondConvolutionCount; i++)
+        {
+            network.convolutedLayers[1].squares[i].values = new float[secondConvolutionWidth][secondConvolutionWidth];
+
+            network.activatedConvolutedLayers[1].squares[i].values = new float[secondConvolutionWidth][secondConvolutionWidth];
+        }
+
+        //second downsample
+        for (int i = 0; i < secondConvolutionCount; i++)
+        {
+            network.downsampledLayers[1].squares[i].values = new float[secondDownsampleWidth][secondDownsampleWidth];
+        }
+
+        //first fully connected
+        network.hiddenNeurons = new SingleDimension[hiddenLayerCount];
+        network.activatedHiddenNeurons = new SingleDimension[hiddenLayerCount];
+        network.hiddenNeurons[0] = new SingleDimension();
+        network.hiddenNeurons[0].values = new float[firstHiddenLayerNeuronCount];
+        network.activatedHiddenNeurons[0] = new SingleDimension();
+        network.activatedHiddenNeurons[0].values = new float[firstHiddenLayerNeuronCount];
+
+
+        //second fully connected
+        network.hiddenNeurons[1] = new SingleDimension();
+        network.hiddenNeurons[1].values = new float[secondHiddenLayerNeuronCount];
+        network.activatedHiddenNeurons[1] = new SingleDimension();
+        network.activatedHiddenNeurons[1].values = new float[secondHiddenLayerNeuronCount];
+
+        //output layer and weights
+        network.outputs.values = new float[outputNeuronCount];
+        network.activatedOutputs.values = new float[outputNeuronCount];
     }
 }

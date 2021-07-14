@@ -23,13 +23,34 @@
             android:layout_gravity="center"
             android:layout_marginBottom="20dp">
 
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+
             <LinearLayout
                 android:id="@+id/roastactivity_camera_Layout"
-                android:layout_width="250dp"
-                android:layout_height="185dp"
-                android:background="@drawable/camerastandin"
+                android:layout_width="@dimen/roastactivity_camerapreview_width"
+                android:layout_height="@dimen/roastactivity_camerapreview_height"
                 android:layout_weight="0"
-                android:orientation="horizontal" />
+                android:orientation="horizontal"
+                android:alpha="1"/>
+
+                <View
+                    android:id="@+id/roastactivity_highlight_view"
+                    android:layout_width="@dimen/roastactivity_hightlight_width"
+                    android:layout_height="@dimen/roastactivity_hightlight_height"
+                    android:layout_gravity="center"
+                    android:background="@drawable/preview_box" >
+                </View>
+                <View
+                    android:layout_width="22dp"
+                    android:layout_height="@dimen/roastactivity_hightlight_height"
+                    android:layout_gravity="center"
+                    android:background="@drawable/preview_box" >
+                </View>
+
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/roastactivity_temp_textview"

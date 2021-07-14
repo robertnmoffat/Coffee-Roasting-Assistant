@@ -316,6 +316,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     //intent.putExtras(extra);
                     //startActivityForResult(intent, 0);
+                    finish();
                     startActivity(intent);
                     overridePendingTransition(0,0); //0 for no animation
                 }
