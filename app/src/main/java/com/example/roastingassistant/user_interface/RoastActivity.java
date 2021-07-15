@@ -101,6 +101,24 @@ public class RoastActivity extends AppCompatActivity {
         graphImage = findViewById(R.id.roastactivity_graph_imageView);
         cameraPreview = findViewById(R.id.roastactivity_camera_Layout);
 
+        Button zoomInButton = findViewById(R.id.roastactivity_zoomin_button);
+        zoomInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                int zoom = zoomIn();
+
+                Log.d("zoomButton", "zoom in pressed. "+zoom);
+            }
+        });
+        Button zoomOutButton = findViewById(R.id.roastactivity_zoomout_button);
+        zoomOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                zoomOut();
+            }
+        });
+
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -313,6 +331,30 @@ public class RoastActivity extends AppCompatActivity {
         return null;
     }
 
+    private int zoomIn(){
+        Camera.Parameters params = mCamera.getParameters();
+        int zoom = params.getZoom();
+        if(zoom+10>=params.getMaxZoom())return zoom;
+
+        zoom+=10;
+        params.setZoom(zoom);
+        mCamera.setParameters(params);
+
+        return zoom;
+    }
+
+    private int zoomOut(){
+        Camera.Parameters params = mCamera.getParameters();
+        int zoom = params.getZoom();
+        if(zoom-10<=0)return zoom;
+
+        zoom-=10;
+        params.setZoom(zoom);
+        mCamera.setParameters(params);
+
+        return zoom;
+    }
+
     private void setupPreview(){
         mCamera = Camera.open();
         mPreview = new CameraPreview(getBaseContext(), mCamera);
@@ -321,6 +363,7 @@ public class RoastActivity extends AppCompatActivity {
         try{
             //try to set camera focus
             Camera.Parameters params = mCamera.getParameters();
+            params.setZoom(params.getMaxZoom()/2);
             params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
             mCamera.setParameters(params);
         }catch(Exception e){
@@ -489,7 +532,7 @@ public class RoastActivity extends AppCompatActivity {
                         }
                         if(guessTextUpdated==false) {
                             if(networkController.getErrorEstimate()<900.0f)
-                                guessText = "" + (position[0]*100+position[1]*10+position[2])+" erest:"+networkController.getErrorEstimate();
+                                guessText = "" + (position[0]*100+position[1]*10+position[2])+" "+networkController.getErrorEstimate();
                             else
                                 guessText = "no number";
                             guessTextUpdated=true;

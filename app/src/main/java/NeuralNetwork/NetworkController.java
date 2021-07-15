@@ -32,10 +32,10 @@ public class NetworkController {
         float errEstimate=0.0f;
         for(int i=0; i<10; i++){
             if(i==network.numberGuess) {
-                errEstimate += network.numberGuess;
+                errEstimate -= network.outputs.values[network.numberGuess];
                 continue;
             }
-            errEstimate+=network.outputs.values[i];//Math.sqrt(network.outputs.values[i]*network.outputs.values[i]);
+            errEstimate+=network.outputs.values[i];
         }
         return errEstimate;
     }
