@@ -228,8 +228,15 @@ public class RoastActivity extends AppCompatActivity {
         {
             for (int x = 0; x < bitmap.getWidth(); x++)
             {
-                int dampening = (int) ((x-(bitmap.getWidth()/2))*(x-(bitmap.getWidth()/2)));
-                if(dampening<1)dampening=1;
+                float dampening=1;
+                if(x<bitmap.getWidth()/3)
+                    dampening = (((float)x/(bitmap.getWidth()/3)));
+                else if(x>=bitmap.getWidth()/3&&x<=1+bitmap.getWidth()/3*2)
+                    dampening = 1;
+                else
+                    dampening = (((float)(bitmap.getWidth()-x)/(bitmap.getWidth()/3)));
+
+                //if(dampening<1)dampening=1;
 
                 int color = bitmap.getPixel(x, y);
                 int red = (color & 0xff0000)>>16;
@@ -240,15 +247,31 @@ public class RoastActivity extends AppCompatActivity {
                 // float total = red + blue + green-dampening;
                 //total = total / 4.0f;
                 total = (int)Math.round((total / filterValue));
-                int newColor = Color.argb(255, (int)(total * filterValue), (int)(total * filterValue), (int)(total * filterValue));
+                int newColor = Color.argb(255, (int)(total * filterValue*dampening), (int)(total * filterValue*dampening), (int)(total * filterValue*dampening));
 
                 bitmap.setPixel(x, y, newColor);
             }
         }
 
-        bitmap = applyFilter(bitmap, filter);
+        //bitmap = applyFilter(bitmap, filter);
 
-        return bitmap;
+        Bitmap.Config conf = bitmap.getConfig(); // see other conf types
+        Bitmap maxedBitmap = Bitmap.createBitmap(bitmap.getWidth()/2, bitmap.getHeight()/2, conf);
+
+        for (int y = 0; y < bitmap.getHeight(); y++)
+        {
+            for (int x = 0; x < bitmap.getWidth(); x++)
+            {
+                int color = bitmap.getPixel(x, y);
+                int colorm = maxedBitmap.getPixel(x/2, y/2);
+                int blue = (color&0x0000ff)>>0;
+                int bluem = (colorm&0x0000ff)>>0;
+                if(blue>=bluem)
+                    maxedBitmap.setPixel(x/2,y/2,color);
+            }
+        }
+
+        return maxedBitmap;
     }
 
     private Bitmap getBitmapSubsection(Bitmap bitmap, int left, int top, int right, int bottom) {
@@ -496,16 +519,20 @@ public class RoastActivity extends AppCompatActivity {
                     int width = bmRight - bmLeft;
                     int height = bmTop - bmBottom;
                     float third = width / 3;
+                    float bufferSize = 8;
+                    int sideBuffer = (int)(third/bufferSize);
+                    int topBuffer = (int)(height/bufferSize);
 
 
                     //bm = getBitmapSubsection(bm, bmLeft,bmTop,bmRight,bmBottom);
-                    bm = Bitmap.createBitmap(bm, bmLeft, bmBottom, width, height);
-                    Bitmap left = Bitmap.createBitmap(bm, 0, 0, (int) third, height);;
-                    Bitmap middle = Bitmap.createBitmap(bm, (int) (third), 0, (int) third, height);;
-                    Bitmap right = Bitmap.createBitmap(bm, (int) (third * 2), 0, (int) third, height);
-                    left = getResizedBitmap(left, 32, 32);
-                    middle = getResizedBitmap(middle, 32, 32);
-                    right = getResizedBitmap(right, 32, 32);
+                    bm = Bitmap.createBitmap(bm, bmLeft-sideBuffer, bmBottom-topBuffer, width+sideBuffer, height+topBuffer);
+                    Bitmap left = Bitmap.createBitmap(bm, 0, 0, (int) third+sideBuffer, height+topBuffer);;
+                    Bitmap middle = Bitmap.createBitmap(bm, (int) (third-sideBuffer), 0, (int) third+sideBuffer, height+topBuffer);;
+                    Bitmap right = Bitmap.createBitmap(bm, (int) (third * 2 -sideBuffer), 0, (int) (third+sideBuffer), height+topBuffer);
+                    int size = 64;
+                    left = getResizedBitmap(left, size, size);
+                    middle = getResizedBitmap(middle, size, size);
+                    right = getResizedBitmap(right, size, size);
                     left = filterBitmap(left);
                     middle = filterBitmap(middle);
                     right = filterBitmap(right);
