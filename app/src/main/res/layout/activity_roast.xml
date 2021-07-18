@@ -80,6 +80,11 @@
                 android:gravity="center"
                 android:textColor="@color/lightGray"
                 />
+            <EditText
+                android:id="@+id/roastactivity_num_edittext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="jlkfdsjg"/>
 
             <ImageView
                 android:id="@+id/roastactivity_graph_imageView"

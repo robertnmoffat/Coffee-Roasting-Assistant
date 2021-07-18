@@ -1,9 +1,11 @@
 package com.example.roastingassistant.user_interface;
 
 import NeuralNetwork.ConvolutionalNeuralNetwork;
+import NeuralNetwork.ImageProcessing;
 import NeuralNetwork.NetworkController;
 import NeuralNetwork.NetworkFileLoader;
 import NeuralNetwork.NetworkInitializer;
+import NeuralNetwork.NeuralThread;
 import NeuralNetwork.Square;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +24,7 @@ import android.graphics.PorterDuffXfermode;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.renderscript.Allocation;
@@ -34,6 +37,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -43,9 +47,13 @@ import com.example.roastingassistant.R;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import Camera.CameraPreview;
+import androidx.core.app.ActivityCompat;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 
+import static NeuralNetwork.ImageProcessing.SaveImage;
 import static com.example.roastingassistant.user_interface.Utils.dp;
 
 public class RoastActivity extends AppCompatActivity {
@@ -75,16 +83,21 @@ public class RoastActivity extends AppCompatActivity {
 
     boolean imageCollectionStarted = false;
     boolean cameraImageLoaded = false;
-    Bitmap imageRight;
-    boolean imageRightUpdated=false;
-    String guessText="";
-    boolean guessTextUpdated=false;
+    public Bitmap imageRight;
+    public boolean imageRightUpdated=false;
+    public String guessText="";
+    public boolean guessTextUpdated=false;
 
-    NetworkController networkController;
+    public NetworkController networkController;
+
+    int STORAGE_PERMISSION_CODE = 100;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ActivityCompat.requestPermissions(RoastActivity.this, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }, STORAGE_PERMISSION_CODE);
         setContentView(R.layout.activity_roast);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         checkPermission();
@@ -153,6 +166,9 @@ public class RoastActivity extends AppCompatActivity {
                 }
 
                 if(!stopped) {
+                    EditText et = findViewById(R.id.roastactivity_num_edittext);
+                    String num = et.getText().toString();
+                    ImageProcessing.SaveImage(imageRight, num);
 
                     currentTime += System.nanoTime()-lastTime;
                     timeString = String.format("%.1f", currentTime/1000000000);
@@ -163,146 +179,19 @@ public class RoastActivity extends AppCompatActivity {
             }
         }, delay);
 
-        NeuralThread thread = new NeuralThread();
+        //Start thread to run the image detection neural network.
+        NeuralThread thread = new NeuralThread(this);
         thread.start();
-
-//        Handler h2 = new Handler();
-//        int delay2 = 250; //milliseconds
-
-
-        //BitmapFactory.Options options = new BitmapFactory.Options();
-        //options.inScaled = false;
-        //Bitmap four = BitmapFactory.decodeResource(getResources(), R.drawable.four, options);
-        //Bitmap eight = BitmapFactory.decodeResource(getResources(), R.drawable.eight, options);
-        //Bitmap nine = BitmapFactory.decodeResource(getResources(), R.drawable.nine, options);
-        //Bitmap seven = BitmapFactory.decodeResource(getResources(), R.drawable.seven, options);
-        //Bitmap three = BitmapFactory.decodeResource(getResources(), R.drawable.three, options);
-        //Bitmap five = BitmapFactory.decodeResource(getResources(), R.drawable.five, options);
-
-//        h2.postDelayed(new Runnable(){
-//
-//
-//            public void run(){
-//                tempText.setText("Current Temp:"+networkController.temperature);
-//
-//
-//                //bm = Bitmap.createScaledBitmap(bm, 400, 300, false);
-////                networkController.setBitmap(five);
-////                int num = networkController.getNumber();
-////
-////                networkController.setBitmap(four);
-////                num = networkController.getNumber();
-////                networkController.setBitmap(eight);
-////                num = networkController.getNumber();
-////                networkController.setBitmap(nine);
-////                num = networkController.getNumber();
-////                networkController.setBitmap(seven);
-////                num = networkController.getNumber();
-////                networkController.setBitmap(three);
-////                num = networkController.getNumber();
-//
-//
-//
-//
-//
-//                h2.postDelayed(this, delay2);
-//            }
-//        }, delay2);
 
         checkPermission();
 
     }
 
-    public static Bitmap filterBitmap(Bitmap bitmap) {
-        float filterValue = 255 / 1;
-
-        Square filter = new Square();
-        filter.width = 3;
-        filter.values = new float[][]{{0,1,0},
-                                      {0,1,0},
-                                      {0,1,0}};
 
 
 
-        for (int y = 0; y < bitmap.getHeight(); y++)
-        {
-            for (int x = 0; x < bitmap.getWidth(); x++)
-            {
-                float dampening=1;
-                if(x<bitmap.getWidth()/3)
-                    dampening = (((float)x/(bitmap.getWidth()/3)));
-                else if(x>=bitmap.getWidth()/3&&x<=1+bitmap.getWidth()/3*2)
-                    dampening = 1;
-                else
-                    dampening = (((float)(bitmap.getWidth()-x)/(bitmap.getWidth()/3)));
 
-                //if(dampening<1)dampening=1;
 
-                int color = bitmap.getPixel(x, y);
-                int red = (color & 0xff0000)>>16;
-                int green = (color&0x00ff00)>>8;
-                int blue = (color&0x0000ff)>>0;
-
-                float total = 16+(65.738f*red/256f) + (129.057f*green/256f) + (25.064f*blue/256f);
-                // float total = red + blue + green-dampening;
-                //total = total / 4.0f;
-                total = (int)Math.round((total / filterValue));
-                int newColor = Color.argb(255, (int)(total * filterValue*dampening), (int)(total * filterValue*dampening), (int)(total * filterValue*dampening));
-
-                bitmap.setPixel(x, y, newColor);
-            }
-        }
-
-        //bitmap = applyFilter(bitmap, filter);
-
-        Bitmap.Config conf = bitmap.getConfig(); // see other conf types
-        Bitmap maxedBitmap = Bitmap.createBitmap(bitmap.getWidth()/2, bitmap.getHeight()/2, conf);
-
-        for (int y = 0; y < bitmap.getHeight(); y++)
-        {
-            for (int x = 0; x < bitmap.getWidth(); x++)
-            {
-                int color = bitmap.getPixel(x, y);
-                int colorm = maxedBitmap.getPixel(x/2, y/2);
-                int blue = (color&0x0000ff)>>0;
-                int bluem = (colorm&0x0000ff)>>0;
-                if(blue>=bluem)
-                    maxedBitmap.setPixel(x/2,y/2,color);
-            }
-        }
-
-        return maxedBitmap;
-    }
-
-    private Bitmap getBitmapSubsection(Bitmap bitmap, int left, int top, int right, int bottom) {
-        Bitmap bmOverlay = Bitmap.createBitmap(320, 480, Bitmap.Config.ARGB_8888);
-
-        Paint paint = new Paint();
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-
-        Canvas canvas = new Canvas(bmOverlay);
-        canvas.drawBitmap(bitmap, 0, 0, null);
-        canvas.drawRect(left, top, right, bottom, paint);
-
-        return bmOverlay;
-    }
-
-    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-        // CREATE A MATRIX FOR THE MANIPULATION
-        Matrix matrix = new Matrix();
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap(
-                bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
-        return resizedBitmap;
-    }
 
     @Override
     protected void onPause() {
@@ -311,6 +200,9 @@ public class RoastActivity extends AppCompatActivity {
         releaseCamera();
     }
 
+    /**
+     * Release camera hardware at end of use for other apps.
+     */
     private void releaseCamera(){
         if(mCamera!=null){
             mCamera.stopPreview();;
@@ -354,6 +246,10 @@ public class RoastActivity extends AppCompatActivity {
         return null;
     }
 
+    /**
+     * Zoom in the camera
+     * @return the current zoom level
+     */
     private int zoomIn(){
         Camera.Parameters params = mCamera.getParameters();
         int zoom = params.getZoom();
@@ -366,6 +262,10 @@ public class RoastActivity extends AppCompatActivity {
         return zoom;
     }
 
+    /**
+     * Zoom out the camera
+     * @return the current zoom level
+     */
     private int zoomOut(){
         Camera.Parameters params = mCamera.getParameters();
         int zoom = params.getZoom();
@@ -442,6 +342,9 @@ public class RoastActivity extends AppCompatActivity {
         };
     }
 
+    /**
+     * Handle starting and stopping the roast timer
+     */
     public void startStop(){
         //Bitmap bitmap = loadBitmapFromView(mPreview);
         if(stopped){
@@ -454,6 +357,14 @@ public class RoastActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Function for acquiring bitmap from camera preview.
+     * @param context
+     * @param width
+     * @param height
+     * @param nv21
+     * @return
+     */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public Allocation renderScriptNV21ToRGBA8888(Context context, int width, int height, byte[] nv21) {
         RenderScript rs = RenderScript.create(context);
@@ -490,141 +401,6 @@ public class RoastActivity extends AppCompatActivity {
         releaseCamera();
     }
 
-    class NeuralThread extends Thread {
-        int runCount = 0;
-        int[][] guesses = new int[3][10];
-
-        NeuralThread() {
-        }
-
-        public void run() {
-            while(true) {
-                Bitmap bm = getCameraBitmap();
-                if (bm != null) {
-                    //bm = getResizedBitmap(bm, 400, 300);
-
-                    float previewWidth = getResources().getDimension(R.dimen.roastactivity_camerapreview_width);
-                    float previewHeight = getResources().getDimension(R.dimen.roastactivity_camerapreview_height);
-                    float hightlightWidth = getResources().getDimension(R.dimen.roastactivity_hightlight_width);
-                    float hightlightHeight = getResources().getDimension(R.dimen.roastactivity_hightlight_height);
-                    float widthPercent = hightlightWidth / previewWidth;
-                    float heightPercent = hightlightHeight / previewHeight;
-                    float bmSelectionWidth = (bm.getWidth() * widthPercent);
-                    float bmSelectionHeight = (bm.getHeight() * heightPercent);
-                    int bmLeft = (int) ((bm.getWidth() / 2) - (bmSelectionWidth / 2));
-                    int bmRight = (int) ((bm.getWidth() / 2) + (bmSelectionWidth / 2));
-                    int bmTop = (int) ((bm.getHeight() / 2) + (bmSelectionHeight / 2));
-                    int bmBottom = (int) ((bm.getHeight() / 2) - (bmSelectionHeight / 2));
-
-                    int width = bmRight - bmLeft;
-                    int height = bmTop - bmBottom;
-                    float third = width / 3;
-                    float bufferSize = 8;
-                    int sideBuffer = (int)(third/bufferSize);
-                    int topBuffer = (int)(height/bufferSize);
 
 
-                    //bm = getBitmapSubsection(bm, bmLeft,bmTop,bmRight,bmBottom);
-                    bm = Bitmap.createBitmap(bm, bmLeft-sideBuffer, bmBottom-topBuffer, width+sideBuffer, height+topBuffer);
-                    Bitmap left = Bitmap.createBitmap(bm, 0, 0, (int) third+sideBuffer, height+topBuffer);;
-                    Bitmap middle = Bitmap.createBitmap(bm, (int) (third-sideBuffer), 0, (int) third+sideBuffer, height+topBuffer);;
-                    Bitmap right = Bitmap.createBitmap(bm, (int) (third * 2 -sideBuffer), 0, (int) (third+sideBuffer), height+topBuffer);
-                    int size = 64;
-                    left = getResizedBitmap(left, size, size);
-                    middle = getResizedBitmap(middle, size, size);
-                    right = getResizedBitmap(right, size, size);
-                    left = filterBitmap(left);
-                    middle = filterBitmap(middle);
-                    right = filterBitmap(right);
-                    networkController.setBitmap(left);
-                    int leftGuess = networkController.getNumber();
-                    guesses[0][leftGuess]++;
-                    networkController.setBitmap(middle);
-                    int middleGuess = networkController.getNumber();
-                    guesses[1][middleGuess]++;
-                    networkController.setBitmap(right);
-                    int guess = networkController.getNumber();
-                    guesses[2][guess]++;
-
-                    if(runCount==6) {
-                        int[] highestCount = new int[]{0,0,0};
-                        int[] position = new int[]{-1,-1,-1};
-                        for(int i=0; i<10; i++){
-                            for(int p=0; p<3; p++) {
-                                if (guesses[p][i] > highestCount[p]) {
-                                    position[p] = i;
-                                    highestCount[p] = guesses[p][i];
-                                }
-                            }
-                        }
-                        if(guessTextUpdated==false) {
-                            if(networkController.getErrorEstimate()<900.0f)
-                                guessText = "" + (position[0]*100+position[1]*10+position[2])+" "+networkController.getErrorEstimate();
-                            else
-                                guessText = "no number";
-                            guessTextUpdated=true;
-                        }
-                        runCount=0;
-                        guesses = new int[3][10];
-                    }else {
-                        runCount++;
-                    }
-
-
-                    if(imageRightUpdated==false) {
-                        imageRight = right;
-                        imageRightUpdated=true;
-                    }
-
-                    bm.recycle();
-
-
-                }
-                try {
-                    Thread.sleep(125);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    static public Bitmap applyFilter(Bitmap input, Square filter)
-    {
-        int width = input.getWidth(), height = input.getHeight();
-
-        Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
-        Bitmap filteredBitmap = Bitmap.createBitmap(width, height, conf);
-
-
-        float positionSum = 0.0f;
-        for (int posy = 0; posy < width; posy++)
-        {
-            for (int posx = 0; posx < height; posx++)
-            {
-                positionSum = 0.0f;
-
-                for (int y = 0; y < filter.width; y++)
-                {
-                    for (int x = 0; x < filter.width; x++)
-                    {
-                        int desiredx = posx+x-filter.width/2;
-                        int desiredy = posy+y-filter.width/2;
-                        if(desiredx<0||desiredx>=width||desiredy<0||desiredy>=height)
-                            continue;
-                        float red = (input.getPixel(desiredx,desiredy)&0xff0000)>>16;
-                        float green = (input.getPixel(desiredx,desiredy)&0x00ff00)>>8;
-                        float blue = (int)(input.getPixel(desiredx,desiredy)&0x0000ff);
-                        if(blue>0)
-                            Log.e("sdf","asdf");
-                        float filt = filter.values[x][y];//just grab one colour. it's black and white so they are all the same.
-                        positionSum += blue * filt;
-                    }
-                }
-                int brightness = ((int)positionSum)>=200?255:0;
-                filteredBitmap.setPixel(posx,posy, Color.argb(255,brightness,brightness,brightness));
-            }
-        }
-        return filteredBitmap;
-    }
 }
