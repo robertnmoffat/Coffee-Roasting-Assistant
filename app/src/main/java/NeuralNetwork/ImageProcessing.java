@@ -31,12 +31,12 @@ public class ImageProcessing {
             for (int x = 0; x < bitmap.getWidth(); x++)
             {
                 float dampening=1;
-                if(x<bitmap.getWidth()/3)
-                    dampening = (((float)x/(bitmap.getWidth()/3)));
-                else if(x>=bitmap.getWidth()/3&&x<=1+bitmap.getWidth()/3*2)
-                    dampening = 1;
-                else
-                    dampening = (((float)(bitmap.getWidth()-x)/(bitmap.getWidth()/3)));
+//                if(x<bitmap.getWidth()/3)
+//                    dampening = (((float)x/(bitmap.getWidth()/3)));
+//                else if(x>=bitmap.getWidth()/3&&x<=1+bitmap.getWidth()/3*2)
+//                    dampening = 1;
+//                else
+//                    dampening = (((float)(bitmap.getWidth()-x)/(bitmap.getWidth()/3)));
 
                 float brightness = 0.75f;
 
@@ -57,6 +57,7 @@ public class ImageProcessing {
                 bitmap.setPixel(x, y, newColor);
             }
         }
+
 
         //bitmap = applyFilter(bitmap, filter);
 
@@ -111,7 +112,7 @@ public class ImageProcessing {
 
     public static void SaveImage(Bitmap finalBitmap, String number) {
         String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath();
-        File myDir = new File(root + "/roastNums/"+number);
+        File myDir = new File(root + "/guessNums/"+number);
         myDir.mkdirs();
         File[] files = myDir.listFiles();
         int count = files==null?0:files.length;

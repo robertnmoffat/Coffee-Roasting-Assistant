@@ -43,15 +43,26 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidplot.xy.BarFormatter;
+import com.androidplot.xy.LineAndPointFormatter;
+import com.androidplot.xy.PointLabelFormatter;
+import com.androidplot.xy.SimpleXYSeries;
+import com.androidplot.xy.XValueMarker;
+import com.androidplot.xy.XYPlot;
 import com.example.roastingassistant.R;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
+
 import Camera.CameraPreview;
 import androidx.core.app.ActivityCompat;
 
+import java.io.Console;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static NeuralNetwork.ImageProcessing.SaveImage;
 import static com.example.roastingassistant.user_interface.Utils.dp;
@@ -65,10 +76,11 @@ public class RoastActivity extends AppCompatActivity {
     Button stopButton;
     Button undoButton;
     Button checkpointButton;
-    ImageView graphImage;
+    GraphView graphView;
 
     TextView timeText;
     TextView tempText;
+    public int curTemp;
 
     LinearLayout checkpointsLayout;
     LinearLayout cameraPreview;
@@ -77,15 +89,18 @@ public class RoastActivity extends AppCompatActivity {
     float lastTime;
     String timeString;
 
+    ArrayList<Integer> tempsOverTime;
+    ArrayList<Integer> checkpointTemps;
 
     byte[] cameraData;
     Bitmap cameraBitmap;
 
     boolean imageCollectionStarted = false;
     boolean cameraImageLoaded = false;
-    public Bitmap imageRight;
+    public Bitmap imageLeft, imageMid, imageRight;
     public boolean imageRightUpdated=false;
     public String guessText="";
+    public int guessInt;
     public boolean guessTextUpdated=false;
 
     public NetworkController networkController;
@@ -102,6 +117,9 @@ public class RoastActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         checkPermission();
 
+        tempsOverTime = new ArrayList<>();
+        checkpointTemps = new ArrayList<>();
+
         networkController = new NetworkController(this);
 
         stopButton = findViewById(R.id.roastactivity_stop_button);
@@ -111,8 +129,16 @@ public class RoastActivity extends AppCompatActivity {
         checkpointsLayout = findViewById(R.id.roastactivity_checkpoint_linearlayout);
         tempText = findViewById(R.id.roastactivity_temp_textview);
 
-        graphImage = findViewById(R.id.roastactivity_graph_imageView);
+        //LinearLayout camAndGraphLayout = findViewById(R.id.roastactivity_camandgraph_layout);
+       // float layoutWidth = camAndGraphLayout.getLayoutParams().;
+
+        //graphView = findViewById(R.id.roastactivity_graph_imageView);
         cameraPreview = findViewById(R.id.roastactivity_camera_Layout);
+        //cameraPreview.getLayoutParams().width = (int)(layoutWidth/3.0f);
+
+        //XYPlot graph = findViewById(R.id.plot);
+        //graph.getLayoutParams().width = (int)(layoutWidth/3.0f);
+       // graph.setLayoutParams(new LinearLayout.LayoutParams((int)(layoutWidth/3.0f),(int)(layoutWidth/3.0f)));
 
         Button zoomInButton = findViewById(R.id.roastactivity_zoomin_button);
         zoomInButton.setOnClickListener(new View.OnClickListener() {
@@ -146,34 +172,88 @@ public class RoastActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(stopped){
                     startStop();
+                }else{
+                    checkpointTemps.add(tempsOverTime.size()-1);
+                    checkpointTemps.add(tempsOverTime.get(tempsOverTime.size()-1));
                 }
             }
         });
 
+        undoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //EditText et = findViewById(R.id.roastactivity_num_edittext);
+                //String num = et.getText().toString();
+                //String leftNum = String.valueOf(num.charAt(0));
+                //String midNum = String.valueOf(num.charAt(1));
+                //String rightNum = String.valueOf(num.charAt(2));
+
+                //ImageProcessing.SaveImage(imageLeft, leftNum);
+                //ImageProcessing.SaveImage(imageMid, midNum);
+                //ImageProcessing.SaveImage(imageRight, rightNum);
+            }
+        });
+
         Handler h = new Handler();
-        int delay = 100; //milliseconds
+        int delay = 500; //milliseconds
+
+
+        XYPlot plot = findViewById(R.id.plot);
+        SimpleXYSeries series = new SimpleXYSeries("Temp");
+        series.setModel(tempsOverTime, SimpleXYSeries.ArrayFormat.Y_VALS_ONLY);
+        plot.addSeries(series, new LineAndPointFormatter());//new BarFormatter(Color.rgb(0, 200, 0), Color.rgb(0, 80, 0)));
+
+        SimpleXYSeries checkpoints = new SimpleXYSeries("Checkpoints");
+        checkpoints.setModel(checkpointTemps, SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED);
+        plot.addSeries(checkpoints, new LineAndPointFormatter());
 
         h.postDelayed(new Runnable(){
 
             public void run(){
                 if(guessTextUpdated){
                     tempText.setText(guessText);
+                    //guessInt = Integer.parseInt(guessText);
                     guessTextUpdated=false;
                 }
                 if(imageRightUpdated){
-                    graphImage.setImageBitmap(imageRight);
+                    //graphView.setImageBitmap(imageLeft, imageMid, imageRight);
                     imageRightUpdated=false;
                 }
 
                 if(!stopped) {
-                    EditText et = findViewById(R.id.roastactivity_num_edittext);
-                    String num = et.getText().toString();
-                    ImageProcessing.SaveImage(imageRight, num);
-
                     currentTime += System.nanoTime()-lastTime;
                     timeString = String.format("%.1f", currentTime/1000000000);
                     timeText.setText("Time:" + timeString);
                     lastTime = System.nanoTime();
+
+                    String num = guessText;
+                    //String leftNum = String.valueOf(num.charAt(0));
+                    //String midNum = String.valueOf(num.charAt(1));
+                    //String rightNum = String.valueOf(num.charAt(2));
+
+                    //ImageProcessing.SaveImage(imageLeft, leftNum);
+                    //ImageProcessing.SaveImage(imageMid, midNum);
+                    //ImageProcessing.SaveImage(imageRight, rightNum);
+
+                    //if((int)(currentTime/1000000000)%2==0) {
+                        int testTemp = 200 + (int)(currentTime / 1000000000.0f)+new Random().nextInt(40);
+                        Log.d("TestTemp", ""+testTemp);
+
+                        tempsOverTime.add(curTemp);
+                        plot.removeSeries(series);
+                        plot.removeSeries(checkpoints);
+                        series.setModel(tempsOverTime, SimpleXYSeries.ArrayFormat.Y_VALS_ONLY);
+                        checkpoints.setModel(checkpointTemps, SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED);
+
+                        plot.addSeries(series, new LineAndPointFormatter(Color.YELLOW, null, null, null));//new BarFormatter(Color.rgb(0, 200, 0), Color.rgb(0, 80, 0)));
+                        LineAndPointFormatter checkpointFormatter =new LineAndPointFormatter(null, Color.GREEN, null, null);
+                        checkpointFormatter.getVertexPaint().setStrokeWidth(30);
+                        plot.addSeries(checkpoints, checkpointFormatter);
+                        plot.redraw();
+                        //graphView.addTemp(testTemp);
+                    //}
+                    //if(tempsOverTime.size()<(int)(currentTime/1000000000))
+                       //tempsOverTime.add(guessInt);
                 }
                 h.postDelayed(this, delay);
             }

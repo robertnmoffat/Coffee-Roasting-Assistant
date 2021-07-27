@@ -38,20 +38,21 @@ public class NeuralThread extends Thread {
                 int width = bmRight - bmLeft;
                 int height = bmTop - bmBottom;
                 float third = width / 3;
-                float bufferSize = 8;
+                float bufferSize = 6+runCount;
                 int sideBuffer = (int)(third/bufferSize);
                 int topBuffer = (int)(height/bufferSize);
 
 
                 //bm = getBitmapSubsection(bm, bmLeft,bmTop,bmRight,bmBottom);
-                bm = Bitmap.createBitmap(bm, bmLeft-sideBuffer, bmBottom-topBuffer, width+sideBuffer, height+topBuffer);
-                Bitmap left = Bitmap.createBitmap(bm, 0, 0, (int) third+sideBuffer, height+topBuffer);;
-                Bitmap middle = Bitmap.createBitmap(bm, (int) (third-sideBuffer), 0, (int) third+sideBuffer, height+topBuffer);;
-                Bitmap right = Bitmap.createBitmap(bm, (int) (third * 2 -sideBuffer), 0, (int) (third+sideBuffer), height+topBuffer);
+                bm = Bitmap.createBitmap(bm, bmLeft-sideBuffer, bmBottom-topBuffer, width+sideBuffer+sideBuffer, height+topBuffer+topBuffer);//Add buffers twice to first counter the left and bottom buffer and hen to actual extend by that amount.
+                Bitmap left = Bitmap.createBitmap(bm, 0, 0, (int) third+sideBuffer+sideBuffer, height+topBuffer+topBuffer);;
+                Bitmap middle = Bitmap.createBitmap(bm, (int) (third), 0, (int) third+sideBuffer+sideBuffer, height+topBuffer+topBuffer);;
+                Bitmap right = Bitmap.createBitmap(bm, (int) (third * 2), 0, (int) (third+sideBuffer+sideBuffer), height+topBuffer+topBuffer);
                 int size = 64;
                 left = ImageProcessing.getResizedBitmap(left, size, size);
                 middle = ImageProcessing.getResizedBitmap(middle, size, size);
                 right = ImageProcessing.getResizedBitmap(right, size, size);
+
                 left = ImageProcessing.filterBitmap(left);
                 middle = ImageProcessing.filterBitmap(middle);
                 right = ImageProcessing.filterBitmap(right);
@@ -80,8 +81,10 @@ public class NeuralThread extends Thread {
                         }
                     }
                     if(roastActivity.guessTextUpdated==false) {
-                        if(roastActivity.networkController.getErrorEstimate()<900.0f)
-                            roastActivity.guessText = "" + (position[0]*100+position[1]*10+position[2])+" "+roastActivity.networkController.getErrorEstimate();
+                        if(roastActivity.networkController.getErrorEstimate()<900.0f) {
+                            roastActivity.guessText = "" + (position[0] * 100 + position[1] * 10 + position[2]);//+" "+roastActivity.networkController.getErrorEstimate();
+                            roastActivity.curTemp = (position[0] * 100 + position[1] * 10 + position[2]);
+                        }
                         else
                             roastActivity.guessText = "no number";
                         roastActivity.guessTextUpdated=true;
@@ -94,6 +97,8 @@ public class NeuralThread extends Thread {
 
 
                 if(roastActivity.imageRightUpdated==false) {
+                    roastActivity.imageLeft = left;
+                    roastActivity.imageMid = middle;
                     roastActivity.imageRight = right;
                     roastActivity.imageRightUpdated=true;
                 }

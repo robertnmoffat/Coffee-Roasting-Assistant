@@ -17,6 +17,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
+            android:id="@+id/roastactivity_camandgraph_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -80,18 +81,19 @@
                 android:gravity="center"
                 android:textColor="@color/lightGray"
                 />
-            <EditText
-                android:id="@+id/roastactivity_num_edittext"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="jlkfdsjg"/>
 
-            <ImageView
-                android:id="@+id/roastactivity_graph_imageView"
-                android:layout_width="250dp"
-                android:layout_height="185dp"
-                android:background="@drawable/roastgraph"
-                android:layout_weight="0"/>
+            <com.androidplot.xy.XYPlot
+                style="@style/APDefacto.Dark"
+                android:id="@+id/plot"
+                android:layout_width="320dp"
+                android:layout_height="220dp"
+                app:title="Roast Temperature"
+                app:rangeTitle="Temperature"
+                app:domainTitle="Time"
+                app:lineLabels="left|bottom"
+                app:lineLabelRotationBottom="-45"
+                app:renderMode="use_background_thread"/>
+
 
         </LinearLayout>
 
