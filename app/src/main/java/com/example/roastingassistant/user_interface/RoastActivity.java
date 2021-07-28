@@ -221,10 +221,13 @@ public class RoastActivity extends AppCompatActivity {
                 }
 
                 if(!stopped) {
-                    currentTime += System.nanoTime()-lastTime;
-                    timeString = String.format("%.1f", currentTime/1000000000);
+                    currentTime += (System.nanoTime()/1000000000.0f)-lastTime;
+                    int mins = (int)(currentTime/60);
+                    float secs = currentTime-(mins*60);
+                    String secString = String.format("%.1f", secs);
+                    timeString = ""+mins+":"+secString;
                     timeText.setText("Time:" + timeString);
-                    lastTime = System.nanoTime();
+                    lastTime = System.nanoTime()/1000000000.0f;
 
                     String num = guessText;
                     //String leftNum = String.valueOf(num.charAt(0));
@@ -236,13 +239,12 @@ public class RoastActivity extends AppCompatActivity {
                     //ImageProcessing.SaveImage(imageRight, rightNum);
 
                     //if((int)(currentTime/1000000000)%2==0) {
-                        int testTemp = 200 + (int)(currentTime / 1000000000.0f)+new Random().nextInt(40);
-                        Log.d("TestTemp", ""+testTemp);
 
+                        tempsOverTime.add((int)currentTime);
                         tempsOverTime.add(curTemp);
                         plot.removeSeries(series);
                         plot.removeSeries(checkpoints);
-                        series.setModel(tempsOverTime, SimpleXYSeries.ArrayFormat.Y_VALS_ONLY);
+                        series.setModel(tempsOverTime, SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED);
                         checkpoints.setModel(checkpointTemps, SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED);
 
                         plot.addSeries(series, new LineAndPointFormatter(Color.YELLOW, null, null, null));//new BarFormatter(Color.rgb(0, 200, 0), Color.rgb(0, 80, 0)));
@@ -430,7 +432,7 @@ public class RoastActivity extends AppCompatActivity {
         if(stopped){
             checkpointButton.setText("Checkpoint");
             stopped = false;
-            lastTime = System.nanoTime();
+            lastTime = System.nanoTime()/1000000000.0f;
         }else{
             checkpointButton.setText("Resume");
             stopped = true;
