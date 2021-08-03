@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.roastingassistant.user_interface.BlendActivity;
 import com.example.roastingassistant.user_interface.MainActivity;
 import com.example.roastingassistant.R;
+import com.example.roastingassistant.user_interface.PreviousRoastActivity;
 import com.example.roastingassistant.user_interface.RemoteDataBrowserActivity;
 import com.example.roastingassistant.user_interface.RoastParamActivity;
 import com.example.roastingassistant.user_interface.Utils;
@@ -107,6 +108,8 @@ public class PlaceholderFragment extends Fragment {
             }
         });
 
+        ll.addView(newRoastBtn);
+
         DatabaseHelper db = DatabaseHelper.getInstance(getContext().getApplicationContext());
         ArrayList<Roast> roasts = (ArrayList<Roast>) db.getAllRoasts();
         if(roasts!=null) {
@@ -131,6 +134,20 @@ public class PlaceholderFragment extends Fragment {
         }
 
         //----Create and add button for browsing network data
+        Button previousRoastButton = createMenuButton(root, "View Roast Data", "");
+        previousRoastButton.setId(R.id.roast_roastdata_button);
+        previousRoastButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity main = (MainActivity) getActivity();
+                main.startActivity(PreviousRoastActivity.class);
+            }
+        });
+
+        //add buttons to the layout
+        ll.addView(previousRoastButton);
+
+        //----Create and add button for browsing network data
         Button dataBrowserButton = createMenuButton(root, "Download Roasts", "");
         dataBrowserButton.setId(R.id.roast_remotedata_button);
         dataBrowserButton.setOnClickListener(new View.OnClickListener() {
@@ -142,7 +159,6 @@ public class PlaceholderFragment extends Fragment {
         });
 
         //add buttons to the layout
-        ll.addView(newRoastBtn);
         ll.addView(dataBrowserButton);
     }
 

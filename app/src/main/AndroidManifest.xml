@@ -2,33 +2,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.roastingassistant">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RoastingAssistant"
-        android:usesCleartextTraffic="true"
-        android:networkSecurityConfig="@xml/network_security_config">
+        android:usesCleartextTraffic="true">
 
-
-        <activity android:name="Database.DatabaseTestActivity"></activity>
-
-        <uses-library
-            android:name="android.test.runner"
-            android:required="false" />
-        <uses-library
-            android:name="android.test.base"
-            android:required="false" />
-        <uses-library
-            android:name="android.test.mock"
-            android:required="false" />
+        <!--
+               Set to true if your app is Standalone, that is, it does not require the handheld
+               app to run.
+        -->
+        <activity android:name="Database.DatabaseTestActivity" />
 
         <activity
             android:name=".user_interface.RoastActivity"
@@ -38,6 +26,7 @@
         <activity
             android:name=".user_interface.RemoteDataBrowserActivity"
             android:theme="@style/Theme.RoastingAssistant.NoActionBar" />
+
         <activity
             android:name=".user_interface.CheckpointParamActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -53,8 +42,14 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.RoastingAssistant.NoActionBar" />
+
         <activity
             android:name=".user_interface.RoastParamActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.RoastingAssistant.NoActionBar" />
+        <activity
+            android:name=".user_interface.PreviousRoastActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.RoastingAssistant.NoActionBar" />
@@ -70,6 +65,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <uses-library
+            android:name="android.test.runner"
+            android:required="false" />
+        <uses-library
+            android:name="android.test.base"
+            android:required="false" />
+        <uses-library
+            android:name="android.test.mock"
+            android:required="false" />
     </application>
+
+    <uses-feature android:name="android.hardware.type.watch" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
 </manifest>
