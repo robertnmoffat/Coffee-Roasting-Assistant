@@ -314,6 +314,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
                     //TODO:open roast activity
                     Intent intent = new Intent(context, RoastActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    intent.putExtra("RoastId", roast.id);
                     //intent.putExtras(extra);
                     //startActivityForResult(intent, 0);
                     finish();

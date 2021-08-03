@@ -393,7 +393,7 @@ public class HttpClient extends AsyncTask<Void, Void, String> {
      * @return
      */
     public int getIdFromResult(String result){
-        if(result.equals("OK")) return -1;
+        if(result.equals("OK")||result.contains("Error")) return -1;
 
         String numStr = result.replaceFirst("ID:", "");
         return Integer.parseInt(numStr);

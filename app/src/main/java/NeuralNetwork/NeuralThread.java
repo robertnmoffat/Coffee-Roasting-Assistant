@@ -9,6 +9,7 @@ import com.example.roastingassistant.user_interface.RoastActivity;
 public class NeuralThread extends Thread {
     int runCount = 0;
     int[][] guesses = new int[3][10];
+    SingleDimension[] outputSums = new SingleDimension[3];
 
     RoastActivity roastActivity;
 
@@ -17,6 +18,11 @@ public class NeuralThread extends Thread {
     }
 
     public void run() {
+        for(int i=0; i<outputSums.length; i++){
+            outputSums[i] = new SingleDimension();
+            outputSums[i].values = new float[10];
+        }
+
         while(true) {
             Bitmap bm = roastActivity.getCameraBitmap();
             if (bm != null) {
@@ -59,21 +65,35 @@ public class NeuralThread extends Thread {
                 roastActivity.networkController.setBitmap(left);
                 int leftGuess = roastActivity.networkController.getNumber();
                 guesses[0][leftGuess]++;
+                addOutputs(outputSums[0], roastActivity.networkController.network.outputs);
+
                 roastActivity.networkController.setBitmap(middle);
                 int middleGuess = roastActivity.networkController.getNumber();
                 guesses[1][middleGuess]++;
+                addOutputs(outputSums[1], roastActivity.networkController.network.outputs);
+
                 roastActivity.networkController.setBitmap(right);
                 int guess = roastActivity.networkController.getNumber();
                 guesses[2][guess]++;
+                addOutputs(outputSums[2], roastActivity.networkController.network.outputs);
 
                 String path = Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_PICTURES).getAbsolutePath();
 
+
                 if(runCount==6) {
+                    float[] highestOutput = new float[]{-9999.0f,-9999.0f,-9999.0f};
+                    int[] highestOutputPos = new int[]{-1,-1,-1};
+
                     int[] highestCount = new int[]{0,0,0};
                     int[] position = new int[]{-1,-1,-1};
                     for(int i=0; i<10; i++){
                         for(int p=0; p<3; p++) {
+                            if(outputSums[p].values[i]>highestOutput[p]){
+                                highestOutput[p] = outputSums[p].values[i];
+                                highestOutputPos[p] = i;
+                            }
+
                             if (guesses[p][i] > highestCount[p]) {
                                 position[p] = i;
                                 highestCount[p] = guesses[p][i];
@@ -82,8 +102,11 @@ public class NeuralThread extends Thread {
                     }
                     if(roastActivity.guessTextUpdated==false) {
                         if(roastActivity.networkController.getErrorEstimate()<900.0f) {
-                            roastActivity.guessText = "" + (position[0] * 100 + position[1] * 10 + position[2]);//+" "+roastActivity.networkController.getErrorEstimate();
-                            roastActivity.curTemp = (position[0] * 100 + position[1] * 10 + position[2]);
+                            int temp = (position[0] * 100 + position[1] * 10 + position[2]);
+                            int sumTemp = (highestOutputPos[0] * 100 + highestOutputPos[1] * 10 + highestOutputPos[2]);
+                            roastActivity.guessText = "" + temp+" sums: "+sumTemp;//+" "+roastActivity.networkController.getErrorEstimate();
+
+                            roastActivity.updateCurTemp(sumTemp);
                         }
                         else
                             roastActivity.guessText = "no number";
@@ -91,6 +114,7 @@ public class NeuralThread extends Thread {
                     }
                     runCount=0;
                     guesses = new int[3][10];
+                    clearOutputSums();
                 }else {
                     runCount++;
                 }
@@ -112,6 +136,18 @@ public class NeuralThread extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void addOutputs(SingleDimension sums, SingleDimension toAdd){
+        for(int i=0; i<sums.values.length; i++){
+            sums.values[i] += toAdd.values[i];
+        }
+    }
+
+    public void clearOutputSums(){
+        for(int i=0; i<outputSums.length; i++){
+            outputSums[i].values = new float[10];
         }
     }
 }

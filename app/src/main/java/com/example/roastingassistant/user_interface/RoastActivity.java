@@ -1,5 +1,8 @@
 package com.example.roastingassistant.user_interface;
 
+import Database.Checkpoint;
+import Database.DatabaseHelper;
+import Database.Roast;
 import NeuralNetwork.ConvolutionalNeuralNetwork;
 import NeuralNetwork.ImageProcessing;
 import NeuralNetwork.NetworkController;
@@ -77,10 +80,12 @@ public class RoastActivity extends AppCompatActivity {
     Button undoButton;
     Button checkpointButton;
     GraphView graphView;
+    TextView checkpointText;
 
     TextView timeText;
     TextView tempText;
     public int curTemp;
+    int lastTemp;
 
     LinearLayout checkpointsLayout;
     LinearLayout cameraPreview;
@@ -90,6 +95,7 @@ public class RoastActivity extends AppCompatActivity {
     String timeString;
 
     ArrayList<Integer> tempsOverTime;
+    ArrayList<Integer> safeTempsOverTime;
     ArrayList<Integer> checkpointTemps;
 
     byte[] cameraData;
@@ -107,10 +113,13 @@ public class RoastActivity extends AppCompatActivity {
 
     int STORAGE_PERMISSION_CODE = 100;
 
+    Roast roast;
+    int currentCheckpoint = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         ActivityCompat.requestPermissions(RoastActivity.this, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }, STORAGE_PERMISSION_CODE);
         setContentView(R.layout.activity_roast);
@@ -118,6 +127,7 @@ public class RoastActivity extends AppCompatActivity {
         checkPermission();
 
         tempsOverTime = new ArrayList<>();
+        safeTempsOverTime = new ArrayList<>();
         checkpointTemps = new ArrayList<>();
 
         networkController = new NetworkController(this);
@@ -139,6 +149,16 @@ public class RoastActivity extends AppCompatActivity {
         //XYPlot graph = findViewById(R.id.plot);
         //graph.getLayoutParams().width = (int)(layoutWidth/3.0f);
        // graph.setLayoutParams(new LinearLayout.LayoutParams((int)(layoutWidth/3.0f),(int)(layoutWidth/3.0f)));
+
+        int id = getIntent().getIntExtra("RoastId", -1);
+
+        if(id!=-1) {
+            roast = DatabaseHelper.getInstance(this).getRoast(id);
+            Log.d("roastid", roast.name);
+            checkpointText = findViewById(R.id.roastactivity_checkpoint_textview);
+            updateCheckpointText();
+        }
+
 
         Button zoomInButton = findViewById(R.id.roastactivity_zoomin_button);
         zoomInButton.setOnClickListener(new View.OnClickListener() {
@@ -173,8 +193,16 @@ public class RoastActivity extends AppCompatActivity {
                 if(stopped){
                     startStop();
                 }else{
-                    checkpointTemps.add(tempsOverTime.size()-1);
-                    checkpointTemps.add(tempsOverTime.get(tempsOverTime.size()-1));
+                    if(currentCheckpoint<roast.checkpoints.size()) {
+                        checkpointTemps.add((int) currentTime);
+                        checkpointTemps.add(safeTempsOverTime.get(safeTempsOverTime.size() - 1));
+                    }
+                    currentCheckpoint++;
+                    if(currentCheckpoint+1<roast.checkpoints.size()) {
+                        updateCheckpointText();
+                    }else{
+                        checkpointText.setText("Roast complete.");
+                    }
                 }
             }
         });
@@ -200,7 +228,7 @@ public class RoastActivity extends AppCompatActivity {
 
         XYPlot plot = findViewById(R.id.plot);
         SimpleXYSeries series = new SimpleXYSeries("Temp");
-        series.setModel(tempsOverTime, SimpleXYSeries.ArrayFormat.Y_VALS_ONLY);
+        series.setModel(safeTempsOverTime, SimpleXYSeries.ArrayFormat.Y_VALS_ONLY);
         plot.addSeries(series, new LineAndPointFormatter());//new BarFormatter(Color.rgb(0, 200, 0), Color.rgb(0, 80, 0)));
 
         SimpleXYSeries checkpoints = new SimpleXYSeries("Checkpoints");
@@ -240,11 +268,29 @@ public class RoastActivity extends AppCompatActivity {
 
                     //if((int)(currentTime/1000000000)%2==0) {
 
+                    int avgLen = 10;
+                    if(tempsOverTime.size()-avgLen-1>0) {
+                        float tempAvg = 0.0f;
+
+                        for(int i=0; i<avgLen; i++){
+                            tempAvg+=(float)tempsOverTime.get(tempsOverTime.size() - avgLen+i)-tempsOverTime.get(tempsOverTime.size() - avgLen+i-1);
+                        }
+                        tempAvg/=(float)tempsOverTime.size();
+                        int curTempVel = (curTemp - tempsOverTime.get(tempsOverTime.size() - 1));
+                        Log.d("tempVelocity", " avg:"+tempAvg+" cur:" + curTempVel);
+
+                        if(Math.abs(curTempVel)<5&&Math.sqrt(tempAvg*tempAvg)<3){
+                            safeTempsOverTime.add((int)currentTime);
+                            safeTempsOverTime.add(curTemp);
+                        }else{
+                            Log.d("tempVelocity", "SKIPPED");
+                        }
+                    }
                         tempsOverTime.add((int)currentTime);
                         tempsOverTime.add(curTemp);
                         plot.removeSeries(series);
                         plot.removeSeries(checkpoints);
-                        series.setModel(tempsOverTime, SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED);
+                        series.setModel(safeTempsOverTime, SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED);
                         checkpoints.setModel(checkpointTemps, SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED);
 
                         plot.addSeries(series, new LineAndPointFormatter(Color.YELLOW, null, null, null));//new BarFormatter(Color.rgb(0, 200, 0), Color.rgb(0, 80, 0)));
@@ -270,7 +316,16 @@ public class RoastActivity extends AppCompatActivity {
     }
 
 
-
+    public void updateCheckpointText(){
+        if(roast!=null) {
+            if (roast.checkpoints.size() > 0) {
+                if (roast.checkpoints.get(currentCheckpoint).trigger == Checkpoint.trig.Temperature)
+                    checkpointText.setText(roast.checkpoints.get(currentCheckpoint).name + " at " + roast.checkpoints.get(currentCheckpoint).temperature + " degrees.");
+                if (roast.checkpoints.get(currentCheckpoint).trigger == Checkpoint.trig.Time)
+                    checkpointText.setText(roast.checkpoints.get(currentCheckpoint).name + " at " + roast.checkpoints.get(currentCheckpoint).timeTotalInSeconds());
+            }
+        }
+    }
 
 
 
@@ -484,5 +539,11 @@ public class RoastActivity extends AppCompatActivity {
     }
 
 
+    public void updateCurTemp(int newTemp){
+        int tempDif = Math.abs((newTemp-lastTemp));
 
+        lastTemp = newTemp;
+        if(tempDif<20)
+            curTemp = newTemp;
+    }
 }

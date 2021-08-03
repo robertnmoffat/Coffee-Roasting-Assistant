@@ -318,6 +318,10 @@ public class NetworkInitializer {
         network.activatedHiddenNeurons[1] = new SingleDimension();
         network.activatedHiddenNeurons[1].values = new float[secondHiddenLayerNeuronCount];
 
+
+    }
+
+    public static void resetOutputs(ConvolutionalNeuralNetwork network){
         //output layer and weights
         network.outputs.values = new float[outputNeuronCount];
         network.activatedOutputs.values = new float[outputNeuronCount];

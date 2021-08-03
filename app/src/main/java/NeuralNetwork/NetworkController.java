@@ -28,6 +28,12 @@ public class NetworkController {
 
     }
 
+    public float getOutput(int pos){
+        if(pos>network.outputs.values.length)
+            return 0.0f;
+        return network.outputs.values[pos];
+    }
+
     public float getErrorEstimate(){
         float errEstimate=0.0f;
         for(int i=0; i<10; i++){
@@ -42,9 +48,11 @@ public class NetworkController {
 
     public int getNumber(){
         NetworkInitializer.resetNetworkNeurons(network);
+        NetworkInitializer.resetOutputs(network);
         NetworkPropagator.forwardPropagate(network);
         return network.numberGuess;
     }
+
 
     public void setBitmap(Bitmap bitmap){
         NetworkInitializer.resetNetworkNeurons(network);
