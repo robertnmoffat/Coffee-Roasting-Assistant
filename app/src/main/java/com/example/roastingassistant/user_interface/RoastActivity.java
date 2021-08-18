@@ -3,6 +3,7 @@ package com.example.roastingassistant.user_interface;
 import Database.Checkpoint;
 import Database.DatabaseHelper;
 import Database.Roast;
+import Database.RoastRecord;
 import NeuralNetwork.ConvolutionalNeuralNetwork;
 import NeuralNetwork.ImageProcessing;
 import NeuralNetwork.NetworkController;
@@ -65,6 +66,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
@@ -220,6 +222,17 @@ public class RoastActivity extends AppCompatActivity {
                 //ImageProcessing.SaveImage(imageLeft, leftNum);
                 //ImageProcessing.SaveImage(imageMid, midNum);
                 //ImageProcessing.SaveImage(imageRight, rightNum);
+                DatabaseHelper db = DatabaseHelper.getInstance(getContext());
+                RoastRecord record = new RoastRecord();
+                record.name = "Test roast";
+                record.startWeightPounts = 12.0f;
+                record.endWeightPounds = 10.0f;
+                record.dateTime = Calendar.getInstance().getTime().toString();
+                record.roastProfile = roast;
+                record.id = db.addRoastRecord(record);
+                Log.d("Databate", "RoastRecord added with id:"+record.id);
+                RoastRecord recordReturned = db.getRoastRecord(record.id);
+                Log.d("Database", "RoastRecord returned: "+recordReturned.name);
             }
         });
 

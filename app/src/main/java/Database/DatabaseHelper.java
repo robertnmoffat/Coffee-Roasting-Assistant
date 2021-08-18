@@ -3,10 +3,12 @@ package Database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.nfc.Tag;
 import android.provider.ContactsContract;
+import android.speech.RecognizerResultsIntent;
 import android.util.Log;
 
 import com.example.roastingassistant.user_interface.BlendActivity;
@@ -25,7 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //Database info
     private static final String DATABASE_NAME = "coffeeDatabase";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     //---------Table names------------
     private static final String TABLE_BLEND = "blend";
@@ -35,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_ROAST_CHECKPOINT = "roast_checkpoint";
     private static final String TABLE_BEAN = "bean";
     private static final String TABLE_ROAST_RECORD = "roast_record";
-    private static final String TABLE_ROASTER = "roaster";
+    //private static final String TABLE_ROASTER = "roaster";
     private static final String TABLE_FLAVOURS = "flavours";
     private static final String TABLE_FLAVOUR = "flavour";
 
@@ -87,15 +89,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_ROAST_RECORD_FILENAME = "filename";
     private static final String KEY_ROAST_RECORD_START_WEIGHT = "start_weight";
     private static final String KEY_ROAST_RECORD_END_WEIGHT = "end_weight";
-    private static final String KEY_ROAST_RECORD_ROASTER_ID = "roaster_id";
+    private static final String KEY_ROAST_RECORD_DATETIME = "datetime";
+    //private static final String KEY_ROAST_RECORD_ROASTER_ID = "roaster_id";
 
     //---------roaster table columns------------
-    private static final String KEY_ROASTER_ID = "roaster_id";
-    private static final String KEY_ROASTER_NAME = "roaster_name";
-    private static final String KEY_ROASTER_BRAND = "brand";
-    private static final String KEY_ROASTER_CAPACITY_POUNDS = "capacity_pounds";
-    private static final String KEY_ROASTER_HEATING_TYPE = "heating_type";
-    private static final String KEY_ROASTER_DRUM_SPEED = "drum_speed";
+//    private static final String KEY_ROASTER_ID = "roaster_id";
+//    private static final String KEY_ROASTER_NAME = "roaster_name";
+//    private static final String KEY_ROASTER_BRAND = "brand";
+//    private static final String KEY_ROASTER_CAPACITY_POUNDS = "capacity_pounds";
+//    private static final String KEY_ROASTER_HEATING_TYPE = "heating_type";
+//    private static final String KEY_ROASTER_DRUM_SPEED = "drum_speed";
 
     //---------flavours table columns------------
     private static final String KEY_FLAVOURS_BEAN_ID = "bean_id";
@@ -197,18 +200,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     KEY_ROAST_RECORD_FILENAME+" TEXT,"+
                     KEY_ROAST_RECORD_START_WEIGHT+" DECIMAL,"+
                     KEY_ROAST_RECORD_END_WEIGHT+" DECIMAL,"+
-                    KEY_ROAST_RECORD_ROASTER_ID+" INTEGER REFERENCES "+KEY_ROASTER_ID+
+                    KEY_ROAST_RECORD_DATETIME+" TEXT"+
+                    //KEY_ROAST_RECORD_ROASTER_ID+" INTEGER REFERENCES "+KEY_ROASTER_ID+
                 ")";
 
-        String CREATE_ROASTER_TABLE = "CREATE TABLE "+TABLE_ROASTER+
-                "("+
-                    KEY_ROASTER_ID+" INTEGER PRIMARY KEY,"+
-                    KEY_ROASTER_NAME+" TEXT,"+
-                    KEY_ROASTER_BRAND+" TEXT,"+
-                    KEY_ROASTER_CAPACITY_POUNDS+" DECIMAL,"+
-                    KEY_ROASTER_HEATING_TYPE+" TEXT,"+
-                    KEY_ROASTER_DRUM_SPEED+" DECIMAL"+
-                ")";
+//        String CREATE_ROASTER_TABLE = "CREATE TABLE "+TABLE_ROASTER+
+//                "("+
+//                    KEY_ROASTER_ID+" INTEGER PRIMARY KEY,"+
+//                    KEY_ROASTER_NAME+" TEXT,"+
+//                    KEY_ROASTER_BRAND+" TEXT,"+
+//                    KEY_ROASTER_CAPACITY_POUNDS+" DECIMAL,"+
+//                    KEY_ROASTER_HEATING_TYPE+" TEXT,"+
+//                    KEY_ROASTER_DRUM_SPEED+" DECIMAL"+
+//                ")";
 
         String CREATE_FLAVOURS_TABLE = "CREATE TABLE "+TABLE_FLAVOURS+
                 "("+
@@ -230,7 +234,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_ROAST_CHECKPOINT_TABLE);
         db.execSQL(CREATE_BEAN_TABLE);
         db.execSQL(CREATE_ROAST_RECORD_TABLE);
-        db.execSQL(CREATE_ROASTER_TABLE);
+        //db.execSQL(CREATE_ROASTER_TABLE);
         db.execSQL(CREATE_FLAVOURS_TABLE);
         db.execSQL(CREATE_FLAVOUR_TABLE);
 
@@ -242,14 +246,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(oldVersion!=newVersion){
             Log.i("Database", "Database upgrading...");
             db.execSQL("DROP TABLE IF EXISTS "+TABLE_BLEND);
-            db.execSQL("DROP TABLE IF EXISTS "+TABLE_ROAST_PROFILE);
             db.execSQL("DROP TABLE IF EXISTS "+TABLE_CHECKPOINTS);
             db.execSQL("DROP TABLE IF EXISTS "+TABLE_ROAST_CHECKPOINT);
+            db.execSQL("DROP TABLE IF EXISTS "+TABLE_ROAST_PROFILE);
             db.execSQL("DROP TABLE IF EXISTS "+TABLE_BEAN);
             db.execSQL("DROP TABLE IF EXISTS "+TABLE_ROAST_RECORD);
-            db.execSQL("DROP TABLE IF EXISTS "+TABLE_ROASTER);
+            //db.execSQL("DROP TABLE IF EXISTS "+TABLE_ROASTER);
             db.execSQL("DROP TABLE IF EXISTS "+TABLE_FLAVOURS);
             db.execSQL("DROP TABLE IF EXISTS "+TABLE_FLAVOUR);
+
 
             onCreate(db);
             Log.i("Database", "Database upgrade complete.");
@@ -290,6 +295,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return beanId;
+    }
+
+    public int addRoastRecord(RoastRecord record){
+        Log.i("Database", "Adding roast_record entry to database...");
+
+        long recordId = -1;
+
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try{
+            ContentValues values = new ContentValues();
+            values.put(KEY_ROAST_RECORD_ROAST_PROFILE_ID_FK, record.roastProfile.id);
+            values.put(KEY_ROAST_RECORD_FILENAME, record.filename);
+            values.put(KEY_ROAST_RECORD_START_WEIGHT, record.startWeightPounts);
+            values.put(KEY_ROAST_RECORD_END_WEIGHT, record.endWeightPounds);
+            values.put(KEY_ROAST_RECORD_DATETIME, record.dateTime);
+
+            recordId = db.insertOrThrow(TABLE_ROAST_RECORD, null, values);
+            db.setTransactionSuccessful();
+        }catch (Exception e){
+            Log.d("Database", "Error adding roast record to database. "+e.getMessage());
+        }finally {
+            db.endTransaction();
+        }
+
+        return (int)recordId;
     }
 
     public int addCheckpoint(Checkpoint checkpoint){
@@ -397,8 +428,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             for(Roast roast: blend.roasts){
                 aValues.put(KEY_ROAST_BLEND_ROASTID_FK, roast.id);
                 aValues.put(KEY_ROAST_BLEND_BLENDID_FK, blendId);
-                long roastblendId = db.insertOrThrow(TABLE_ROAST_BLEND, null, aValues);
-                if(roastblendId==-1){
+                long roastBlendId = db.insertOrThrow(TABLE_ROAST_BLEND, null, aValues);
+                if(roastBlendId==-1){
                     Log.d("Database", "Error inserting roast-blend association table to database.");
                     return -1;
                 }
@@ -474,6 +505,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 blend.id = id;
                 blend.name = cursor.getString(cursor.getColumnIndex(KEY_BLEND_NAME));
                 blend.description = cursor.getString(cursor.getColumnIndex(KEY_BLEND_DESCRIPTION));
+
             }else{
                 Log.d("Database", "No blend found with id "+id);
                 return null;
@@ -499,6 +531,56 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return blend;
+    }
+
+    public RoastRecord getRoastRecord(int id){
+        RoastRecord record = new RoastRecord();
+
+
+        String ROAST_RECORD_SELECT_QUERY =
+                String.format("SELECT * FROM %s WHERE %s=%s", TABLE_ROAST_RECORD, KEY_ROAST_RECORD_ID, id);
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(ROAST_RECORD_SELECT_QUERY, null);
+
+        /**
+         *                     KEY_ROAST_RECORD_ID+" INTEGER PRIMARY KEY,"+
+         *                     KEY_ROAST_RECORD_ROAST_PROFILE_ID_FK+" INTEGER REFERENCES "+TABLE_ROAST_PROFILE+","+
+         *                     KEY_ROAST_RECORD_FILENAME+" TEXT,"+
+         *                     KEY_ROAST_RECORD_START_WEIGHT+" DECIMAL,"+
+         *                     KEY_ROAST_RECORD_END_WEIGHT+" DECIMAL,"+
+         *                     KEY_ROAST_RECORD_DATETIME+" TEXT,"+
+         *                     KEY_ROAST_RECORD_ROASTER_ID+" INTEGER REFERENCES "+KEY_ROASTER_ID+
+         */
+
+        try{
+            if(cursor.moveToFirst()){
+                int roastId = cursor.getInt(cursor.getColumnIndex(KEY_ROAST_RECORD_ROAST_PROFILE_ID_FK));
+                Roast roast = getRoast(roastId);
+                if(roast!=null)
+                    record.roastProfile = roast;
+                //Roaster roaster = new Roaster();//TODO get roaster?
+
+                record.id = id;
+                record.filename = cursor.getString(cursor.getColumnIndex(KEY_ROAST_RECORD_FILENAME));
+                record.startWeightPounts = (float)cursor.getDouble(cursor.getColumnIndex(KEY_ROAST_RECORD_START_WEIGHT));
+                record.endWeightPounds = (float)cursor.getDouble(cursor.getColumnIndex(KEY_ROAST_RECORD_END_WEIGHT));
+                record.dateTime = cursor.getString(cursor.getColumnIndex(KEY_ROAST_RECORD_DATETIME));
+                record.name = record.roastProfile.name+" "+record.dateTime;
+
+            }else{
+                Log.d("Database", "No roast record found with id "+id);
+                return null;//No entries found matching
+            }
+
+        }catch (Exception e){
+            Log.d("Database", "Failed to access Bean entry from database. "+e.getMessage());
+        }finally{
+            if(cursor!=null&&cursor.isClosed())
+                cursor.close();
+        }
+
+        return record;
     }
 
     public Roast getRoast(int id){
