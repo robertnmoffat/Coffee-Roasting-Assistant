@@ -533,6 +533,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return blend;
     }
 
+    public ArrayList<RoastRecord> getAllRoastRecords(){
+        ArrayList<RoastRecord> records = new ArrayList<>();
+
+        String ROAST_RECORD_IDS_QUERY =
+                String.format("SELECT %s FROM %s", KEY_ROAST_RECORD_ID, TABLE_ROAST_RECORD);
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(ROAST_RECORD_IDS_QUERY, null);
+        try{
+            if(cursor.moveToFirst()){
+                do {
+                    int curId = cursor.getInt(cursor.getColumnIndex(KEY_ROAST_RECORD_ID));
+                    records.add(getRoastRecord(curId));
+                }while(cursor.moveToNext());
+            }else{
+                Log.e("Database", "No roast record entries found.");
+                return null;
+            }
+        }catch (Exception e){
+            Log.d("Database", "Failed to access roast record from database. "+e.getMessage());
+        }finally{
+            if(cursor!=null&&cursor.isClosed())
+                cursor.close();
+        }
+
+        return records;
+    }
+
     public RoastRecord getRoastRecord(int id){
         RoastRecord record = new RoastRecord();
 

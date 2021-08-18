@@ -12,6 +12,9 @@ import android.widget.TextView;
 
 import com.example.roastingassistant.R;
 
+import java.util.ArrayList;
+
+import Database.DatabaseHelper;
 import Database.DbData;
 import Database.RoastRecord;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +30,10 @@ public class PreviousRoastActivity extends AppCompatActivity {
         setContentView(R.layout.activity_previous_roast);
 
         layout = findViewById(R.id.previousroast_roasts_layout);
+        ArrayList<RoastRecord> records = DatabaseHelper.getInstance(this).getAllRoastRecords();
+        for(RoastRecord record: records){
+            addButton(record);
+        }
     }
 
     public Context getContext(){
