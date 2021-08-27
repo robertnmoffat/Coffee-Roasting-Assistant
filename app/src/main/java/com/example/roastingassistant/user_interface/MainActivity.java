@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.example.roastingassistant.R;
 import com.google.android.material.tabs.TabLayout;
 
+import Database.RoastRecord;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,6 +20,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.roastingassistant.user_interface.main.SectionsPagerAdapter;
+
+import java.util.ArrayList;
 
 import Database.Bean;
 import Database.DatabaseHelper;
@@ -81,8 +84,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
 
-        //-----------------Temporary db setup------------------------------
-        //deleteDatabase("coffeeDatabase");//For testing purposes, delete database before use so that there is a fresh db.
+//        ArrayList<RoastRecord> records = DatabaseHelper.getInstance(this).getAllRoastRecords();
+//        for(int i=0; i<records.size(); i++){
+//            this.deleteFile(records.get(i).name);
+//        }
+//
+//        //-----------------Temporary db setup------------------------------
+//        deleteDatabase("coffeeDatabase");//For testing purposes, delete database before use so that there is a fresh db.
+
+
 
         //DBThread dbt = new DBThread(this.getApplicationContext());
         //dbt.start();

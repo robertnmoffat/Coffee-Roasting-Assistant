@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".user_interface.RoastDataViewActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.10"
+            android:orientation="horizontal"
+            android:background="@color/grayBack">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"></View>
+
+            <Spinner
+                android:id="@+id/menuSpinner"
+                android:layout_width="40dp"
+                android:layout_height="45dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/hamburger_icon"
+                style="@style/spinnerItemStyle"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/roastdataview_title_textview"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="RoastTitle"
+            android:textSize="25dp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:background="@color/grayBack"
+            app:tabIndicatorColor="#FFFFFF"
+            app:tabTextColor="#FFFFFF"
+            app:tabTextAppearance="@style/CustomTextAppearanceTab">
+        </TextView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@color/grayBack" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@color/lightGray" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="110dp"
+        android:weightSum="6">
+        <ScrollView
+            android:id="@+id/roastparamactivity_scrollview"
+            android:layout_weight="5"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/grayBack"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.androidplot.xy.XYPlot
+                    style="@style/APDefacto.Dark"
+                    android:id="@+id/plot"
+                    android:layout_width="320dp"
+                    android:layout_height="220dp"
+                    app:title="Roast Temperature"
+                    app:rangeTitle="Temperature"
+                    app:domainTitle="Time"
+                    app:lineLabels="left|bottom"
+                    app:lineLabelRotationBottom="-45"
+                    app:renderMode="use_background_thread"
+                    android:layout_gravity="center"/>
+
+
+
+            </LinearLayout>
+
+
+        </ScrollView>
+        <LinearLayout
+            android:id="@+id/roastdataview_buttonsarea_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:background="@color/grayBackLower"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/roastdataview_done_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Done"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:background="@drawable/round_shape_btn"
+                android:layout_marginBottom="2dp"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

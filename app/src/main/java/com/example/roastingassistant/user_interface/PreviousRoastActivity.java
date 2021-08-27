@@ -9,6 +9,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.roastingassistant.R;
 
@@ -29,8 +30,22 @@ public class PreviousRoastActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_previous_roast);
 
+        Button doneButton = findViewById(R.id.previousroast_done_button);
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         layout = findViewById(R.id.previousroast_roasts_layout);
         ArrayList<RoastRecord> records = DatabaseHelper.getInstance(this).getAllRoastRecords();
+
+        if(records==null){
+            Toast.makeText(getContext(), "No Saved Records.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         for(RoastRecord record: records){
             addButton(record);
         }
@@ -47,11 +62,12 @@ public class PreviousRoastActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), BeanActivity.class);
-                intent.putExtra("Mode", RoastParamActivity.mode.downloading);
-                //intent.putExtra("serverId", data.serverId);
+                Intent intent = new Intent(getContext(), RoastDataViewActivity.class);
+                //intent.putExtra("Mode", RoastParamActivity.mode.downloading);
+                intent.putExtra("recordId", record.id);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                startActivityForResult(intent, 0);
+                //startActivityForResult(intent, 0);
+                startActivity(intent);
                 overridePendingTransition(0, 0); //0 for no animation
                 //Log.d("Server", data.name + " ID:" + data.serverId);
             }

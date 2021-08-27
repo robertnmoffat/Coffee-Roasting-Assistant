@@ -63,6 +63,7 @@ import androidx.core.app.ActivityCompat;
 
 import java.io.Console;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -229,10 +230,23 @@ public class RoastActivity extends AppCompatActivity {
                 record.endWeightPounds = 10.0f;
                 record.dateTime = Calendar.getInstance().getTime().toString();
                 record.roastProfile = roast;
+                record.filename = record.roastProfile.name+" "+record.dateTime;
                 record.id = db.addRoastRecord(record);
-                Log.d("Databate", "RoastRecord added with id:"+record.id);
+
+                Log.d("Database", "RoastRecord added with id:"+record.id);
                 RoastRecord recordReturned = db.getRoastRecord(record.id);
                 Log.d("Database", "RoastRecord returned: "+recordReturned.name);
+
+
+                DataSaver.saveRoastData(record, safeTempsOverTime, checkpointTemps, getContext());
+                String[] filenames = getContext().fileList();
+                for(int i=0;i<filenames.length;i++) {
+                    Log.d("FileIO", "" + filenames[i]);
+                }
+                ArrayList<Integer> temps = new ArrayList<>();
+                ArrayList<Integer> checks = new ArrayList<>();
+                DataSaver.loadRoastData(record, temps, checks, getContext());
+
             }
         });
 

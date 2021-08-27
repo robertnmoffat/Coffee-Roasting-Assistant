@@ -7,6 +7,7 @@ public class RoastRecord extends DbData{
     public int id=0;
     public Roast roastProfile;
     public String filename;
+    public int filesizeBytes=0;
     public float startWeightPounts;
     public float endWeightPounds;
     public String dateTime;

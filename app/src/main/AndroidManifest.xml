@@ -11,13 +11,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RoastingAssistant"
         android:usesCleartextTraffic="true">
-
+        <activity
+            android:name=".user_interface.RoastDataViewActivity"
+            android:label="@string/title_activity_roast_data_view"
+            android:theme="@style/Theme.RoastingAssistant.NoActionBar"></activity>
         <!--
                Set to true if your app is Standalone, that is, it does not require the handheld
                app to run.
         -->
         <activity android:name="Database.DatabaseTestActivity" />
-
         <activity
             android:name=".user_interface.RoastActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -26,7 +28,6 @@
         <activity
             android:name=".user_interface.RemoteDataBrowserActivity"
             android:theme="@style/Theme.RoastingAssistant.NoActionBar" />
-
         <activity
             android:name=".user_interface.CheckpointParamActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -42,7 +43,6 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.RoastingAssistant.NoActionBar" />
-
         <activity
             android:name=".user_interface.RoastParamActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -66,7 +66,6 @@
             </intent-filter>
         </activity>
 
-
         <uses-library
             android:name="android.test.runner"
             android:required="false" />
@@ -79,12 +78,11 @@
     </application>
 
     <uses-feature android:name="android.hardware.type.watch" />
-
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>
