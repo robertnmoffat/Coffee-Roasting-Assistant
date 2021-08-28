@@ -107,7 +107,7 @@ public class DataSaver {
                 dos.writeInt(tempsOverTime.get(i));
             }
             dos.close();
-            record.filesizeBytes = (checkpointTimes.size()+tempsOverTime.size()+2)*Integer.BYTES;
+
         } catch (FileNotFoundException e) {
             Log.e("FileIO", "File not found exception thrown.");
             e.printStackTrace();

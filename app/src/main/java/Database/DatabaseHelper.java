@@ -90,6 +90,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_ROAST_RECORD_START_WEIGHT = "start_weight";
     private static final String KEY_ROAST_RECORD_END_WEIGHT = "end_weight";
     private static final String KEY_ROAST_RECORD_DATETIME = "datetime";
+    private static final String KEY_ROAST_RECORD_FILESIZE = "filesize";
     //private static final String KEY_ROAST_RECORD_ROASTER_ID = "roaster_id";
 
     //---------roaster table columns------------
@@ -200,7 +201,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     KEY_ROAST_RECORD_FILENAME+" TEXT,"+
                     KEY_ROAST_RECORD_START_WEIGHT+" DECIMAL,"+
                     KEY_ROAST_RECORD_END_WEIGHT+" DECIMAL,"+
-                    KEY_ROAST_RECORD_DATETIME+" TEXT"+
+                    KEY_ROAST_RECORD_DATETIME+" TEXT,"+
+                    KEY_ROAST_RECORD_FILESIZE+" INTEGER"+
                     //KEY_ROAST_RECORD_ROASTER_ID+" INTEGER REFERENCES "+KEY_ROASTER_ID+
                 ")";
 
@@ -311,6 +313,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put(KEY_ROAST_RECORD_START_WEIGHT, record.startWeightPounts);
             values.put(KEY_ROAST_RECORD_END_WEIGHT, record.endWeightPounds);
             values.put(KEY_ROAST_RECORD_DATETIME, record.dateTime);
+            values.put(KEY_ROAST_RECORD_FILESIZE, record.filesizeBytes);
 
             recordId = db.insertOrThrow(TABLE_ROAST_RECORD, null, values);
             db.setTransactionSuccessful();
@@ -595,6 +598,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 record.endWeightPounds = (float)cursor.getDouble(cursor.getColumnIndex(KEY_ROAST_RECORD_END_WEIGHT));
                 record.dateTime = cursor.getString(cursor.getColumnIndex(KEY_ROAST_RECORD_DATETIME));
                 record.name = record.roastProfile.name+" "+record.dateTime;
+                record.filesizeBytes = cursor.getInt(cursor.getColumnIndex(KEY_ROAST_RECORD_FILESIZE));
 
             }else{
                 Log.d("Database", "No roast record found with id "+id);

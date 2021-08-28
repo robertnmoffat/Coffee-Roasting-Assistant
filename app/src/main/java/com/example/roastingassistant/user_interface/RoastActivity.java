@@ -199,7 +199,10 @@ public class RoastActivity extends AppCompatActivity {
                 }else{
                     if(currentCheckpoint<roast.checkpoints.size()) {
                         checkpointTemps.add((int) currentTime);
-                        checkpointTemps.add(safeTempsOverTime.get(safeTempsOverTime.size() - 1));
+                        if(safeTempsOverTime.size()!=0)
+                            checkpointTemps.add(safeTempsOverTime.get(safeTempsOverTime.size() - 1));
+                        else
+                            checkpointTemps.add(0);
                     }
                     currentCheckpoint++;
                     if(currentCheckpoint+1<roast.checkpoints.size()) {
@@ -231,6 +234,7 @@ public class RoastActivity extends AppCompatActivity {
                 record.dateTime = Calendar.getInstance().getTime().toString();
                 record.roastProfile = roast;
                 record.filename = record.roastProfile.name+" "+record.dateTime;
+                record.filesizeBytes = (checkpointTemps.size()+safeTempsOverTime.size()+2)*Integer.BYTES;
                 record.id = db.addRoastRecord(record);
 
                 Log.d("Database", "RoastRecord added with id:"+record.id);
@@ -256,7 +260,7 @@ public class RoastActivity extends AppCompatActivity {
 
         XYPlot plot = findViewById(R.id.plot);
         SimpleXYSeries series = new SimpleXYSeries("Temp");
-        series.setModel(safeTempsOverTime, SimpleXYSeries.ArrayFormat.Y_VALS_ONLY);
+        series.setModel(safeTempsOverTime, SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED);
         plot.addSeries(series, new LineAndPointFormatter());//new BarFormatter(Color.rgb(0, 200, 0), Color.rgb(0, 80, 0)));
 
         SimpleXYSeries checkpoints = new SimpleXYSeries("Checkpoints");

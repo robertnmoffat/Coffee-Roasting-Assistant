@@ -58,7 +58,6 @@ public class PreviousRoastActivity extends AppCompatActivity {
     public void addButton(RoastRecord record){
         Button button = new Button(this);
 
-
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
