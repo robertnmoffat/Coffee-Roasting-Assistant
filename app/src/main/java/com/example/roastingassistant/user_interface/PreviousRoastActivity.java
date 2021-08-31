@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import com.example.roastingassistant.R;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 import Database.DatabaseHelper;
@@ -25,12 +27,18 @@ public class PreviousRoastActivity extends AppCompatActivity {
     private TextView mTextView;
     LinearLayout layout;
 
+    boolean returnResult = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_previous_roast);
 
+        Intent intent = getIntent();
+        returnResult = intent.getBooleanExtra("returnResult", false);
+
         Button doneButton = findViewById(R.id.previousroast_done_button);
+
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,6 +69,15 @@ public class PreviousRoastActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(returnResult) {
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("overlayId", record.id);
+                    setResult(RESULT_OK, resultIntent);
+
+                    finish();
+                    return;
+                }
+
                 Intent intent = new Intent(getContext(), RoastDataViewActivity.class);
                 //intent.putExtra("Mode", RoastParamActivity.mode.downloading);
                 intent.putExtra("recordId", record.id);

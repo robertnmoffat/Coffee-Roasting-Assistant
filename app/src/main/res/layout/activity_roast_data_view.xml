@@ -36,17 +36,16 @@
         <TextView
             android:id="@+id/roastdataview_title_textview"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="RoastTitle"
-            android:textSize="25dp"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:gravity="center"
+            android:layout_height="88dp"
             android:background="@color/grayBack"
+            android:gravity="center"
+            android:text="RoastTitle"
+            android:textColor="@color/white"
+            android:textSize="25dp"
+            android:textStyle="bold"
             app:tabIndicatorColor="#FFFFFF"
-            app:tabTextColor="#FFFFFF"
-            app:tabTextAppearance="@style/CustomTextAppearanceTab">
-        </TextView>
+            app:tabTextAppearance="@style/CustomTextAppearanceTab"
+            app:tabTextColor="#FFFFFF"></TextView>
 
         <View
             android:layout_width="match_parent"
@@ -63,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginTop="110dp"
+        android:layout_marginTop="150dp"
         android:weightSum="6">
         <ScrollView
             android:id="@+id/roastparamactivity_scrollview"
@@ -74,6 +73,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <LinearLayout
+                android:id="@+id/roastdataview_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
@@ -89,9 +89,71 @@
                     app:lineLabels="left|bottom"
                     app:lineLabelRotationBottom="-45"
                     app:renderMode="use_background_thread"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"/>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Start weight:"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="20dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="12LB"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        android:layout_marginTop="20dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="End weight:"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="20dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="10LB"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        android:layout_marginTop="20dp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Weight loss:"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginLeft="20dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0.83%"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        android:layout_marginTop="20dp"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
