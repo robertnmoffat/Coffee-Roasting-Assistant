@@ -104,7 +104,9 @@ public class NeuralThread extends Thread {
                         if(roastActivity.networkController.getErrorEstimate()<900.0f) {
                             int temp = (position[0] * 100 + position[1] * 10 + position[2]);
                             int sumTemp = (highestOutputPos[0] * 100 + highestOutputPos[1] * 10 + highestOutputPos[2]);
-                            roastActivity.guessText = "" + temp+" sums: "+sumTemp;//+" "+roastActivity.networkController.getErrorEstimate();
+
+                            float nnTotal = getTotal(roastActivity.networkController);
+                            roastActivity.guessText = "" + temp+" sums: "+sumTemp+" total:"+nnTotal;//+" "+roastActivity.networkController.getErrorEstimate();
 
                             roastActivity.updateCurTemp(sumTemp);
                         }
@@ -137,6 +139,14 @@ public class NeuralThread extends Thread {
                 e.printStackTrace();
             }
         }
+    }
+
+    public float getTotal(NetworkController nController){
+        float total = 0.0f;
+        for(int i=0; i<10; i++){
+            total+=nController.getOutput(i);
+        }
+        return total;
     }
 
     public void addOutputs(SingleDimension sums, SingleDimension toAdd){

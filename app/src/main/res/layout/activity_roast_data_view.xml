@@ -81,7 +81,7 @@
                 <com.androidplot.xy.XYPlot
                     style="@style/APDefacto.Dark"
                     android:id="@+id/plot"
-                    android:layout_width="320dp"
+                    android:layout_width="match_parent"
                     android:layout_height="220dp"
                     app:title="Roast Temperature"
                     app:rangeTitle="Temperature"

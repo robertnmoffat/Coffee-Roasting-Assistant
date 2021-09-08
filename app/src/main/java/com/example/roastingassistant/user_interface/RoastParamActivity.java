@@ -1,5 +1,6 @@
 package com.example.roastingassistant.user_interface;
 
+import Database.DbData;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
@@ -32,7 +33,6 @@ import Database.Checkpoint;
 import Database.DatabaseHelper;
 import Database.Roast;
 import Networking.HttpClient;
-import Utilities.IntList;
 
 /**
  * Activity for displaying and handling alterations on different roasts roasting parameters.
@@ -406,6 +406,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
             if(resultCode==RESULT_OK) {
                 Log.i("callback", "Callback received!");
                 Checkpoint checkpoint = (Checkpoint) (Checkpoint)data.getExtras().getSerializable("Checkpoint");
+                checkpoint = DatabaseHelper.getInstance(this).getCheckpoint(checkpoint.id);
                 addCheckPoint(checkpoint);
                 checkpointsAdded.add(checkpoint);
             }

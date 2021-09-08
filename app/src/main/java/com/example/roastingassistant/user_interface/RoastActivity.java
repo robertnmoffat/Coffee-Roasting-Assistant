@@ -4,55 +4,42 @@ import Database.Checkpoint;
 import Database.DatabaseHelper;
 import Database.Roast;
 import Database.RoastRecord;
-import NeuralNetwork.ConvolutionalNeuralNetwork;
-import NeuralNetwork.ImageProcessing;
 import NeuralNetwork.NetworkController;
-import NeuralNetwork.NetworkFileLoader;
-import NeuralNetwork.NetworkInitializer;
 import NeuralNetwork.NeuralThread;
-import NeuralNetwork.Square;
+import Utilities.DataCleaner;
 import Utilities.DataSaver;
+import Utilities.Utilities;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.hardware.Camera;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
-import android.os.Looper;
+import android.provider.Settings;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.renderscript.Type;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.androidplot.xy.BarFormatter;
 import com.androidplot.xy.LineAndPointFormatter;
-import com.androidplot.xy.PointLabelFormatter;
 import com.androidplot.xy.SimpleXYSeries;
-import com.androidplot.xy.XValueMarker;
 import com.androidplot.xy.XYPlot;
 import com.example.roastingassistant.R;
 import com.gun0912.tedpermission.PermissionListener;
@@ -61,29 +48,26 @@ import com.gun0912.tedpermission.TedPermission;
 import Camera.CameraPreview;
 import androidx.core.app.ActivityCompat;
 
-import java.io.Console;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
-
-import static NeuralNetwork.ImageProcessing.SaveImage;
-import static com.example.roastingassistant.user_interface.Utils.dp;
 
 public class RoastActivity extends AppCompatActivity {
     private Camera mCamera;
     private CameraPreview mPreview;
     private Camera.PictureCallback mPicture;
 
+    boolean testing = false;
+    int testPos=1;
+    ArrayList<Integer> testTemps;
+
+    boolean turnedAround = false;
+    boolean checkpointWarned = false;
+
     boolean stopped=true;
     Button stopButton;
     Button undoButton;
     Button checkpointButton;
-    GraphView graphView;
     TextView checkpointText;
 
     TextView timeText;
@@ -105,25 +89,52 @@ public class RoastActivity extends AppCompatActivity {
     byte[] cameraData;
     Bitmap cameraBitmap;
 
-    boolean imageCollectionStarted = false;
     boolean cameraImageLoaded = false;
     public Bitmap imageLeft, imageMid, imageRight;
     public boolean imageRightUpdated=false;
     public String guessText="";
-    public int guessInt;
     public boolean guessTextUpdated=false;
 
     public NetworkController networkController;
 
     int STORAGE_PERMISSION_CODE = 100;
 
+    MediaPlayer player;
+
     Roast roast;
     int currentCheckpoint = 0;
+
+    SoundPool soundPool;
+    int soundEffect1, soundEffect2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+//                    .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+//                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+//                    .build();
+//            soundPool = new SoundPool.Builder()
+//                    .setMaxStreams(6)
+//                    .setAudioAttributes(audioAttributes)
+//                    .build();
+//        } else {
+//            soundPool = new SoundPool(6, AudioManager.STREAM_MUSIC, 0);
+//        }
+
+        player = MediaPlayer.create(this,
+                R.raw.ring);
+
+
+        if(testing){
+            testTemps = new ArrayList<>();
+            RoastRecord record = new RoastRecord();
+            record.filename="TestData";
+            record.filesizeBytes = 15040;
+            DataSaver.loadRoastData(record, testTemps, new ArrayList<>(), this);
+        }
 
         ActivityCompat.requestPermissions(RoastActivity.this, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE }, STORAGE_PERMISSION_CODE);
         setContentView(R.layout.activity_roast);
@@ -143,16 +154,7 @@ public class RoastActivity extends AppCompatActivity {
         checkpointsLayout = findViewById(R.id.roastactivity_checkpoint_linearlayout);
         tempText = findViewById(R.id.roastactivity_temp_textview);
 
-        //LinearLayout camAndGraphLayout = findViewById(R.id.roastactivity_camandgraph_layout);
-       // float layoutWidth = camAndGraphLayout.getLayoutParams().;
-
-        //graphView = findViewById(R.id.roastactivity_graph_imageView);
         cameraPreview = findViewById(R.id.roastactivity_camera_Layout);
-        //cameraPreview.getLayoutParams().width = (int)(layoutWidth/3.0f);
-
-        //XYPlot graph = findViewById(R.id.plot);
-        //graph.getLayoutParams().width = (int)(layoutWidth/3.0f);
-       // graph.setLayoutParams(new LinearLayout.LayoutParams((int)(layoutWidth/3.0f),(int)(layoutWidth/3.0f)));
 
         int id = getIntent().getIntExtra("RoastId", -1);
 
@@ -197,19 +199,7 @@ public class RoastActivity extends AppCompatActivity {
                 if(stopped){
                     startStop();
                 }else{
-                    if(currentCheckpoint<roast.checkpoints.size()) {
-                        checkpointTemps.add((int) currentTime);
-                        if(safeTempsOverTime.size()!=0)
-                            checkpointTemps.add(safeTempsOverTime.get(safeTempsOverTime.size() - 1));
-                        else
-                            checkpointTemps.add(0);
-                    }
-                    currentCheckpoint++;
-                    if(currentCheckpoint+1<roast.checkpoints.size()) {
-                        updateCheckpointText();
-                    }else{
-                        checkpointText.setText("Roast complete.");
-                    }
+                    triggerCheckpoint();
                 }
             }
         });
@@ -300,61 +290,136 @@ public class RoastActivity extends AppCompatActivity {
 
                     //if((int)(currentTime/1000000000)%2==0) {
 
-                    int avgLen = 10;
-                    if(tempsOverTime.size()-avgLen-1>0) {
-                        float tempAvg = 0.0f;
+                    recordSafeTemp();
 
-                        for(int i=0; i<avgLen; i++){
-                            tempAvg+=(float)tempsOverTime.get(tempsOverTime.size() - avgLen+i)-tempsOverTime.get(tempsOverTime.size() - avgLen+i-1);
+                    if (testing) {
+                        if(testPos<testTemps.size()) {
+                            curTemp = testTemps.get(testPos);
+                            guessText=""+curTemp;
+                            guessTextUpdated=true;
+                            tempsOverTime.add(testTemps.get(testPos-1));
+                            tempsOverTime.add(testTemps.get(testPos));
+                            testPos+=2;
                         }
-                        tempAvg/=(float)tempsOverTime.size();
-                        int curTempVel = (curTemp - tempsOverTime.get(tempsOverTime.size() - 1));
-                        Log.d("tempVelocity", " avg:"+tempAvg+" cur:" + curTempVel);
+                    } else {
+                        tempsOverTime.add((int) currentTime);
+                        tempsOverTime.add(curTemp);
+                    }
 
-                        if(Math.abs(curTempVel)<5&&Math.sqrt(tempAvg*tempAvg)<3){
-                            safeTempsOverTime.add((int)currentTime);
-                            safeTempsOverTime.add(curTemp);
-                        }else{
-                            Log.d("tempVelocity", "SKIPPED");
+                    if(lastSafeTemp()<190){
+                        turnedAround=true;
+                    }
+                    if(currentCheckpoint<roast.checkpoints.size()&&turnedAround) {
+                        if (roast.checkpoints.get(currentCheckpoint).trigger == Checkpoint.trig.Temperature) {
+                            if (!checkpointWarned && lastSafeTemp() >= roast.checkpoints.get(currentCheckpoint).temperature - 7) {
+                                player.start();
+                                checkpointWarned = true;
+                            }
+                            if (lastSafeTemp() >= roast.checkpoints.get(currentCheckpoint).temperature) {
+                                triggerCheckpoint();
+                            }
+                        }else if(roast.checkpoints.get(currentCheckpoint).trigger == Checkpoint.trig.Time){
+                            if (!checkpointWarned && currentTime >= roast.checkpoints.get(currentCheckpoint).timeTotalInSeconds() - 7) {
+                                player.start();
+                                checkpointWarned = true;
+                            }
+                            if (currentTime >= roast.checkpoints.get(currentCheckpoint).timeTotalInSeconds()) {
+                                triggerCheckpoint();
+                            }
+                        }else if(roast.checkpoints.get(currentCheckpoint).trigger == Checkpoint.trig.PromptAtTemp){
+                            if (!checkpointWarned && lastSafeTemp() >= roast.checkpoints.get(currentCheckpoint).temperature - 7) {
+                                player.start();
+                                checkpointWarned = true;
+                            }
                         }
                     }
-                        tempsOverTime.add((int)currentTime);
-                        tempsOverTime.add(curTemp);
-                        plot.removeSeries(series);
-                        plot.removeSeries(checkpoints);
-                        series.setModel(safeTempsOverTime, SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED);
-                        checkpoints.setModel(checkpointTemps, SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED);
 
-                        plot.addSeries(series, new LineAndPointFormatter(Color.YELLOW, null, null, null));//new BarFormatter(Color.rgb(0, 200, 0), Color.rgb(0, 80, 0)));
-                        LineAndPointFormatter checkpointFormatter =new LineAndPointFormatter(null, Color.GREEN, null, null);
-                        checkpointFormatter.getVertexPaint().setStrokeWidth(30);
-                        plot.addSeries(checkpoints, checkpointFormatter);
-                        plot.redraw();
-                        //graphView.addTemp(testTemp);
+                    plot.removeSeries(series);
+                    plot.removeSeries(checkpoints);
+                    series.setModel(safeTempsOverTime, SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED);
+                    checkpoints.setModel(checkpointTemps, SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED);
+
+                    plot.addSeries(series, new LineAndPointFormatter(Color.YELLOW, null, null, null));//new BarFormatter(Color.rgb(0, 200, 0), Color.rgb(0, 80, 0)));
+                    LineAndPointFormatter checkpointFormatter = new LineAndPointFormatter(null, Color.GREEN, null, null);
+                    checkpointFormatter.getVertexPaint().setStrokeWidth(30);
+                    plot.addSeries(checkpoints, checkpointFormatter);
+                    plot.redraw();
+                    //graphView.addTemp(testTemp);
                     //}
                     //if(tempsOverTime.size()<(int)(currentTime/1000000000))
-                       //tempsOverTime.add(guessInt);
+                    //tempsOverTime.add(guessInt);
                 }
                 h.postDelayed(this, delay);
             }
         }, delay);
 
         //Start thread to run the image detection neural network.
-        NeuralThread thread = new NeuralThread(this);
-        thread.start();
+        if(!testing) {
+            NeuralThread thread = new NeuralThread(this);
+            thread.start();
+        }
 
         checkPermission();
 
     }
 
+    public int lastSafeTemp(){
+        if(safeTempsOverTime.size()>0)
+            return safeTempsOverTime.get(safeTempsOverTime.size()-1);
+        return curTemp;
+    }
+
+    public void triggerCheckpoint(){
+        checkpointWarned = false;
+        if(currentCheckpoint<roast.checkpoints.size()) {
+            checkpointTemps.add((int) currentTime);
+            if(safeTempsOverTime.size()!=0)
+                checkpointTemps.add(safeTempsOverTime.get(safeTempsOverTime.size() - 1));
+            else
+                checkpointTemps.add(0);
+        }
+        currentCheckpoint++;
+        if(currentCheckpoint<roast.checkpoints.size()) {
+            updateCheckpointText();
+        }else{
+            checkpointText.setText("Roast complete.");
+        }
+    }
+
+    public void recordSafeTemp(){
+        safeTempsOverTime = DataCleaner.medianFilter(tempsOverTime, 100);
+
+
+//        int avgLen = 10;
+//        if(tempsOverTime.size()-avgLen-1>0) {
+//            float tempAvg = 0.0f;
+//
+//            for(int i=0; i<avgLen; i++){
+//                tempAvg+=(float)tempsOverTime.get(tempsOverTime.size() - avgLen+i)-tempsOverTime.get(tempsOverTime.size() - avgLen+i-1);
+//            }
+//            tempAvg/=(float)tempsOverTime.size();
+//            int curTempVel = (curTemp - tempsOverTime.get(tempsOverTime.size() - 1));
+//            Log.d("tempVelocity", " avg:"+tempAvg+" cur:" + curTempVel);
+//
+//            if(Math.abs(curTempVel)<5&&Math.sqrt(tempAvg*tempAvg)<3){
+//                safeTempsOverTime = DataCleaner.medianFilter(tempsOverTime, 100);
+////                safeTempsOverTime.add((int)currentTime);
+////                safeTempsOverTime.add(curTemp);
+//            }else{
+//                Log.d("tempVelocity", "SKIPPED");
+//            }
+//        }
+    }
 
     public void updateCheckpointText(){
         if(roast!=null) {
-            if (roast.checkpoints.size() > 0) {
+            if (roast.checkpoints.size() > 0&&currentCheckpoint<roast.checkpoints.size()) {
                 if (roast.checkpoints.get(currentCheckpoint).trigger == Checkpoint.trig.Temperature)
                     checkpointText.setText(roast.checkpoints.get(currentCheckpoint).name + " at " + roast.checkpoints.get(currentCheckpoint).temperature + " degrees.");
                 if (roast.checkpoints.get(currentCheckpoint).trigger == Checkpoint.trig.Time)
-                    checkpointText.setText(roast.checkpoints.get(currentCheckpoint).name + " at " + roast.checkpoints.get(currentCheckpoint).timeTotalInSeconds());
+                    checkpointText.setText(roast.checkpoints.get(currentCheckpoint).name + " at " + Utilities.secondsToTimeString(roast.checkpoints.get(currentCheckpoint).timeTotalInSeconds()));
+                if (roast.checkpoints.get(currentCheckpoint).trigger == Checkpoint.trig.PromptAtTemp)
+                    checkpointText.setText(roast.checkpoints.get(currentCheckpoint).name + " at " + roast.checkpoints.get(currentCheckpoint).temperature);
             }
         }
     }

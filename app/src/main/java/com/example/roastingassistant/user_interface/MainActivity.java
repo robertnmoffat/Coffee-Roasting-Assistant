@@ -9,6 +9,7 @@ import com.example.roastingassistant.R;
 import com.google.android.material.tabs.TabLayout;
 
 import Database.RoastRecord;
+import Utilities.Utilities;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -83,8 +84,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 db.addRoast(roast);
             }
         }
-
+String dsfhkj= Utilities.secondsToTimeString(3245);
 //        ArrayList<RoastRecord> records = DatabaseHelper.getInstance(this).getAllRoastRecords();
+//        if(records!=null)
 //        for(int i=0; i<records.size(); i++){
 //            this.deleteFile(records.get(i).name);
 //        }

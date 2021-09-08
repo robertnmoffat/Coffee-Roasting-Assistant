@@ -15,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar;
 import Database.Checkpoint;
 import Database.DatabaseHelper;
 import Database.RoastRecord;
+import Utilities.DataCleaner;
 import Utilities.DataSaver;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -76,6 +77,9 @@ public class RoastDataViewActivity extends AppCompatActivity {
 
         DataSaver.loadRoastData(record, temps, checkpoints, this);
         setupGraph();
+        long start = System.currentTimeMillis();
+        long end = System.currentTimeMillis();
+        long total = end-start;
 
         LinearLayout layout = findViewById(R.id.roastdataview_layout);
         for(int i=0; i<record.roastProfile.checkpoints.size(); i++) {
