@@ -329,6 +329,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public int addCheckpoint(Checkpoint checkpoint){
         Log.i("Database", "Adding checkpoint entry to database...");
         //Create or open database for writing
+
+        int id = getCheckpoint(checkpoint);
+        if(id!=-1) {
+            return id;
+        }
+
         long checkpointId=-1;
         SQLiteDatabase db = getWritableDatabase();
 
@@ -667,6 +673,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return roast;
+    }
+
+    public int getCheckpoint(Checkpoint checkpoint){
+        String CHECKPOINT_SELECT_QUERY =
+                String.format("SELECT * FROM %s WHERE (%s='%s' AND %s='%s' AND %s=%s AND %s=%s)", TABLE_ROAST_CHECKPOINT, KEY_ROAST_CHECKPOINT_NAME, checkpoint.name, KEY_ROAST_CHECKPOINT_TRIGGER, checkpoint.trigger.toString(), KEY_ROAST_CHECKPOINT_TEMPERATURE, ""+checkpoint.temperature, KEY_ROAST_CHECKPOINT_TIME, ""+checkpoint.timeTotalInSeconds());
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(CHECKPOINT_SELECT_QUERY, null);
+        try{
+            if(cursor.moveToFirst()){
+                int id = cursor.getInt(cursor.getColumnIndex(KEY_ROAST_CHECKPOINT_ID));
+                cursor.close();
+                return id;
+            }else{
+                Log.d("Database", "No entries returned.");
+                cursor.close();
+                return -1;
+            }
+        }catch (Exception e){
+            Log.d("Database", "Error getting Checkpoint from database.");
+        }finally {
+            if(cursor!=null&&cursor.isClosed())
+                cursor.close();
+        }
+        return -1;
     }
 
     public Checkpoint getCheckpoint(int id){
