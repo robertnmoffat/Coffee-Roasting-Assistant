@@ -221,6 +221,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
 
                 }else{
                     Checkpoint checkpoint = checkpoints.get(checkpointId-1);
+                    checkpoint = DatabaseHelper.getInstance(getContext()).getCheckpoint(checkpoint.id);
                     addCheckPoint(checkpoint);
                 }
 
@@ -373,6 +374,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         String name = parent.getId()==R.id.roastparamactivity_bean_spinner? "Bean":"Checkpoint";
         Log.i("Spinner", "ID: "+id+" View: "+name);
 
+        //----Bean Spinner----
         if(name.equals("Bean")){
             beanSpinnerSelection = (int)id;
 
@@ -381,6 +383,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
                     Log.i("Spinner", "Bean selected.");
                     break;
             }
+        //-----Checkpoint Spinner----
         }else{
             checkpointId = (int)id;
         }
