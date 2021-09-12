@@ -2,6 +2,7 @@ package com.example.roastingassistant.user_interface;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -10,10 +11,12 @@ import com.google.android.material.tabs.TabLayout;
 
 import Database.RoastRecord;
 import Utilities.Utilities;
+import androidx.appcompat.app.AlertDialog;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -165,4 +168,10 @@ String dsfhkj= Utilities.secondsToTimeString(3245);
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
+    public Context getContext(){
+        return this;
+    }
+
+
 }

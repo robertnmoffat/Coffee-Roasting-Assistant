@@ -1,12 +1,17 @@
 package com.example.roastingassistant.user_interface.main;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -14,6 +19,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -44,6 +51,8 @@ public class PlaceholderFragment extends Fragment {
 
     private PageViewModel pageViewModel;
     private int pageNumber;
+
+    int currentLongHoldRoastId=-1;
 
     View root;
 
@@ -119,6 +128,8 @@ public class PlaceholderFragment extends Fragment {
                     @Override
                     public boolean onLongClick(View v) {
                         Toast.makeText(getContext(), "long press!", Toast.LENGTH_SHORT).show();
+                        currentLongHoldRoastId = roast.id;
+                        showMenu(v);
                         return true;
                     }
                 });
@@ -161,6 +172,62 @@ public class PlaceholderFragment extends Fragment {
         //add buttons to the layout
         ll.addView(dataBrowserButton);
     }
+
+    public Context getContext(){
+        MainActivity main = (MainActivity) getActivity();
+        return main.getContext();
+    }
+
+    public void showMenu(View v){
+        PopupMenu popup = new PopupMenu(getContext(), v);
+        MainActivity main = (MainActivity) getActivity();
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.delete:
+                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which){
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        LinearLayout ll = root.findViewById(R.id.linearLayout1);
+                                        DatabaseHelper.getInstance(getContext()).deleteRoast(currentLongHoldRoastId);
+                                        MainActivity main = (MainActivity) getActivity();
+                                        ll.removeView(v);
+                                        break;
+
+                                    case DialogInterface.BUTTON_NEGATIVE:
+                                        //No button clicked
+                                        break;
+                                }
+                            }
+                        };
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setMessage("Delete from database?").setPositiveButton("Yes", dialogClickListener)
+                                .setNegativeButton("No", dialogClickListener).show();
+
+                        return true;
+                    case R.id.upload:
+
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.menu_dropdown, popup.getMenu());
+        popup.show();
+    }
+
+
+
+
+
+
+
 
     private void setupBeanFragment(View root){
         LinearLayout ll = root.findViewById(R.id.linearLayout1);

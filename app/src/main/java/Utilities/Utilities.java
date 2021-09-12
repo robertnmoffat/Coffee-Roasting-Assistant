@@ -1,5 +1,10 @@
 package Utilities;
 
+import android.content.Context;
+import android.content.DialogInterface;
+
+import androidx.appcompat.app.AlertDialog;
+
 public class Utilities {
 
     public static String secondsToTimeString(int seconds){
@@ -10,4 +15,6 @@ public class Utilities {
         String timeString = minString+":"+secString;
         return timeString;
     }
+
+
 }

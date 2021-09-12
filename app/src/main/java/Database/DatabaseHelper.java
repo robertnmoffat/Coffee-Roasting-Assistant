@@ -621,6 +621,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return record;
     }
 
+    public void deleteRoast(int id){
+        deleteCheckpoints(id);
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.beginTransaction();
+        String WHERE_CLAUSE = KEY_ROAST_PROFILE_ID+"="+id;
+        int rows = db.delete(TABLE_ROAST_PROFILE, WHERE_CLAUSE, null);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+    }
+
+    public void deleteCheckpoints(int id){
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.beginTransaction();
+        String WHERE_CLAUSE = KEY_CHECKPOINTS_ROAST_PROFILE_ID_FK+"="+id;
+        int rows = db.delete(TABLE_CHECKPOINTS, WHERE_CLAUSE, null);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+    }
+
     public Roast getRoast(int id){
         Roast roast = new Roast();
         int checkpointCount;
