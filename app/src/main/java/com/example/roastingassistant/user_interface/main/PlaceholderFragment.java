@@ -18,6 +18,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import Database.Checkpoint;
+import Database.RoastCheckpointAssociation;
+import Networking.HttpClient;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
@@ -210,6 +213,30 @@ public class PlaceholderFragment extends Fragment {
 
                         return true;
                     case R.id.upload:
+                        Roast roast = DatabaseHelper.getInstance(getContext()).getRoast(currentLongHoldRoastId);
+                        HttpClient client = new HttpClient();
+                        String result;
+
+                        for(int i=0; i<roast.checkpoints.size();i++){
+                            Checkpoint curCheck = roast.checkpoints.get(i);
+                            curCheck.minutes=0;
+                            curCheck.seconds=0;
+                            result = client.postRequest(curCheck);
+                            curCheck.serverId = client.getIdFromResult(result);
+                        }
+
+                        result = client.postRequest(roast.bean);
+                        roast.bean.serverId = client.getIdFromResult(result);
+
+                        result = client.postRequest(roast);
+                        roast.serverId = client.getIdFromResult(result);
+
+                        for(int i=0; i<roast.checkpoints.size();i++){
+                            RoastCheckpointAssociation roastCheck = new RoastCheckpointAssociation();
+                            roastCheck.roastId = roast.serverId;
+                            roastCheck.checkpointId = roast.checkpoints.get(i).serverId;
+                            client.postRequest(roastCheck);
+                        }
 
                         return true;
                     default:
