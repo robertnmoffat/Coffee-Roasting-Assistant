@@ -54,8 +54,6 @@ public class CheckpointParamActivity extends AppCompatActivity implements Adapte
                 long checkId = DatabaseHelper.getInstance(getContext().getApplicationContext()).addCheckpoint(checkObj);//Add checkpoint to db for re-usability
                 checkObj.id = (int)checkId;
 
-                //TODO: need to return a Checkpoint object somehow to parent activity.
-
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("Checkpoint", checkObj);//load the checkpoint object into the intent to be returned to the RoastParamActivity
                 setResult(RESULT_OK, resultIntent);

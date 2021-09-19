@@ -29,6 +29,8 @@ public class PreviousRoastActivity extends AppCompatActivity {
 
     boolean returnResult = false;
 
+    ArrayList<RoastRecord> records;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +49,7 @@ public class PreviousRoastActivity extends AppCompatActivity {
         });
 
         layout = findViewById(R.id.previousroast_roasts_layout);
-        ArrayList<RoastRecord> records = DatabaseHelper.getInstance(this).getAllRoastRecords();
+        records = DatabaseHelper.getInstance(this).getAllRoastRecords();
 
         if(records==null){
             Toast.makeText(getContext(), "No Saved Records.", Toast.LENGTH_SHORT).show();
