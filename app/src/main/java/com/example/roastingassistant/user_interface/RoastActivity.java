@@ -309,6 +309,17 @@ public class RoastActivity extends AppCompatActivity {
                     if(lastSafeTemp()<190){
                         turnedAround=true;
                     }
+                    //----Time Trigger-----
+                    if (currentCheckpoint<roast.checkpoints.size() && roast.checkpoints.get(currentCheckpoint).trigger == Checkpoint.trig.Time) {
+                        if (!checkpointWarned && currentTime >= roast.checkpoints.get(currentCheckpoint).timeTotalInSeconds() - 7) {
+                            player.start();
+                            checkpointWarned = true;
+                        }
+                        if (currentTime >= roast.checkpoints.get(currentCheckpoint).timeTotalInSeconds()) {
+                            triggerCheckpoint();
+                        }
+                    }
+                    //----Other triggers after temperature turn around-------
                     if(currentCheckpoint<roast.checkpoints.size()&&turnedAround) {
                         if (roast.checkpoints.get(currentCheckpoint).trigger == Checkpoint.trig.Temperature) {
                             if (!checkpointWarned && lastSafeTemp() >= roast.checkpoints.get(currentCheckpoint).temperature - 7) {
@@ -316,14 +327,6 @@ public class RoastActivity extends AppCompatActivity {
                                 checkpointWarned = true;
                             }
                             if (lastSafeTemp() >= roast.checkpoints.get(currentCheckpoint).temperature) {
-                                triggerCheckpoint();
-                            }
-                        }else if(roast.checkpoints.get(currentCheckpoint).trigger == Checkpoint.trig.Time){
-                            if (!checkpointWarned && currentTime >= roast.checkpoints.get(currentCheckpoint).timeTotalInSeconds() - 7) {
-                                player.start();
-                                checkpointWarned = true;
-                            }
-                            if (currentTime >= roast.checkpoints.get(currentCheckpoint).timeTotalInSeconds()) {
                                 triggerCheckpoint();
                             }
                         }else if(roast.checkpoints.get(currentCheckpoint).trigger == Checkpoint.trig.PromptAtTemp){
