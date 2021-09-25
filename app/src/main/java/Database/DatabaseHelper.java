@@ -760,6 +760,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return checkpoint;
     }
 
+    /**
+     * Get ArrayList of Roasts with only id, name, roastlevel and droptemp filled in for UI buttons. Id will be used to get full roast information when button is pressed.
+     * @return ArrayList of partially filled in Roasts for UI buttons.
+     */
+    public ArrayList<Roast> getAllRoastsForButtons(){
+        Log.d("Database", "Getting all roast entries in database...");
+        ArrayList<Roast> roasts = new ArrayList<Roast>();
+        List<RoastCheckpointAssociation> associations = new ArrayList<RoastCheckpointAssociation>();
+
+        String KEY_ROAST_COUNT = "roast_entries";
+
+        String ROAST_WITHOUT_BEAN_AND_CHECK_QUERY =
+                String.format("SELECT * FROM %s", TABLE_ROAST_PROFILE);
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(ROAST_WITHOUT_BEAN_AND_CHECK_QUERY, null);
+
+        if(cursor.moveToFirst()){
+            do{
+                Roast roast = new Roast();
+
+                String roastIdString = cursor.getString(cursor.getColumnIndex(KEY_ROAST_PROFILE_ID));
+                int roastId = Integer.parseInt(roastIdString);
+
+                roast.id = roastId;
+                roast.name = cursor.getString(cursor.getColumnIndex(KEY_ROAST_PROFILE_NAME));
+                roast.roastLevel = cursor.getString(cursor.getColumnIndex(KEY_ROAST_PROFILE_ROAST));
+                roast.dropTemp = cursor.getInt(cursor.getColumnIndex(KEY_ROAST_PROFILE_DROP_TEMP));
+
+                roasts.add(roast);
+            }while(cursor.moveToNext());
+        }
+
+        return roasts;
+    }
+
     public ArrayList<Roast> getAllRoasts(){
         Log.d("Database", "Getting all roast entries in database...");
         ArrayList<Roast> roasts = new ArrayList<Roast>();
@@ -838,6 +874,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         Collections.addAll(roasts, roastArray);
+        for(int i=0; i<roasts.size(); i++){
+            if(roasts.get(i).id==0) {
+                roasts.remove(i);
+                i-=1;
+            }
+        }
+
         return roasts;
     }
 

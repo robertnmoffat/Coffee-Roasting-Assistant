@@ -42,6 +42,7 @@ import Database.Bean;
 import Database.Blend;
 import Database.DatabaseHelper;
 import Database.Roast;
+import kotlin.jvm.internal.Ref;
 
 import static com.example.roastingassistant.user_interface.Utils.*;
 
@@ -123,7 +124,7 @@ public class PlaceholderFragment extends Fragment {
         ll.addView(newRoastBtn);
 
         DatabaseHelper db = DatabaseHelper.getInstance(getContext().getApplicationContext());
-        ArrayList<Roast> roasts = (ArrayList<Roast>) db.getAllRoasts();
+        ArrayList<Roast> roasts = (ArrayList<Roast>) db.getAllRoastsForButtons();
         if(roasts!=null) {
             for (Roast roast : roasts) {
                 Button viewRoastButton = createMenuButton(root, roast.name, roast.roastLevel+" "+roast.dropTemp);
@@ -168,7 +169,7 @@ public class PlaceholderFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 MainActivity main = (MainActivity) getActivity();
-                main.startActivity(RemoteDataBrowserActivity.class);
+                main.startActivity(RemoteDataBrowserActivity.class, new Intent().putExtra("ViewType", "Roast"));
             }
         });
 
@@ -286,6 +287,20 @@ public class PlaceholderFragment extends Fragment {
             });
             ll.addView(dbBeanButton);
         }
+
+        //----Create and add button for browsing network data
+        Button dataBrowserButton = createMenuButton(root, "Download Beans", "");
+        dataBrowserButton.setId(R.id.roast_remotedata_button);
+        dataBrowserButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity main = (MainActivity) getActivity();
+                main.startActivity(RemoteDataBrowserActivity.class, new Intent().putExtra("ViewType", "Bean"));
+            }
+        });
+
+        //add buttons to the layout
+        ll.addView(dataBrowserButton);
     }
 
     private void setupBlendFragment(View root){
@@ -324,6 +339,20 @@ public class PlaceholderFragment extends Fragment {
                 ll.addView(blendButton);
             }
         }
+
+        //----Create and add button for browsing network data
+        Button dataBrowserButton = createMenuButton(root, "Download Blends", "");
+        dataBrowserButton.setId(R.id.roast_remotedata_button);
+        dataBrowserButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity main = (MainActivity) getActivity();
+                main.startActivity(RemoteDataBrowserActivity.class, new Intent().putExtra("ViewType", "Blend"));
+            }
+        });
+
+        //add buttons to the layout
+        ll.addView(dataBrowserButton);
     }
 
     private Button createMenuButton(View root, String title, String subText){

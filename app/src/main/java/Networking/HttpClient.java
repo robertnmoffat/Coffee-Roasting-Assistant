@@ -45,6 +45,9 @@ import Database.RoastCheckpointAssociation;
  */
 public class HttpClient extends AsyncTask<Void, Void, String> {
     public enum HttpFunction{
+        getAllBeanNames,
+        getAllRoastNames,
+        getAllBlendNames,
         getAllNames,
         createEntries,
         getBean,
@@ -85,6 +88,11 @@ public class HttpClient extends AsyncTask<Void, Void, String> {
         Log.d("Server", "Starting server thread.");
 
         switch (functionToPerform){
+            case getAllBeanNames:
+            case getAllBlendNames:
+            case getAllRoastNames:
+                getAll(functionToPerform);
+                break;
             case getAllNames:
                 getAllNames();
                 break;
@@ -196,6 +204,56 @@ public class HttpClient extends AsyncTask<Void, Void, String> {
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * Get all of a given data type (roast, bean, or blend) and store in dbData
+     * @param toGet HttpFunction type to get. Only roast, bean, or blend.
+     */
+    public void getAll(HttpFunction toGet){
+        if(dbData==null)dbData = new ArrayList<DbData>();
+        String name="";
+        switch (toGet){
+            case getAllBeanNames:
+                name="allBeans";
+                break;
+            case getAllRoastNames:
+                name="allRoasts";
+                break;
+            case getAllBlendNames:
+                name="allBlends";
+                break;
+        }
+        if(name==""){
+            Log.e("Server", "Incorrect server get request.");
+            return;
+        }
+
+        String beanResult = getRequest(name);
+
+        try {//JSON ARRAY
+            JSONArray jArray = new JSONArray(beanResult);
+
+            for(int i=0; i<jArray.length(); i++) {
+                JSONObject json = new JSONObject(jArray.getString(i));
+                switch (toGet){
+                    case getAllBeanNames:
+                        Bean jBean = new Bean(json);
+                        dbData.add(jBean);
+                        break;
+                    case getAllRoastNames:
+                        Roast jRoast = new Roast(json);
+                        dbData.add(jRoast);
+                        break;
+                    case getAllBlendNames:
+                        Blend jBlend = new Blend(json);
+                        dbData.add(jBlend);
+                        break;
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void getAllNames(){
