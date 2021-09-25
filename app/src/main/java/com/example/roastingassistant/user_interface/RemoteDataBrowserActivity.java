@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
@@ -35,10 +36,14 @@ public class RemoteDataBrowserActivity extends AppCompatActivity implements Adap
     HttpClient client;
     Spinner filterSpinner;
 
+    ArrayList<Button> buttons;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remote_data_browser);
+
+        buttons = new ArrayList<>();
 
         if (android.os.Build.VERSION.SDK_INT > 9)
         {
@@ -46,18 +51,39 @@ public class RemoteDataBrowserActivity extends AppCompatActivity implements Adap
                     StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
+        Intent intent = getIntent();
+        String viewType = intent.getStringExtra("ViewType");
 
         layout = findViewById(R.id.databrowser_data_layout);
 
         client = new HttpClient();
         client.functionToPerform = HttpClient.HttpFunction.getAllNames;
+        switch (viewType){
+            case "Roast":
+                client.functionToPerform = HttpClient.HttpFunction.getAllRoastNames;
+                break;
+            case "Bean":
+                client.functionToPerform = HttpClient.HttpFunction.getAllBeanNames;
+                break;
+            case "Blend":
+                client.functionToPerform = HttpClient.HttpFunction.getAllBlendNames;
+                break;
+
+        }
         client.setLoadedCallback(this);
         //client.layout = layout;
         client.execute();
 
+        EditText searchText = findViewById(R.id.databrowser_search_edittext);
+        Button searchButton = findViewById(R.id.databrowser_search_button);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                applyButtonFilter(searchText.getText().toString().toLowerCase());
+            }
+        });
 
-
-        setupSpinner();
+        //setupSpinner();
 
         Button doneButton = findViewById(R.id.databrowser_done_button);
         doneButton.setOnClickListener(new View.OnClickListener() {
@@ -86,6 +112,22 @@ public class RemoteDataBrowserActivity extends AppCompatActivity implements Adap
         //drop down layout style
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSpinner.setAdapter(dataAdapter);
+    }
+
+    public void clearButtons(){
+        for (Button button:
+             buttons) {
+            layout.removeView(button);
+        }
+    }
+
+    public void applyButtonFilter(String string){
+        clearButtons();
+
+        for(DbData data: client.dbData){
+            if(data.name.toLowerCase().contains(string))
+                addButton(data);
+        }
     }
 
 
@@ -148,6 +190,7 @@ public class RemoteDataBrowserActivity extends AppCompatActivity implements Adap
         //button.setBackground(this.getResources().getDrawable(R.drawable.round_shape_btn));
 
         layout.addView(button);
+        buttons.add(button);
     }
     public Context getContext(){
         return this;
