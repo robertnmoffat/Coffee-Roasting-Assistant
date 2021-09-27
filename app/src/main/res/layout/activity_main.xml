@@ -23,14 +23,13 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"></View>
 
-            <Spinner
-                android:id="@+id/menuSpinner"
+            <Button
+                android:id="@+id/menuButton"
                 android:layout_width="40dp"
                 android:layout_height="45dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/hamburger_icon"
-                style="@style/spinnerItemStyle"/>
+                android:background="@drawable/hamburger_icon"/>
         </LinearLayout>
 
         <com.google.android.material.tabs.TabLayout

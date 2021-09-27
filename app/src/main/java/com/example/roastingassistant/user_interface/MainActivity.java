@@ -9,17 +9,25 @@ import android.os.Bundle;
 import com.example.roastingassistant.R;
 import com.google.android.material.tabs.TabLayout;
 
+import Database.Checkpoint;
+import Database.RoastCheckpointAssociation;
 import Database.RoastRecord;
+import Networking.HttpClient;
 import Utilities.Utilities;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -34,9 +42,9 @@ import Database.Roast;
 /**
  * Main menu of the app.
  * Contains a roast, bean, and blend fragment.
- *
  */
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
+    private String username = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,25 +56,109 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
 
-        Spinner spinner = findViewById(R.id.menuSpinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.menu_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
+        Button menuButton = findViewById(R.id.menuButton);
+        menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu popup = new PopupMenu(getContext(), view);
+                MainActivity main = (MainActivity) getActivity();
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.settingsmenu_units:
+                                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        switch (which) {
+                                            case DialogInterface.BUTTON_POSITIVE:
+
+                                                break;
+
+                                            case DialogInterface.BUTTON_NEGATIVE:
+                                                //No button clicked
+                                                break;
+                                        }
+                                    }
+                                };
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                builder.setMessage("Which unit to use?").setPositiveButton("Metric", dialogClickListener)
+                                        .setNegativeButton("Standard", dialogClickListener).show();
+                                break;
+                            case R.id.settingsmenu_language:
+                                Toast.makeText(getContext(), "Only English is currently supported.", Toast.LENGTH_SHORT).show();
+                                break;
+                            case R.id.settingsmenu_username:
+                                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+
+                                alert.setTitle("Username");
+                                //alert.setMessage("Message");
+
+                                // Set an EditText view to get user input
+                                final EditText input = new EditText(getContext());
+                                alert.setView(input);
+
+                                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        username = input.getText().toString();
+                                    }
+                                });
+
+                                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        // Canceled.
+                                    }
+                                });
+
+                                alert.show();
+                                break;
+                            case R.id.settingsmenu_delDb:
+                                DialogInterface.OnClickListener delDialogClickListener = new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        switch (which) {
+                                            case DialogInterface.BUTTON_POSITIVE:
+                                                deleteDatabase("coffeeDatabase");
+                                                Toast.makeText(getContext(), "Database deleted.", Toast.LENGTH_SHORT).show();
+                                                finish();
+                                                startActivity(getIntent());
+                                                break;
+
+                                            case DialogInterface.BUTTON_NEGATIVE:
+                                                //No button clicked
+                                                break;
+                                        }
+                                    }
+                                };
+
+                                AlertDialog.Builder delBuilder = new AlertDialog.Builder(getContext());
+                                delBuilder.setMessage("Are you sure you wish to clear local database?").setPositiveButton("Yes", delDialogClickListener)
+                                        .setNegativeButton("No", delDialogClickListener).show();
+                                break;
+                        }
+
+                        return false;//whether to consume the click message or send on to others
+                    }
+                });
+                MenuInflater inflater = popup.getMenuInflater();
+                inflater.inflate(R.menu.settings_menu, popup.getMenu());
+                popup.show();
+            }
+        });
 
         /**
          * Thread meant for starting up the database so that the main thread doesn't have to potentially wait on it.
          */
-        class DBThread extends Thread{
+        class DBThread extends Thread {
             Context context;
             DatabaseHelper db;
-            public DBThread(Context context){
+
+            public DBThread(Context context) {
                 this.context = context;
             }
 
-            public void run(){
+            public void run() {
                 db = DatabaseHelper.getInstance(context);
                 Bean bean = new Bean();
                 bean.name = "Brazil";
@@ -87,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 db.addRoast(roast);
             }
         }
-String dsfhkj= Utilities.secondsToTimeString(3245);
+        String dsfhkj = Utilities.secondsToTimeString(3245);
 //        ArrayList<RoastRecord> records = DatabaseHelper.getInstance(this).getAllRoastRecords();
 //        if(records!=null)
 //        for(int i=0; i<records.size(); i++){
@@ -96,7 +188,6 @@ String dsfhkj= Utilities.secondsToTimeString(3245);
 //
 //        //-----------------Temporary db setup------------------------------
 //        deleteDatabase("coffeeDatabase");//For testing purposes, delete database before use so that there is a fresh db.
-
 
 
         //DBThread dbt = new DBThread(this.getApplicationContext());
@@ -113,65 +204,60 @@ String dsfhkj= Utilities.secondsToTimeString(3245);
 
     }
 
-    public void startRoastParamActivity(){
+    public Context getActivity() {
+        return this;
+    }
+
+    public void startRoastParamActivity() {
         Intent intent = new Intent(this, RoastParamActivity.class);
         intent.putExtra("Mode", RoastParamActivity.mode.adding);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivityForResult(intent, 0);
-        overridePendingTransition(0,0); //0 for no animation
+        overridePendingTransition(0, 0); //0 for no animation
     }
-    public void startBeanViewActivity(){
+
+    public void startBeanViewActivity() {
         Intent intent = new Intent(this, BeanActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivityForResult(intent, 0);
-        overridePendingTransition(0,0); //0 for no animation
+        overridePendingTransition(0, 0); //0 for no animation
     }
-    public void startBeanViewActivity(int id){
+
+    public void startBeanViewActivity(int id) {
         Intent intent = new Intent(this, BeanActivity.class).putExtra("Id", id);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivityForResult(intent, 0);
-        overridePendingTransition(0,0); //0 for no animation
+        overridePendingTransition(0, 0); //0 for no animation
     }
-    public void startBlendViewActivity(){
+
+    public void startBlendViewActivity() {
         Intent intent = new Intent(this, BlendActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivityForResult(intent, 0);
-        overridePendingTransition(0,0); //0 for no animation
+        overridePendingTransition(0, 0); //0 for no animation
     }
 
-    public void startActivity(Class c){
+    public void startActivity(Class c) {
         Intent intent = new Intent(this, c);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivityForResult(intent, 0);
-        overridePendingTransition(0,0); //0 for no animation
+        overridePendingTransition(0, 0); //0 for no animation
     }
 
-    public void startActivity(Class c, Intent extra){
+    public void startActivity(Class c, Intent extra) {
         Intent intent = new Intent(this, c);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         intent.putExtras(extra);
         startActivityForResult(intent, 0);
-        overridePendingTransition(0,0); //0 for no animation
+        overridePendingTransition(0, 0); //0 for no animation
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if(id==3){
-            deleteDatabase("coffeeDatabase");
-            Toast.makeText(this.getApplicationContext(), "Database deleted.", Toast.LENGTH_SHORT).show();
-            finish();
-            startActivity(getIntent());
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-
-    public Context getContext(){
+    public Context getContext() {
         return this;
     }
 
+    public String getUsername() {
+        return username;
+    }
 
 }

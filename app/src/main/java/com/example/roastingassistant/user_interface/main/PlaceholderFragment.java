@@ -21,6 +21,7 @@ import android.widget.Toast;
 import Database.Checkpoint;
 import Database.RoastCheckpointAssociation;
 import Networking.HttpClient;
+import NeuralNetwork.NetworkController;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
@@ -131,7 +132,7 @@ public class PlaceholderFragment extends Fragment {
                 viewRoastButton.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        Toast.makeText(getContext(), "long press!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getContext(), "long press!", Toast.LENGTH_SHORT).show();
                         currentLongHoldRoastId = roast.id;
                         showMenu(v);
                         return true;
@@ -196,7 +197,10 @@ public class PlaceholderFragment extends Fragment {
                                 switch (which){
                                     case DialogInterface.BUTTON_POSITIVE:
                                         LinearLayout ll = root.findViewById(R.id.linearLayout1);
-                                        DatabaseHelper.getInstance(getContext()).deleteRoast(currentLongHoldRoastId);
+                                        //if(dbType.equals("Roast"))
+                                            DatabaseHelper.getInstance(getContext()).deleteRoast(currentLongHoldRoastId);
+                                        //if(dbType.equals("Bean"))
+                                        //    DatabaseHelper.getInstance(getContext()).deleteBean(currentLongHoldRoastId);
                                         MainActivity main = (MainActivity) getActivity();
                                         ll.removeView(v);
                                         break;

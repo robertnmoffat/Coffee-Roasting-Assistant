@@ -622,9 +622,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void deleteRoast(int id){
-        deleteCheckpoints(id);
-
         SQLiteDatabase db = getWritableDatabase();
+
+//        if(crCursor.moveToFirst()){
+//            do {
+//                String checkIdString = crCursor.getString(crCursor.getColumnIndex(KEY_CHECKPOINTS_CHECKPOINT_FK));
+//                int checkId = Integer.parseInt(checkIdString);
+//                roast.checkpoints.add(getCheckpoint(checkId));
+//            }while(crCursor.moveToNext());
+//        }else{
+//            Log.d("Database", "No checkpoints found.");
+//        }
 
         db.beginTransaction();
         String WHERE_CLAUSE = KEY_ROAST_PROFILE_ID+"="+id;
@@ -634,7 +642,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void deleteCheckpoints(int id){
+    public void deleteBean(int id){
+        //deleteCheckpoints(id);
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.beginTransaction();
+        String WHERE_CLAUSE = KEY_BEAN_ID+"="+id;
+        int rows = db.delete(TABLE_BEAN, WHERE_CLAUSE, null);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+    }
+
+    public void deleteCheckpoint(int id){
         SQLiteDatabase db = getWritableDatabase();
 
         db.beginTransaction();
