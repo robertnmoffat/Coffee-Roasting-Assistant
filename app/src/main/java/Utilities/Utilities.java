@@ -16,5 +16,15 @@ public class Utilities {
         return timeString;
     }
 
+    public static int standardTempToMetric(int fahrenheit){
+        float celsius = fahrenheit-32/1.8f;
+        return Math.round(celsius);
+    }
+
+    public static int metricTempToStandard(int celsius){
+        float fahrenheit = celsius*1.8f + 32;
+        return Math.round(fahrenheit);
+    }
+
 
 }
