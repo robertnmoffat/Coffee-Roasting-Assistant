@@ -1,6 +1,8 @@
 package com.example.roastingassistant.user_interface;
 
 import Database.DbData;
+import Utilities.CommonFunctions;
+import Utilities.GlobalSettings;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
@@ -9,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -130,7 +133,6 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         //TODO: roast.charge_temp
         String dropText = ((EditText)findViewById(R.id.roastparamactivity_droptemp_edittext)).getText().toString();
         int temp = Integer.parseInt(dropText);
-                     //todo: create global settings class and convert unit type if needed.
         roast.dropTemp = dropText.equals("")?0 : temp;
         //TODO: roast.flavour
         roast.checkpoints = new ArrayList<>(checkpointsAdded);
@@ -165,18 +167,18 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         LinearLayout checkLayout = findViewById(R.id.roastparamactivity_checkpoints_layout);
         TextView checkDescription = new TextView(this);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0,Utils.dp(10,getResources()), Utils.dp(40,getResources()), Utils.dp(10,getResources()));
+        params.setMargins(0,CommonFunctions.dp(10,getResources()), CommonFunctions.dp(40,getResources()), CommonFunctions.dp(10,getResources()));
         params.gravity = Gravity.RIGHT;
         checkDescription.setLayoutParams(params);
         checkDescription.setText(name+" "+description);
         checkDescription.setTextColor(getResources().getColor(R.color.lightGray));
         checkDescription.setBackgroundColor(getResources().getColor(R.color.grayBack));
-        checkDescription.setTextSize(Utils.dp(7, getResources()));
+        checkDescription.setTextSize(CommonFunctions.dp(7, getResources()));
         checkDescription.setGravity(Gravity.RIGHT);
 
         LinearLayout textAndButton = new LinearLayout(this);
         LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params2.setMargins(0, Utils.dp(10, this.getResources()), 0, 0);
+        params2.setMargins(0, CommonFunctions.dp(10, this.getResources()), 0, 0);
         textAndButton.setLayoutParams(params2);
         textAndButton.setOrientation(LinearLayout.HORIZONTAL);
         int id = ViewCompat.generateViewId();//TODO:Store id in array
@@ -185,10 +187,10 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         if(curMode==mode.adding) {
             Button removeButton = new Button(this);
             LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params3.setMargins(Utils.dp(20,this.getResources()),0,0,0);
+            params3.setMargins(CommonFunctions.dp(20,this.getResources()),0,0,0);
             removeButton.setLayoutParams(params3);
-            removeButton.setMaxWidth(Utils.dp(10, getResources()));
-            removeButton.setMaxHeight(Utils.dp(10, getResources()));
+            removeButton.setMaxWidth(CommonFunctions.dp(10, getResources()));
+            removeButton.setMaxHeight(CommonFunctions.dp(10, getResources()));
             removeButton.setText("-");
             removeButton.setTextColor(getResources().getColor(R.color.white));
             removeButton.setBackgroundColor(getResources().getColor(R.color.lightGray));
@@ -278,7 +280,12 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         lvlEd.setEnabled(false);
 
         EditText dropEd = findViewById(R.id.roastparamactivity_droptemp_edittext);
-        dropEd.setText(""+roast.dropTemp);
+        int temp = roast.dropTemp;
+        char c = GlobalSettings.getSettings(this).isMetric()?'C':'F';
+        if(GlobalSettings.getSettings(this).isMetric()){
+            temp = CommonFunctions.standardTempToMetric(temp);
+        }
+        dropEd.setText(""+temp+c);
         dropEd.setEnabled(false);
 
         Button downloadButton = findViewById(R.id.roastparamactivity_add_button);
@@ -299,8 +306,8 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
             //convert 40dp to equivalent pixels.
 
             //--------Converting sizes to dp----------
-            int fortydp = Utils.dp(40, getResources());
-            int tendp = Utils.dp(10, getResources());
+            int fortydp = CommonFunctions.dp(40, getResources());
+            int tendp = CommonFunctions.dp(10, getResources());
 
             params.setMargins(fortydp,0,0,0);
             startRoastButton.setLayoutParams(params);
@@ -419,10 +426,16 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
     }
 
     private void addCheckPoint(Checkpoint checkpoint) {
+        boolean isMetric = GlobalSettings.getSettings(this).isMetric();
+        char c = isMetric?'C':'F';
+        int temp = isMetric?CommonFunctions.standardTempToMetric(checkpoint.temperature):checkpoint.temperature;
+
         checkpoints.add(checkpoint);
         switch (checkpoint.trigger){
             case Temperature:
-                createCheckPoint(checkpoint.name, "Temp: "+checkpoint.temperature, checkpoint.id);
+
+
+                createCheckPoint(checkpoint.name, "Temp: "+temp+c, checkpoint.id);
                 break;
             case Time:
                 createCheckPoint(checkpoint.name, "Time: "+checkpoint.minutes+":"+checkpoint.seconds, checkpoint.id);
@@ -431,7 +444,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
                 createCheckPoint(checkpoint.name, "Turnaround", checkpoint.id);
                 break;
             case PromptAtTemp:
-                createCheckPoint(checkpoint.name, "Prompt at "+checkpoint.temperature, checkpoint.id);
+                createCheckPoint(checkpoint.name, "Prompt at "+temp+c, checkpoint.id);
                 break;
             default:
                 createCheckPoint(checkpoint.name, "", checkpoint.id);

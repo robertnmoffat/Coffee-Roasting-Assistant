@@ -15,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar;
 import Database.Checkpoint;
 import Database.DatabaseHelper;
 import Database.RoastRecord;
+import Utilities.CommonFunctions;
 import Utilities.DataCleaner;
 import Utilities.DataSaver;
 import androidx.annotation.Nullable;
@@ -86,7 +87,7 @@ public class RoastDataViewActivity extends AppCompatActivity {
             Checkpoint checkpoint = record.roastProfile.checkpoints.get(i);
             TextView checkDescription = new TextView(this);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(Utils.dp(20, getResources()), Utils.dp(20, getResources()), 0, 0);
+            params.setMargins(CommonFunctions.dp(20, getResources()), CommonFunctions.dp(20, getResources()), 0, 0);
             checkDescription.setLayoutParams(params);
 
             if(i*2>=checkpoints.size())
@@ -99,7 +100,7 @@ public class RoastDataViewActivity extends AppCompatActivity {
 
             checkDescription.setTextColor(getResources().getColor(R.color.white));
             //checkDescription.setBackgroundColor(getResources().getColor(R.color.grayBack));
-            checkDescription.setTextSize(Utils.dp(8, getResources()));
+            checkDescription.setTextSize(CommonFunctions.dp(8, getResources()));
             //checkDescription.setGravity(Gravity.RIGHT);
             layout.addView(checkDescription);
         }

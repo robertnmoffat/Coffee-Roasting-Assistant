@@ -36,8 +36,6 @@ import Utilities.DataSaver;
  * Contains a roast, bean, and blend fragment.
  */
 public class MainActivity extends AppCompatActivity {
-    private String username = "";
-    private boolean standard = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,12 +66,12 @@ public class MainActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int which) {
                                         switch (which) {
                                             case DialogInterface.BUTTON_POSITIVE:
-                                                setToMetric();
+                                                GlobalSettings.getSettings(getContext()).setMetric(true, getContext());
                                                 Toast.makeText(getContext(), "Set to Metric.", Toast.LENGTH_SHORT).show();
                                                 break;
 
                                             case DialogInterface.BUTTON_NEGATIVE:
-                                                setToStandard();
+                                                GlobalSettings.getSettings(getContext()).setMetric(false, getContext());
                                                 Toast.makeText(getContext(), "Set to Standard.", Toast.LENGTH_SHORT).show();
                                                 break;
                                         }
@@ -99,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
-                                        username = input.getText().toString();
+                                        GlobalSettings.getSettings(getContext()).setUsername(input.getText().toString(), getContext());
                                     }
                                 });
 
@@ -254,22 +252,5 @@ public class MainActivity extends AppCompatActivity {
         return this;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public boolean isStandard(){
-        return standard;
-    }
-    public boolean isMetric(){
-        return !standard;
-    }
-
-    public void setToStandard(){
-        standard = true;
-    }
-    public void setToMetric(){
-        standard=false;
-    }
 
 }

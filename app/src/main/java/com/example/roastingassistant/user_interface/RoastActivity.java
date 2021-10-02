@@ -9,6 +9,7 @@ import NeuralNetwork.NeuralThread;
 import Utilities.DataCleaner;
 import Utilities.DataSaver;
 import Utilities.CommonFunctions;
+import Utilities.GlobalSettings;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -412,14 +413,20 @@ public class RoastActivity extends AppCompatActivity {
     }
 
     public void updateCheckpointText(){
+        boolean isMetric = GlobalSettings.getSettings(this).isMetric();
+        char c = isMetric?'C':'F';
+
+
         if(roast!=null) {
             if (roast.checkpoints.size() > 0&&currentCheckpoint<roast.checkpoints.size()) {
+                int temp = isMetric?CommonFunctions.standardTempToMetric(roast.checkpoints.get(currentCheckpoint).temperature):roast.checkpoints.get(currentCheckpoint).temperature;
+
                 if (roast.checkpoints.get(currentCheckpoint).trigger == Checkpoint.trig.Temperature)
-                    checkpointText.setText(roast.checkpoints.get(currentCheckpoint).name + " at " + roast.checkpoints.get(currentCheckpoint).temperature + " degrees.");
+                    checkpointText.setText(roast.checkpoints.get(currentCheckpoint).name + " at " + temp+c );
                 if (roast.checkpoints.get(currentCheckpoint).trigger == Checkpoint.trig.Time)
                     checkpointText.setText(roast.checkpoints.get(currentCheckpoint).name + " at " + CommonFunctions.secondsToTimeString(roast.checkpoints.get(currentCheckpoint).timeTotalInSeconds()));
                 if (roast.checkpoints.get(currentCheckpoint).trigger == Checkpoint.trig.PromptAtTemp)
-                    checkpointText.setText(roast.checkpoints.get(currentCheckpoint).name + " at " + roast.checkpoints.get(currentCheckpoint).temperature);
+                    checkpointText.setText(roast.checkpoints.get(currentCheckpoint).name + " at " + temp+c);
             }
         }
     }

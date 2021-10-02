@@ -2,6 +2,8 @@ package Utilities;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
+import android.util.TypedValue;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -17,7 +19,7 @@ public class CommonFunctions {
     }
 
     public static int standardTempToMetric(int fahrenheit){
-        float celsius = fahrenheit-32/1.8f;
+        float celsius = (fahrenheit-32)/1.8f;
         return Math.round(celsius);
     }
 
@@ -26,5 +28,15 @@ public class CommonFunctions {
         return Math.round(fahrenheit);
     }
 
-
+    /**
+     * Convert dp amount to equivalent pixels.
+     * @param num
+     * @return
+     */
+    public static int dp(int num, Resources r){
+        return (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                num,
+                r.getDisplayMetrics());
+    }
 }

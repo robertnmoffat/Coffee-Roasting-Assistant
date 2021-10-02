@@ -1,5 +1,6 @@
 package com.example.roastingassistant.user_interface;
 
+import Utilities.CommonFunctions;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
 
@@ -179,18 +180,18 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
         LinearLayout roastLayout = findViewById(R.id.blend_roast_layout);
         TextView checkDescription = new TextView(this);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, Utils.dp(10, getResources()), Utils.dp(40, getResources()), Utils.dp(10, getResources()));
+        params.setMargins(0, CommonFunctions.dp(10, getResources()), CommonFunctions.dp(40, getResources()), CommonFunctions.dp(10, getResources()));
         params.gravity = Gravity.RIGHT;
         checkDescription.setLayoutParams(params);
         checkDescription.setText(name + " " + description);
         checkDescription.setTextColor(getResources().getColor(R.color.lightGray));
         checkDescription.setBackgroundColor(getResources().getColor(R.color.grayBack));
-        checkDescription.setTextSize(Utils.dp(7, getResources()));
+        checkDescription.setTextSize(CommonFunctions.dp(7, getResources()));
         checkDescription.setGravity(Gravity.RIGHT);
 
         LinearLayout textAndButton = new LinearLayout(this);
         LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params2.setMargins(0, Utils.dp(10, this.getResources()), 0, 0);
+        params2.setMargins(0, CommonFunctions.dp(10, this.getResources()), 0, 0);
         textAndButton.setLayoutParams(params2);
         textAndButton.setOrientation(LinearLayout.HORIZONTAL);
         int id = ViewCompat.generateViewId();//TODO:Store id in array
@@ -198,10 +199,10 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
 
         Button removeButton = new Button(this);
         LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params3.setMargins(Utils.dp(20, this.getResources()), 0, 0, 0);
+        params3.setMargins(CommonFunctions.dp(20, this.getResources()), 0, 0, 0);
         removeButton.setLayoutParams(params3);
-        removeButton.setMaxWidth(Utils.dp(10, getResources()));
-        removeButton.setMaxHeight(Utils.dp(10, getResources()));
+        removeButton.setMaxWidth(CommonFunctions.dp(10, getResources()));
+        removeButton.setMaxHeight(CommonFunctions.dp(10, getResources()));
         removeButton.setText("-");
         removeButton.setTextColor(getResources().getColor(R.color.white));
         removeButton.setBackgroundColor(getResources().getColor(R.color.lightGray));

@@ -5,10 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.Html;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,12 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import Database.Checkpoint;
 import Database.RoastCheckpointAssociation;
 import Networking.HttpClient;
-import NeuralNetwork.NetworkController;
+import Utilities.CommonFunctions;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
@@ -34,18 +30,14 @@ import com.example.roastingassistant.R;
 import com.example.roastingassistant.user_interface.PreviousRoastActivity;
 import com.example.roastingassistant.user_interface.RemoteDataBrowserActivity;
 import com.example.roastingassistant.user_interface.RoastParamActivity;
-import com.example.roastingassistant.user_interface.Utils;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import Database.Bean;
 import Database.Blend;
 import Database.DatabaseHelper;
 import Database.Roast;
-import kotlin.jvm.internal.Ref;
 
-import static com.example.roastingassistant.user_interface.Utils.*;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -365,9 +357,9 @@ public class PlaceholderFragment extends Fragment {
         Resources r = root.getContext().getResources();
 
         //--------Converting sizes to dp----------
-        int fortydp = dp(40, getResources());
-        int tendp = dp(10, getResources());
-        int eightydp = dp(60, getResources());
+        int fortydp = CommonFunctions.dp(40, getResources());
+        int tendp = CommonFunctions.dp(10, getResources());
+        int eightydp = CommonFunctions.dp(60, getResources());
 
         params.setMargins(fortydp,fortydp,fortydp,tendp);
         Button btnTag = new Button(root.getContext());
