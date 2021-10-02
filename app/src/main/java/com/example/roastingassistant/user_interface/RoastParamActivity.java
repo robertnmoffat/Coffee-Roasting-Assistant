@@ -129,7 +129,9 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         roast.roastLevel = ((EditText)findViewById(R.id.roastparamactivity_roastlevel_edittext)).getText().toString();
         //TODO: roast.charge_temp
         String dropText = ((EditText)findViewById(R.id.roastparamactivity_droptemp_edittext)).getText().toString();
-        roast.dropTemp = dropText.equals("")?0 : Integer.parseInt(dropText);
+        int temp = Integer.parseInt(dropText);
+                     //todo: create global settings class and convert unit type if needed.
+        roast.dropTemp = dropText.equals("")?0 : temp;
         //TODO: roast.flavour
         roast.checkpoints = new ArrayList<>(checkpointsAdded);
 

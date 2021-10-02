@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,6 +12,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -115,6 +118,41 @@ public class DataSaver {
 
         } finally {
 
+        }
+    }
+
+    public static void saveSettings(GlobalSettings settings, Context context){
+        File file = new File(context.getFilesDir(),"Settings");
+        try {
+            FileOutputStream os = new FileOutputStream(file);
+            PrintWriter writer = new PrintWriter(os);
+            writer.println("metric:"+settings.isMetric());
+            writer.println("username:"+settings.getUsername());
+            writer.println("language:"+settings.getLanguage().toString());
+            writer.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void loadSettings(GlobalSettings settings, Context context){
+        File file = new File(context.getFilesDir(),"Settings");
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader reader = new BufferedReader(isr);
+            String metric = reader.readLine().split(":")[1];
+            String username = reader.readLine().split(":")[1];
+            String language = reader.readLine().split(":")[1];
+
+            settings.setMetric(metric.equals("true")?true:false, context);
+            settings.setUsername(username, context);
+            settings.setLanguage(GlobalSettings.Language.valueOf(language), context);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
         }
     }
 }

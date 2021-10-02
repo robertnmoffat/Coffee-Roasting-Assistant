@@ -1,6 +1,5 @@
 package com.example.roastingassistant.user_interface;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,11 +8,7 @@ import android.os.Bundle;
 import com.example.roastingassistant.R;
 import com.google.android.material.tabs.TabLayout;
 
-import Database.Checkpoint;
-import Database.RoastCheckpointAssociation;
-import Database.RoastRecord;
-import Networking.HttpClient;
-import Utilities.Utilities;
+import Utilities.CommonFunctions;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.viewpager.widget.ViewPager;
@@ -23,21 +18,18 @@ import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.roastingassistant.user_interface.main.SectionsPagerAdapter;
 
-import java.util.ArrayList;
-
 import Database.Bean;
 import Database.DatabaseHelper;
 import Database.Roast;
+
+import Utilities.GlobalSettings;
+import Utilities.DataSaver;
 
 /**
  * Main menu of the app.
@@ -45,6 +37,7 @@ import Database.Roast;
  */
 public class MainActivity extends AppCompatActivity {
     private String username = "";
+    private boolean standard = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
+
+        GlobalSettings settings = GlobalSettings.getSettings(this);
+        DataSaver.saveSettings(settings, this);
 
         Button menuButton = findViewById(R.id.menuButton);
         menuButton.setOnClickListener(new View.OnClickListener() {
@@ -72,11 +68,13 @@ public class MainActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int which) {
                                         switch (which) {
                                             case DialogInterface.BUTTON_POSITIVE:
-
+                                                setToMetric();
+                                                Toast.makeText(getContext(), "Set to Metric.", Toast.LENGTH_SHORT).show();
                                                 break;
 
                                             case DialogInterface.BUTTON_NEGATIVE:
-                                                //No button clicked
+                                                setToStandard();
+                                                Toast.makeText(getContext(), "Set to Standard.", Toast.LENGTH_SHORT).show();
                                                 break;
                                         }
                                     }
@@ -179,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
                 db.addRoast(roast);
             }
         }
-        String dsfhkj = Utilities.secondsToTimeString(3245);
+        String dsfhkj = CommonFunctions.secondsToTimeString(3245);
 //        ArrayList<RoastRecord> records = DatabaseHelper.getInstance(this).getAllRoastRecords();
 //        if(records!=null)
 //        for(int i=0; i<records.size(); i++){
@@ -258,6 +256,20 @@ public class MainActivity extends AppCompatActivity {
 
     public String getUsername() {
         return username;
+    }
+
+    public boolean isStandard(){
+        return standard;
+    }
+    public boolean isMetric(){
+        return !standard;
+    }
+
+    public void setToStandard(){
+        standard = true;
+    }
+    public void setToMetric(){
+        standard=false;
     }
 
 }

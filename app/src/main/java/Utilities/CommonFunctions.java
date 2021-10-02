@@ -5,7 +5,7 @@ import android.content.DialogInterface;
 
 import androidx.appcompat.app.AlertDialog;
 
-public class Utilities {
+public class CommonFunctions {
 
     public static String secondsToTimeString(int seconds){
         int mins = seconds/60;

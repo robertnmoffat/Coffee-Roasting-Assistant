@@ -8,7 +8,7 @@ import NeuralNetwork.NetworkController;
 import NeuralNetwork.NeuralThread;
 import Utilities.DataCleaner;
 import Utilities.DataSaver;
-import Utilities.Utilities;
+import Utilities.CommonFunctions;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,14 +17,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.hardware.Camera;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
@@ -420,7 +417,7 @@ public class RoastActivity extends AppCompatActivity {
                 if (roast.checkpoints.get(currentCheckpoint).trigger == Checkpoint.trig.Temperature)
                     checkpointText.setText(roast.checkpoints.get(currentCheckpoint).name + " at " + roast.checkpoints.get(currentCheckpoint).temperature + " degrees.");
                 if (roast.checkpoints.get(currentCheckpoint).trigger == Checkpoint.trig.Time)
-                    checkpointText.setText(roast.checkpoints.get(currentCheckpoint).name + " at " + Utilities.secondsToTimeString(roast.checkpoints.get(currentCheckpoint).timeTotalInSeconds()));
+                    checkpointText.setText(roast.checkpoints.get(currentCheckpoint).name + " at " + CommonFunctions.secondsToTimeString(roast.checkpoints.get(currentCheckpoint).timeTotalInSeconds()));
                 if (roast.checkpoints.get(currentCheckpoint).trigger == Checkpoint.trig.PromptAtTemp)
                     checkpointText.setText(roast.checkpoints.get(currentCheckpoint).name + " at " + roast.checkpoints.get(currentCheckpoint).temperature);
             }
