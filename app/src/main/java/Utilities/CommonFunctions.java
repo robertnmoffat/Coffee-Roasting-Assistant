@@ -28,6 +28,13 @@ public class CommonFunctions {
         return Math.round(fahrenheit);
     }
 
+    public static String formatTempString(int temp, Context context){
+        boolean isMetric = GlobalSettings.getSettings(context).isMetric();
+        temp = isMetric?metricTempToStandard(temp):temp;
+        String tempString = ""+temp+(isMetric?'C':'F');
+        return tempString;
+    }
+
     /**
      * Convert dp amount to equivalent pixels.
      * @param num

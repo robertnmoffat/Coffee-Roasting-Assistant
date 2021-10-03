@@ -163,7 +163,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
      * @param name
      * @param description
      */
-    public void createCheckPoint(String name, String description, int dbId){
+    public void createCheckPoint(String name, String description, int arrayPos){
         LinearLayout checkLayout = findViewById(R.id.roastparamactivity_checkpoints_layout);
         TextView checkDescription = new TextView(this);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -198,9 +198,9 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
             removeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {//Remove checkpoint button
-                    checkpointsAdded.remove(dbId-1);
                     ((ViewGroup)textAndButton).removeView(checkDescription);
                     ((ViewGroup)textAndButton).removeView(removeButton);
+                    checkpointsAdded.remove(arrayPos);
                 }
             });
 
@@ -426,28 +426,26 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
     }
 
     private void addCheckPoint(Checkpoint checkpoint) {
-        boolean isMetric = GlobalSettings.getSettings(this).isMetric();
-        char c = isMetric?'C':'F';
-        int temp = isMetric?CommonFunctions.standardTempToMetric(checkpoint.temperature):checkpoint.temperature;
+        String tempString = CommonFunctions.formatTempString(checkpoint.temperature, this);
 
         checkpoints.add(checkpoint);
+        checkpointsAdded.add(checkpoint);
+        int pos = checkpointsAdded.size()-1;
         switch (checkpoint.trigger){
             case Temperature:
-
-
-                createCheckPoint(checkpoint.name, "Temp: "+temp+c, checkpoint.id);
+                createCheckPoint(checkpoint.name, "Temp: "+tempString, pos);
                 break;
             case Time:
-                createCheckPoint(checkpoint.name, "Time: "+checkpoint.minutes+":"+checkpoint.seconds, checkpoint.id);
+                createCheckPoint(checkpoint.name, "Time: "+checkpoint.minutes+":"+checkpoint.seconds, pos);
                 break;
             case TurnAround:
-                createCheckPoint(checkpoint.name, "Turnaround", checkpoint.id);
+                createCheckPoint(checkpoint.name, "Turnaround", pos);
                 break;
             case PromptAtTemp:
-                createCheckPoint(checkpoint.name, "Prompt at "+temp+c, checkpoint.id);
+                createCheckPoint(checkpoint.name, "Prompt at "+tempString, pos);
                 break;
             default:
-                createCheckPoint(checkpoint.name, "", checkpoint.id);
+                createCheckPoint(checkpoint.name, "", pos);
                 break;
         }
     }

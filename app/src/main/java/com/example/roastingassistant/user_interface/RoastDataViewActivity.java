@@ -96,7 +96,8 @@ public class RoastDataViewActivity extends AppCompatActivity {
             float secs = checkpoints.get(i*2)-(mins*60);
             String secString = String.format("%.1f", secs);
             String timeString = ""+mins+":"+secString;
-            checkDescription.setText(checkpoint.name + " \n\t" + timeString+ " \n\t" + checkpoints.get(i*2+1) + " degrees");
+            String tempString = CommonFunctions.formatTempString(checkpoints.get(i*2+1), this);
+            checkDescription.setText(checkpoint.name + " \n\t" + timeString+ " \n\t" + tempString);
 
             checkDescription.setTextColor(getResources().getColor(R.color.white));
             //checkDescription.setBackgroundColor(getResources().getColor(R.color.grayBack));
