@@ -299,6 +299,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return beanId;
     }
 
+    public void updateRoastRecordWeights(RoastRecord record){
+        Log.i("Database", "Updating roast_record weights in database...");
+
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+
+        ContentValues args = new ContentValues();
+        args.put(KEY_ROAST_RECORD_START_WEIGHT, ""+record.startWeightPounts);
+        args.put(KEY_ROAST_RECORD_END_WEIGHT, ""+record.endWeightPounds);
+
+        db.update(TABLE_ROAST_RECORD, args, KEY_ROAST_RECORD_ID+"="+record.id, null);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+    }
+
     public int addRoastRecord(RoastRecord record){
         Log.i("Database", "Adding roast_record entry to database...");
 
