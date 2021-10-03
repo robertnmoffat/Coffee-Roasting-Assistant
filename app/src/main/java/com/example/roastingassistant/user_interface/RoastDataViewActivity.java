@@ -97,7 +97,7 @@ public class RoastDataViewActivity extends AppCompatActivity {
             String secString = String.format("%.1f", secs);
             String timeString = ""+mins+":"+secString;
             String tempString = CommonFunctions.formatTempString(checkpoints.get(i*2+1), this);
-            checkDescription.setText(checkpoint.name + " \n\t" + timeString+ " \n\t" + tempString);
+            checkDescription.setText(checkpoint.name + " \n\t" + "Time: " + timeString+ " \n\t" + "Temp: " + tempString);
 
             checkDescription.setTextColor(getResources().getColor(R.color.white));
             //checkDescription.setBackgroundColor(getResources().getColor(R.color.grayBack));

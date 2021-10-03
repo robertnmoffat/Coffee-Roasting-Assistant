@@ -30,7 +30,7 @@ public class CommonFunctions {
 
     public static String formatTempString(int temp, Context context){
         boolean isMetric = GlobalSettings.getSettings(context).isMetric();
-        temp = isMetric?metricTempToStandard(temp):temp;
+        temp = isMetric?standardTempToMetric(temp):temp;
         String tempString = ""+temp+(isMetric?'C':'F');
         return tempString;
     }
