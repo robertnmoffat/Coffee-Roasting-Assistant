@@ -8,7 +8,7 @@ public class RoastRecord extends DbData{
     public Roast roastProfile;
     public String filename;
     public int filesizeBytes=0;
-    public float startWeightPounts;
+    public float startWeightPounds;
     public float endWeightPounds;
     public String dateTime;
     public Roaster roaster;
@@ -16,7 +16,7 @@ public class RoastRecord extends DbData{
     public RoastRecord(){
         filename = "";
         roastProfile = null;
-        this.startWeightPounts = 0.0f;
+        this.startWeightPounds = 0.0f;
         this.endWeightPounds = 0.0f;
         roaster = null;
         this.dateTime = Calendar.getInstance().getTime().toString();
@@ -24,7 +24,7 @@ public class RoastRecord extends DbData{
 
     public RoastRecord(Roast roastProfile, float startWeightPounts, float endWeightPounds){
         this.roastProfile = roastProfile;
-        this.startWeightPounts = startWeightPounts;
+        this.startWeightPounds = startWeightPounts;
         this.endWeightPounds = endWeightPounds;
         this.dateTime = Calendar.getInstance().getTime().toString();
     }

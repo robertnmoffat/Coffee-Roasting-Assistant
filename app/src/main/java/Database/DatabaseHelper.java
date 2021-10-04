@@ -299,6 +299,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return beanId;
     }
 
+    public void updateRoastRecordWeights(RoastRecord record){
+        Log.i("Database", "Updating roast_record weights in database...");
+
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+
+        ContentValues args = new ContentValues();
+        args.put(KEY_ROAST_RECORD_START_WEIGHT, ""+record.startWeightPounds);
+        args.put(KEY_ROAST_RECORD_END_WEIGHT, ""+record.endWeightPounds);
+
+        db.update(TABLE_ROAST_RECORD, args, KEY_ROAST_RECORD_ID+"="+record.id, null);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+    }
+
     public int addRoastRecord(RoastRecord record){
         Log.i("Database", "Adding roast_record entry to database...");
 
@@ -310,7 +326,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ContentValues values = new ContentValues();
             values.put(KEY_ROAST_RECORD_ROAST_PROFILE_ID_FK, record.roastProfile.id);
             values.put(KEY_ROAST_RECORD_FILENAME, record.filename);
-            values.put(KEY_ROAST_RECORD_START_WEIGHT, record.startWeightPounts);
+            values.put(KEY_ROAST_RECORD_START_WEIGHT, record.startWeightPounds);
             values.put(KEY_ROAST_RECORD_END_WEIGHT, record.endWeightPounds);
             values.put(KEY_ROAST_RECORD_DATETIME, record.dateTime);
             values.put(KEY_ROAST_RECORD_FILESIZE, record.filesizeBytes);
@@ -600,7 +616,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 record.id = id;
                 record.filename = cursor.getString(cursor.getColumnIndex(KEY_ROAST_RECORD_FILENAME));
-                record.startWeightPounts = (float)cursor.getDouble(cursor.getColumnIndex(KEY_ROAST_RECORD_START_WEIGHT));
+                record.startWeightPounds = (float)cursor.getDouble(cursor.getColumnIndex(KEY_ROAST_RECORD_START_WEIGHT));
                 record.endWeightPounds = (float)cursor.getDouble(cursor.getColumnIndex(KEY_ROAST_RECORD_END_WEIGHT));
                 record.dateTime = cursor.getString(cursor.getColumnIndex(KEY_ROAST_RECORD_DATETIME));
                 record.name = record.roastProfile.name+" "+record.dateTime;

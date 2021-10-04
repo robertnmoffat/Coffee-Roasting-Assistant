@@ -18,6 +18,14 @@ public class CommonFunctions {
         return timeString;
     }
 
+    public static float poundsToKg(float pounds){
+        return pounds*0.45359237f;
+    }
+
+    public static float KgToPounds(float Kg){
+        return Kg/0.45359237f;
+    }
+
     public static int standardTempToMetric(int fahrenheit){
         float celsius = (fahrenheit-32)/1.8f;
         return Math.round(celsius);
@@ -33,6 +41,12 @@ public class CommonFunctions {
         temp = isMetric?standardTempToMetric(temp):temp;
         String tempString = ""+temp+(isMetric?'C':'F');
         return tempString;
+    }
+
+    public static String formatWeightString(float weight, Context context){
+        boolean isMetric = GlobalSettings.getSettings(context).isMetric();
+        weight = isMetric?poundsToKg(weight):weight;
+        return String.format("%.2f", weight)+(isMetric?"Kg":"Lbs");
     }
 
     /**
