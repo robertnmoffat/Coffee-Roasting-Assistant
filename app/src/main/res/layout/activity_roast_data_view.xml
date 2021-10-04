@@ -94,39 +94,57 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="100dp"
                     android:orientation="horizontal"
                     android:layout_gravity="center">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Start weight:"
+                        android:text="Start \nweight:"
                         android:textColor="@color/white"
                         android:textSize="20dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginLeft="20dp"/>
                     <EditText
                         android:id="@+id/roastdataview_startweight_edittext"
+                        android:inputType="number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="12LB"
+                        android:text="12"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        android:layout_marginTop="20dp"/>
+                    <TextView
+                        android:id="@+id/roastdataview_startweight_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lbs"
                         android:textColor="@color/white"
                         android:textSize="20dp"
                         android:layout_marginTop="20dp"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="End weight:"
+                        android:text="End \nweight:"
                         android:textColor="@color/white"
                         android:textSize="20dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginLeft="20dp"/>
                     <EditText
                         android:id="@+id/roastdataview_endweight_edittext"
+                        android:inputType="number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="10LB"
+                        android:text="10"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        android:layout_marginTop="20dp"/>
+                    <TextView
+                        android:id="@+id/roastdataview_endweight_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lbs"
                         android:textColor="@color/white"
                         android:textSize="20dp"
                         android:layout_marginTop="20dp"/>
@@ -160,7 +178,6 @@
 
             </LinearLayout>
 
-
         </ScrollView>
         <LinearLayout
             android:id="@+id/roastdataview_buttonsarea_layout"
@@ -179,6 +196,18 @@
                 android:textColor="@color/white"
                 android:background="@drawable/round_shape_btn"
                 android:layout_marginBottom="2dp"
+                android:layout_marginRight="10dp"
+                />
+            <Button
+                android:id="@+id/roastdataview_update_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Update"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:background="@drawable/round_shape_btn"
+                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="10dp"
                 />
 
         </LinearLayout>

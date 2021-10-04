@@ -49,6 +49,12 @@ public class CommonFunctions {
         return String.format("%.2f", weight)+(isMetric?"Kg":"Lbs");
     }
 
+    public static String formatWeightStringNumber(float weight, Context context){
+        boolean isMetric = GlobalSettings.getSettings(context).isMetric();
+        weight = isMetric?poundsToKg(weight):weight;
+        return String.format("%.2f", weight);
+    }
+
     /**
      * Convert dp amount to equivalent pixels.
      * @param num

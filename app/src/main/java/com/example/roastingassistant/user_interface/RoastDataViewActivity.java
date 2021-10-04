@@ -18,6 +18,7 @@ import Database.RoastRecord;
 import Utilities.CommonFunctions;
 import Utilities.DataCleaner;
 import Utilities.DataSaver;
+import Utilities.GlobalSettings;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -34,6 +35,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.roastingassistant.R;
+
+import org.w3c.dom.Text;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -78,9 +81,37 @@ public class RoastDataViewActivity extends AppCompatActivity {
         checkpoints = new ArrayList<>();
 
         EditText startWeight = findViewById(R.id.roastdataview_startweight_edittext);
-        startWeight.setText(CommonFunctions.formatWeightString(record.startWeightPounds, getContext()));
+        startWeight.setText(CommonFunctions.formatWeightStringNumber(record.startWeightPounds, getContext()));
+        boolean isMetric = GlobalSettings.getSettings(this).isMetric();
+        TextView startWeightSuffix = findViewById(R.id.roastdataview_startweight_textview);
+        startWeightSuffix.setText(isMetric?"Kgs":"Lbs");
         EditText endWeight = findViewById(R.id.roastdataview_endweight_edittext);
-        endWeight.setText(CommonFunctions.formatWeightString(record.endWeightPounds, getContext()));
+        endWeight.setText(CommonFunctions.formatWeightStringNumber(record.endWeightPounds, getContext()));
+        TextView endWeightSuffix = findViewById(R.id.roastdataview_endweight_textview);
+        endWeightSuffix.setText(isMetric?"Kgs":"Lbs");
+        TextView percentView = findViewById(R.id.roastdataview_losspercent_textview);
+        percentView.setText(String.format("%.2f", (1-record.endWeightPounds/record.startWeightPounds))+"%");
+
+        Button updateButton = findViewById(R.id.roastdataview_update_button);
+        updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                float startWeightFloat = Float.parseFloat(startWeight.getText().toString());
+                float endWeightFloat = Float.parseFloat(endWeight.getText().toString());
+
+                if(isMetric){//if metric convert back to pounds
+                    startWeightFloat = CommonFunctions.KgToPounds(startWeightFloat);
+                    endWeightFloat = CommonFunctions.KgToPounds(endWeightFloat);
+                }
+
+                record.startWeightPounds = startWeightFloat;
+                record.endWeightPounds = endWeightFloat;
+
+                DatabaseHelper.getInstance(getContext()).updateRoastRecordWeights(record);
+                Toast.makeText(getContext(), "Record weights updated.", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
 
         DataSaver.loadRoastData(record, temps, checkpoints, this);
         setupGraph();
