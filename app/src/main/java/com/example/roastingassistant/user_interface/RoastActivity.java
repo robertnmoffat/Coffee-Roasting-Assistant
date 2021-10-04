@@ -217,13 +217,16 @@ public class RoastActivity extends AppCompatActivity {
                 DatabaseHelper db = DatabaseHelper.getInstance(getContext());
                 RoastRecord record = new RoastRecord();
                 record.name = "Test roast";
-                record.startWeightPounts = 12.0f;
+                record.startWeightPounds = 12.0f;
                 record.endWeightPounds = 10.0f;
                 record.dateTime = Calendar.getInstance().getTime().toString();
                 record.roastProfile = roast;
                 record.filename = record.roastProfile.name+" "+record.dateTime;
                 record.filesizeBytes = (checkpointTemps.size()+safeTempsOverTime.size()+2)*Integer.BYTES;
                 record.id = db.addRoastRecord(record);
+
+                record.endWeightPounds = 5.0f;
+                db.updateRoastRecordWeights(record);
 
                 Log.d("Database", "RoastRecord added with id:"+record.id);
                 RoastRecord recordReturned = db.getRoastRecord(record.id);

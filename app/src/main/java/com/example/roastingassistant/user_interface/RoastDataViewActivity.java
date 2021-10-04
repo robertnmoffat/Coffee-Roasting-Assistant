@@ -27,6 +27,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -75,6 +76,11 @@ public class RoastDataViewActivity extends AppCompatActivity {
 
         temps = new ArrayList<>();
         checkpoints = new ArrayList<>();
+
+        EditText startWeight = findViewById(R.id.roastdataview_startweight_edittext);
+        startWeight.setText(CommonFunctions.formatWeightString(record.startWeightPounds, getContext()));
+        EditText endWeight = findViewById(R.id.roastdataview_endweight_edittext);
+        endWeight.setText(CommonFunctions.formatWeightString(record.endWeightPounds, getContext()));
 
         DataSaver.loadRoastData(record, temps, checkpoints, this);
         setupGraph();

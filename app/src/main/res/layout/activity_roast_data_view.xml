@@ -106,7 +106,8 @@
                         android:textSize="20dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginLeft="20dp"/>
-                    <TextView
+                    <EditText
+                        android:id="@+id/roastdataview_startweight_edittext"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="12LB"
@@ -121,7 +122,8 @@
                         android:textSize="20dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginLeft="20dp"/>
-                    <TextView
+                    <EditText
+                        android:id="@+id/roastdataview_endweight_edittext"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="10LB"
@@ -146,6 +148,7 @@
                         android:layout_marginTop="20dp"
                         android:layout_marginLeft="20dp"/>
                     <TextView
+                        android:id="@+id/roastdataview_losspercent_textview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0.83%"
