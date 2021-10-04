@@ -159,6 +159,7 @@
                     android:textColor="@color/white"/>
                 <EditText
                     android:id="@+id/roastparamactivity_droptemp_edittext"
+                    android:inputType="number"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textSize="20dp"

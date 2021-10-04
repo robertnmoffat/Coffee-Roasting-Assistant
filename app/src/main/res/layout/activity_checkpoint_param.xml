@@ -136,6 +136,7 @@
                         android:textColor="@color/white"/>
                     <EditText
                         android:id="@+id/checkpoint_temp_edittext"
+                        android:inputType="number"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:textSize="20dp"
@@ -160,6 +161,7 @@
                         android:textColor="@color/white"/>
                     <EditText
                         android:id="@+id/checkpoint_timeminute_edittext"
+                        android:inputType="number"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:textSize="20dp"
@@ -176,6 +178,7 @@
                         android:layout_marginRight="10dp"/>
                     <EditText
                         android:id="@+id/checkpoint_timesecond_edittext"
+                        android:inputType="number"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:textSize="20dp"
