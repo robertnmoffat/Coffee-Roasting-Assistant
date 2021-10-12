@@ -31,11 +31,14 @@ android {
     useLibrary 'android.test.base'
     useLibrary 'android.test.mock'
 
+
 }
 
 dependencies {
     implementation 'io.github.ParkSangGwon:tedpermission:2.3.0'
     implementation "com.androidplot:androidplot-core:1.5.7"
+
+    implementation 'com.github.elirehema:worksheet:0.0.1'
 }
 
 

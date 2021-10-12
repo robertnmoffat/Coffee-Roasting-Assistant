@@ -1,11 +1,18 @@
 package Utilities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.util.TypedValue;
 
+import java.io.File;
+
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ShareCompat;
+import androidx.core.content.FileProvider;
 
 public class CommonFunctions {
 
@@ -66,4 +73,6 @@ public class CommonFunctions {
                 num,
                 r.getDisplayMetrics());
     }
+
+
 }

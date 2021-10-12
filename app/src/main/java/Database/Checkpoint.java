@@ -59,4 +59,5 @@ public class Checkpoint extends DbData implements Serializable {
         map.put("temperature", ""+temperature);
         return map;
     }
+
 }

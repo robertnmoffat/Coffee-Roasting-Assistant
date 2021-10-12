@@ -22,9 +22,9 @@ public class RoastRecord extends DbData{
         this.dateTime = Calendar.getInstance().getTime().toString();
     }
 
-    public RoastRecord(Roast roastProfile, float startWeightPounts, float endWeightPounds){
+    public RoastRecord(Roast roastProfile, float startWeightPounds, float endWeightPounds){
         this.roastProfile = roastProfile;
-        this.startWeightPounds = startWeightPounts;
+        this.startWeightPounds = startWeightPounds;
         this.endWeightPounds = endWeightPounds;
         this.dateTime = Calendar.getInstance().getTime().toString();
     }
@@ -36,5 +36,9 @@ public class RoastRecord extends DbData{
         HashMap<String, String> map = new HashMap<>();
         map.put("name", name);
         return map;
+    }
+
+    public String toString(){
+        return name+" "+startWeightPounds+" "+endWeightPounds;
     }
 }
