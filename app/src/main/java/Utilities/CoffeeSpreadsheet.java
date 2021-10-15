@@ -43,11 +43,21 @@ public class CoffeeSpreadsheet {
     private Activity activity;
     private File file;
 
+    /**
+     * Creates a new Instance of Spreadsheet Class.
+     * @param activity Calling activity.
+     * @param records List of records to be added to the spreadsheet.
+     */
     public CoffeeSpreadsheet(Activity activity, ArrayList<RoastRecord> records){
         this.activity = activity;
         createSpreadsheet(activity, records);
     }
 
+    /**
+     * Creates a spreadsheet based on the RoastRecords passed.
+     * @param activity Calling activity.
+     * @param records List of records to be added to the spreadsheet.
+     */
     public void createSpreadsheet(Activity activity, ArrayList<RoastRecord> records){
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet firstSheet = workbook.createSheet("Sheet No 1");
@@ -66,16 +76,22 @@ public class CoffeeSpreadsheet {
             ArrayList<Integer> checks = new ArrayList<>();
             DataSaver.loadRoastData(record, temps, checks, activity);
 
-            for(int j=0; j<record.roastProfile.checkpoints.size(); j++){
-                Checkpoint checkpoint = record.roastProfile.checkpoints.get(j);
-                HSSFCell cell = rowA.createCell(colPos++);
-                cell.setCellValue(new HSSFRichTextString(checkpoint.name + " \n\t" + "Time: " + CommonFunctions.secondsToTimeString(checks.get(j))+ " \n\t" + "Temp: " + checkpoint.temperature));
+            HSSFCell cellC = rowA.createCell(colPos++);
+            cellC.setCellValue(new HSSFRichTextString("Start weight:\n"+record.startWeightPounds));
+            HSSFCell cellD = rowA.createCell(colPos++);
+            cellD.setCellValue(new HSSFRichTextString("End weight:\n"+record.endWeightPounds));
+
+            int timePos = 0;
+            for(int j=60; timePos<temps.size(); j+=60){//Count one minute at a time for each entry.
+                for(; timePos<temps.size(); timePos+=2){//Time and temp are stored in the same list, so count by two to only access times.
+                    if(temps.get(timePos)>=j){//check time values until one is greater than or equal to the current minute iteration.
+                        HSSFCell cell = rowA.createCell(colPos++);
+                        cell.setCellValue(new HSSFRichTextString("Temp: " + temps.get(timePos+1) + " \n\t" + "Time: " + CommonFunctions.secondsToTimeString(temps.get(timePos))));
+                        break;
+                    }
+                }
             }
 
-            HSSFCell cellC = rowA.createCell(colPos++);
-            cellC.setCellValue(new HSSFRichTextString("Start weight: "+record.startWeightPounds));
-            HSSFCell cellD = rowA.createCell(colPos++);
-            cellD.setCellValue(new HSSFRichTextString("End weight: "+record.endWeightPounds));
         }
         FileOutputStream fos = null;
         try {
@@ -101,10 +117,16 @@ public class CoffeeSpreadsheet {
         }
     }
 
-    public void sendSpreadsheet(){
-        if(file==null)
+    /**
+     * Sends an ACTION_SEND intent so that the spreadsheet file can be either emailed or uploaded to Google Drive.
+     */
+    public void sendSpreadsheet(Context context){
+        if(file==null) {
+            Toast.makeText(context, "Spreadsheet file does not exist.", Toast.LENGTH_SHORT).show();
             return;
+        }
 
+        //Uses FileProvider so that external apps can have access to the file which is protected by the local app's storage.
         Uri contentUri = FileProvider.getUriForFile(activity, "com.example.roastingassistant.fileprovider", file);
 
         Intent intent = ShareCompat.IntentBuilder.from(activity)

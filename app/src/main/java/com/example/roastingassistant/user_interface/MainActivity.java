@@ -82,9 +82,9 @@ public class MainActivity extends AppCompatActivity {
         GlobalSettings settings = GlobalSettings.getSettings(this);
         DataSaver.saveSettings(settings, this);
 
-        ArrayList<RoastRecord> records = new ArrayList<>();
-        records = DatabaseHelper.getInstance(this).getAllRoastRecords();
-        CoffeeSpreadsheet spread = new CoffeeSpreadsheet(this, records);
+//        ArrayList<RoastRecord> records = new ArrayList<>();
+//        records = DatabaseHelper.getInstance(this).getAllRoastRecords();
+//        CoffeeSpreadsheet spread = new CoffeeSpreadsheet(this, records);
 
 
 
@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        spread.sendSpreadsheet();
+        //spread.sendSpreadsheet();
 
     }
 

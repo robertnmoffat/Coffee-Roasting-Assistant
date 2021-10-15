@@ -1,5 +1,6 @@
 package com.example.roastingassistant.user_interface;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import Database.DatabaseHelper;
 import Database.DbData;
 import Database.RoastRecord;
+import Utilities.CoffeeSpreadsheet;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class PreviousRoastActivity extends AppCompatActivity {
@@ -30,23 +32,20 @@ public class PreviousRoastActivity extends AppCompatActivity {
     boolean returnResult = false;
 
     ArrayList<RoastRecord> records;
+    Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_previous_roast);
 
+        activity = this;
+
         Intent intent = getIntent();
         returnResult = intent.getBooleanExtra("returnResult", false);
 
         Button doneButton = findViewById(R.id.previousroast_done_button);
-
-        doneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        Button exportButton = findViewById(R.id.previousroast_export_button);
 
         layout = findViewById(R.id.previousroast_roasts_layout);
         records = DatabaseHelper.getInstance(this).getAllRoastRecords();
@@ -59,6 +58,22 @@ public class PreviousRoastActivity extends AppCompatActivity {
         for(RoastRecord record: records){
             addButton(record);
         }
+
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+        exportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArrayList<RoastRecord> fullRecords = new ArrayList<>();
+                fullRecords = DatabaseHelper.getInstance(getContext()).getAllRoastRecords();
+                CoffeeSpreadsheet sheet = new CoffeeSpreadsheet(activity, fullRecords);
+                sheet.sendSpreadsheet(getContext());
+            }
+        });
     }
 
     public Context getContext(){
