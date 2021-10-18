@@ -106,7 +106,7 @@ public class NeuralThread extends Thread {
                             int sumTemp = (highestOutputPos[0] * 100 + highestOutputPos[1] * 10 + highestOutputPos[2]);
 
                             float nnTotal = getTotal(roastActivity.networkController);
-                            roastActivity.guessText = "" + temp+" sums: "+sumTemp+" total:"+nnTotal;//+" "+roastActivity.networkController.getErrorEstimate();
+                            roastActivity.guessText = "" + sumTemp;//temp+" sums: "+sumTemp+" total:"+nnTotal;//+" "+roastActivity.networkController.getErrorEstimate();
 
                             roastActivity.updateCurTemp(sumTemp);
                         }

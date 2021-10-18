@@ -11,10 +11,12 @@ import Utilities.DataSaver;
 import Utilities.CommonFunctions;
 import Utilities.GlobalSettings;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.hardware.Camera;
@@ -187,6 +189,7 @@ public class RoastActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!stopped){
                     startStop();
+                    promptForSave();
                 }
             }
         });
@@ -214,34 +217,12 @@ public class RoastActivity extends AppCompatActivity {
                 //ImageProcessing.SaveImage(imageLeft, leftNum);
                 //ImageProcessing.SaveImage(imageMid, midNum);
                 //ImageProcessing.SaveImage(imageRight, rightNum);
-                DatabaseHelper db = DatabaseHelper.getInstance(getContext());
-                RoastRecord record = new RoastRecord();
-                record.name = "Test roast";
-                record.startWeightPounds = 12.0f;
-                record.endWeightPounds = 10.0f;
-                record.dateTime = Calendar.getInstance().getTime().toString();
-                record.roastProfile = roast;
-                record.filename = record.roastProfile.name+" "+record.dateTime;
-                record.filesizeBytes = (checkpointTemps.size()+safeTempsOverTime.size()+2)*Integer.BYTES;
-                record.id = db.addRoastRecord(record);
 
-                record.endWeightPounds = 5.0f;
-                db.updateRoastRecordWeights(record);
-
-                Log.d("Database", "RoastRecord added with id:"+record.id);
-                RoastRecord recordReturned = db.getRoastRecord(record.id);
-                Log.d("Database", "RoastRecord returned: "+recordReturned.name);
-
-
-                DataSaver.saveRoastData(record, safeTempsOverTime, checkpointTemps, getContext());
-                String[] filenames = getContext().fileList();
-                for(int i=0;i<filenames.length;i++) {
-                    Log.d("FileIO", "" + filenames[i]);
+                if(currentCheckpoint>0){
+                    checkpointTemps.remove(checkpointTemps.size()-1);
+                    checkpointTemps.remove(checkpointTemps.size()-1);
+                    currentCheckpoint-=1;
                 }
-                ArrayList<Integer> temps = new ArrayList<>();
-                ArrayList<Integer> checks = new ArrayList<>();
-                DataSaver.loadRoastData(record, temps, checks, getContext());
-
             }
         });
 
@@ -262,7 +243,7 @@ public class RoastActivity extends AppCompatActivity {
 
             public void run(){
                 if(guessTextUpdated){
-                    tempText.setText(guessText);
+                    tempText.setText("Temperature:\n"+guessText);
                     //guessInt = Integer.parseInt(guessText);
                     guessTextUpdated=false;
                 }
@@ -425,11 +406,11 @@ public class RoastActivity extends AppCompatActivity {
                 int temp = isMetric?CommonFunctions.standardTempToMetric(roast.checkpoints.get(currentCheckpoint).temperature):roast.checkpoints.get(currentCheckpoint).temperature;
 
                 if (roast.checkpoints.get(currentCheckpoint).trigger == Checkpoint.trig.Temperature)
-                    checkpointText.setText(roast.checkpoints.get(currentCheckpoint).name + " at " + temp+c );
+                    checkpointText.setText("Next checkpoint:\n"+roast.checkpoints.get(currentCheckpoint).name + " at " + temp+c );
                 if (roast.checkpoints.get(currentCheckpoint).trigger == Checkpoint.trig.Time)
-                    checkpointText.setText(roast.checkpoints.get(currentCheckpoint).name + " at " + CommonFunctions.secondsToTimeString(roast.checkpoints.get(currentCheckpoint).timeTotalInSeconds()));
+                    checkpointText.setText("Next checkpoint:\n"+roast.checkpoints.get(currentCheckpoint).name + " at " + CommonFunctions.secondsToTimeString(roast.checkpoints.get(currentCheckpoint).timeTotalInSeconds()));
                 if (roast.checkpoints.get(currentCheckpoint).trigger == Checkpoint.trig.PromptAtTemp)
-                    checkpointText.setText(roast.checkpoints.get(currentCheckpoint).name + " at " + temp+c);
+                    checkpointText.setText("Next checkpoint:\n"+roast.checkpoints.get(currentCheckpoint).name + " at " + temp+c);
             }
         }
     }
@@ -652,5 +633,57 @@ public class RoastActivity extends AppCompatActivity {
         lastTemp = newTemp;
         if(tempDif<20)
             curTemp = newTemp;
+    }
+
+    public void promptForSave(){
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        saveRoast();
+                        Toast.makeText(getContext(), "Roast data saved.", Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Save roast data?").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
+    }
+
+    public void saveRoast(){
+        DatabaseHelper db = DatabaseHelper.getInstance(getContext());
+        RoastRecord record = new RoastRecord();
+        record.name = "Test roast";
+        record.startWeightPounds = 12.0f;
+        record.endWeightPounds = 10.0f;
+        record.dateTime = Calendar.getInstance().getTime().toString();
+        record.roastProfile = roast;
+        record.filename = record.roastProfile.name+" "+record.dateTime;
+        record.filesizeBytes = (checkpointTemps.size()+safeTempsOverTime.size()+2)*Integer.BYTES;
+        record.id = db.addRoastRecord(record);
+
+        record.endWeightPounds = 5.0f;
+        db.updateRoastRecordWeights(record);
+
+        Log.d("Database", "RoastRecord added with id:"+record.id);
+        RoastRecord recordReturned = db.getRoastRecord(record.id);
+        Log.d("Database", "RoastRecord returned: "+recordReturned.name);
+
+
+        DataSaver.saveRoastData(record, safeTempsOverTime, checkpointTemps, getContext());
+        String[] filenames = getContext().fileList();
+        for(int i=0;i<filenames.length;i++) {
+            Log.d("FileIO", "" + filenames[i]);
+        }
+        ArrayList<Integer> temps = new ArrayList<>();
+        ArrayList<Integer> checks = new ArrayList<>();
+        DataSaver.loadRoastData(record, temps, checks, getContext());
     }
 }
