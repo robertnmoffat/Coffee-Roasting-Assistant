@@ -129,6 +129,7 @@ public class DataSaver {
             writer.println("metric:"+settings.isMetric());
             writer.println("username:"+settings.getUsername());
             writer.println("language:"+settings.getLanguage().toString());
+            writer.println("brightness:"+settings.getCameraBrightness());
             writer.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -144,10 +145,12 @@ public class DataSaver {
             String metric = reader.readLine().split(":")[1];
             String username = reader.readLine().split(":")[1];
             String language = reader.readLine().split(":")[1];
+            String brightness = reader.readLine().split(":")[1];
 
             settings.setMetric(metric.equals("true")?true:false, context);
             settings.setUsername(username, context);
             settings.setLanguage(GlobalSettings.Language.valueOf(language), context);
+            settings.setCameraBrightness(Float.parseFloat(brightness), context);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

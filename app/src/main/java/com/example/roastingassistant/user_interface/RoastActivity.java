@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.hardware.Camera;
@@ -52,11 +53,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class RoastActivity extends AppCompatActivity {
-    private Camera mCamera;
-    private CameraPreview mPreview;
-    private Camera.PictureCallback mPicture;
-
+public class RoastActivity extends AbstractCamera {
     boolean testing = false;
     int testPos=1;
     ArrayList<Integer> testTemps;
@@ -71,12 +68,6 @@ public class RoastActivity extends AppCompatActivity {
     TextView checkpointText;
 
     TextView timeText;
-    TextView tempText;
-    public int curTemp;
-    int lastTemp;
-
-    LinearLayout checkpointsLayout;
-    LinearLayout cameraPreview;
 
     float currentTime = 0.0f;
     float lastTime;
@@ -85,19 +76,6 @@ public class RoastActivity extends AppCompatActivity {
     ArrayList<Integer> tempsOverTime;
     ArrayList<Integer> safeTempsOverTime;
     ArrayList<Integer> checkpointTemps;
-
-    byte[] cameraData;
-    Bitmap cameraBitmap;
-
-    boolean cameraImageLoaded = false;
-    public Bitmap imageLeft, imageMid, imageRight;
-    public boolean imageRightUpdated=false;
-    public String guessText="";
-    public boolean guessTextUpdated=false;
-
-    public NetworkController networkController;
-
-    int STORAGE_PERMISSION_CODE = 100;
 
     MediaPlayer player;
 
@@ -111,18 +89,7 @@ public class RoastActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            AudioAttributes audioAttributes = new AudioAttributes.Builder()
-//                    .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
-//                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-//                    .build();
-//            soundPool = new SoundPool.Builder()
-//                    .setMaxStreams(6)
-//                    .setAudioAttributes(audioAttributes)
-//                    .build();
-//        } else {
-//            soundPool = new SoundPool(6, AudioManager.STREAM_MUSIC, 0);
-//        }
+        brightness = GlobalSettings.getSettings(this).getCameraBrightness();
 
         player = MediaPlayer.create(this,
                 R.raw.ring);
@@ -239,8 +206,8 @@ public class RoastActivity extends AppCompatActivity {
         checkpoints.setModel(checkpointTemps, SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED);
         plot.addSeries(checkpoints, new LineAndPointFormatter());
 
-        h.postDelayed(new Runnable(){
 
+        h.postDelayed(new Runnable(){
             public void run(){
                 if(guessTextUpdated){
                     tempText.setText("Temperature:\n"+guessText);
@@ -686,4 +653,6 @@ public class RoastActivity extends AppCompatActivity {
         ArrayList<Integer> checks = new ArrayList<>();
         DataSaver.loadRoastData(record, temps, checks, getContext());
     }
+
+
 }

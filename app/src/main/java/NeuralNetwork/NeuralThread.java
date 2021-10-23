@@ -4,20 +4,32 @@ import android.graphics.Bitmap;
 import android.os.Environment;
 
 import com.example.roastingassistant.R;
+import com.example.roastingassistant.user_interface.AbstractCamera;
+import com.example.roastingassistant.user_interface.CameraCalibrationActivity;
 import com.example.roastingassistant.user_interface.RoastActivity;
 
+import Database.Roast;
+
 public class NeuralThread extends Thread {
+    int calibrationIteration = 0;
+    final int TOTAL_CALIBRATIONS = 6;
     int runCount = 0;
     int[][] guesses = new int[3][10];
     SingleDimension[] outputSums = new SingleDimension[3];
 
-    RoastActivity roastActivity;
+    AbstractCamera roastActivity;
 
     public NeuralThread(RoastActivity roastActivity) {
         this.roastActivity = roastActivity;
     }
+    public NeuralThread(CameraCalibrationActivity cameraCalibrationActivity){
+        this.roastActivity = cameraCalibrationActivity;
+    }
 
     public void run() {
+        if(roastActivity==null)
+            return;
+
         for(int i=0; i<outputSums.length; i++){
             outputSums[i] = new SingleDimension();
             outputSums[i].values = new float[10];
@@ -30,10 +42,10 @@ public class NeuralThread extends Thread {
 
                 float previewWidth = roastActivity.getResources().getDimension(R.dimen.roastactivity_camerapreview_width);
                 float previewHeight = roastActivity.getResources().getDimension(R.dimen.roastactivity_camerapreview_height);
-                float hightlightWidth = roastActivity.getResources().getDimension(R.dimen.roastactivity_hightlight_width);
-                float hightlightHeight = roastActivity.getResources().getDimension(R.dimen.roastactivity_hightlight_height);
-                float widthPercent = hightlightWidth / previewWidth;
-                float heightPercent = hightlightHeight / previewHeight;
+                float highlightWidth = roastActivity.getResources().getDimension(R.dimen.roastactivity_hightlight_width);
+                float highlightHeight = roastActivity.getResources().getDimension(R.dimen.roastactivity_hightlight_height);
+                float widthPercent = highlightWidth / previewWidth;
+                float heightPercent = highlightHeight / previewHeight;
                 float bmSelectionWidth = (bm.getWidth() * widthPercent);
                 float bmSelectionHeight = (bm.getHeight() * heightPercent);
                 int bmLeft = (int) ((bm.getWidth() / 2) - (bmSelectionWidth / 2));
@@ -59,9 +71,11 @@ public class NeuralThread extends Thread {
                 middle = ImageProcessing.getResizedBitmap(middle, size, size);
                 right = ImageProcessing.getResizedBitmap(right, size, size);
 
-                left = ImageProcessing.filterBitmap(left);
-                middle = ImageProcessing.filterBitmap(middle);
-                right = ImageProcessing.filterBitmap(right);
+                float brightness = roastActivity.getBrightness();
+
+                left = ImageProcessing.filterBitmap(left, brightness);
+                middle = ImageProcessing.filterBitmap(middle, brightness);
+                right = ImageProcessing.filterBitmap(right, brightness);
                 roastActivity.networkController.setBitmap(left);
                 int leftGuess = roastActivity.networkController.getNumber();
                 guesses[0][leftGuess]++;

@@ -11,6 +11,7 @@ public class GlobalSettings {
     private boolean metric = false;
     private String username = "User";
     private Language language = Language.english;
+    private float cameraBrightness = 0.75f;
 
     private static GlobalSettings settings;
 
@@ -51,6 +52,15 @@ public class GlobalSettings {
 
     public void setLanguage(Language language, Context context) {
         this.language = language;
+        DataSaver.saveSettings(this, context);
+    }
+
+    public float getCameraBrightness() {
+        return cameraBrightness;
+    }
+
+    public void setCameraBrightness(float cameraBrightness, Context context) {
+        this.cameraBrightness = cameraBrightness;
         DataSaver.saveSettings(this, context);
     }
 }

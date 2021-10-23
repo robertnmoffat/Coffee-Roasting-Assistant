@@ -25,6 +25,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.roastingassistant.user_interface.BlendActivity;
+import com.example.roastingassistant.user_interface.CameraCalibrationActivity;
 import com.example.roastingassistant.user_interface.MainActivity;
 import com.example.roastingassistant.R;
 import com.example.roastingassistant.user_interface.PreviousRoastActivity;
@@ -43,7 +44,6 @@ import Database.Roast;
  * A placeholder fragment containing a simple view.
  */
 public class PlaceholderFragment extends Fragment {
-
     private static final String ARG_SECTION_NUMBER = "section_number";
 
     private PageViewModel pageViewModel;
@@ -378,4 +378,6 @@ public class PlaceholderFragment extends Fragment {
         //btnTag.setId("1");
         return btnTag;
     }
+
+
 }

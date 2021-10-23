@@ -15,7 +15,7 @@ import java.io.FileOutputStream;
 
 public class ImageProcessing {
 
-    public static Bitmap filterBitmap(Bitmap bitmap) {
+    public static Bitmap filterBitmap(Bitmap bitmap, float brightness) {
         float filterValue = 255 / 1;
 
         Square filter = new Square();
@@ -38,7 +38,7 @@ public class ImageProcessing {
 //                else
 //                    dampening = (((float)(bitmap.getWidth()-x)/(bitmap.getWidth()/3)));
 
-                float brightness = 0.75f;
+
 
                 //if(dampening<1)dampening=1;
 
@@ -51,7 +51,8 @@ public class ImageProcessing {
                 total *= brightness;
                 // float total = red + blue + green-dampening;
                 //total = total / 4.0f;
-                total = (int)Math.round((total / filterValue));
+                total = (int)Math.round((total / filterValue));//int so that it rounds down
+
                 int newColor = Color.argb(255, (int)(total * filterValue*dampening), (int)(total * filterValue*dampening), (int)(total * filterValue*dampening));
 
                 bitmap.setPixel(x, y, newColor);

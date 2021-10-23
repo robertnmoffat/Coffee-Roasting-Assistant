@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         tabs.setupWithViewPager(viewPager);
 
         GlobalSettings settings = GlobalSettings.getSettings(this);
+
         DataSaver.saveSettings(settings, this);
 
 //        ArrayList<RoastRecord> records = new ArrayList<>();
@@ -172,6 +173,10 @@ public class MainActivity extends AppCompatActivity {
                                 AlertDialog.Builder delBuilder = new AlertDialog.Builder(getContext());
                                 delBuilder.setMessage("Are you sure you wish to clear local database?").setPositiveButton("Yes", delDialogClickListener)
                                         .setNegativeButton("No", delDialogClickListener).show();
+                                break;
+                            case R.id.settingsmenu_calibrate:
+                                Intent intent = new Intent(getContext(), CameraCalibrationActivity.class);
+                                startActivity(intent);
                                 break;
                         }
 

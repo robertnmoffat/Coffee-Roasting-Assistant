@@ -4,10 +4,12 @@ import Database.DbData;
 import Utilities.CommonFunctions;
 import Utilities.GlobalSettings;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -41,6 +43,8 @@ import Networking.HttpClient;
  * Activity for displaying and handling alterations on different roasts roasting parameters.
  */
 public class RoastParamActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, HttpCallback {
+    Roast roastToRoast;
+
     public enum mode{
         adding,
         viewing,
@@ -322,14 +326,8 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
                 @Override
                 public void onClick(View v) {
                     //TODO:open roast activity
-                    Intent intent = new Intent(context, RoastActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    intent.putExtra("RoastId", roast.id);
-                    //intent.putExtras(extra);
-                    //startActivityForResult(intent, 0);
-                    finish();
-                    startActivity(intent);
-                    overridePendingTransition(0,0); //0 for no animation
+                    roastToRoast = roast;
+                    requestCalibration();
                 }
             });
 
@@ -484,5 +482,36 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
                 });
             }
         });
+    }
+
+    public void requestCalibration(){
+        Roast roast = roastToRoast;
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        Intent intent = new Intent(getContext(), CameraCalibrationActivity.class);
+                        startActivity(intent);
+
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        Intent roastIntent = new Intent(context, RoastActivity.class);
+                        roastIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        roastIntent.putExtra("RoastId", roast.id);
+                        //intent.putExtras(extra);
+                        //startActivityForResult(intent, 0);
+                        finish();
+                        startActivity(roastIntent);
+                        overridePendingTransition(0,0); //0 for no animation
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Calibrate temperature recognition?").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
     }
 }
