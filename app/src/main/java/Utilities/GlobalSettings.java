@@ -13,6 +13,17 @@ public class GlobalSettings {
     private Language language = Language.english;
     private float cameraBrightness = 0.75f;
 
+    public boolean isCalibrated() {
+        return calibrated;
+    }
+
+    public void setCalibrated(boolean calibrated, Context context) {
+        this.calibrated = calibrated;
+        DataSaver.saveSettings(this, context);
+    }
+
+    private boolean calibrated = false;
+
     private static GlobalSettings settings;
 
     private GlobalSettings(){

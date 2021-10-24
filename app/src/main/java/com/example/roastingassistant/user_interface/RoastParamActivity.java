@@ -327,7 +327,19 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
                 public void onClick(View v) {
                     //TODO:open roast activity
                     roastToRoast = roast;
-                    requestCalibration();
+
+                    if(GlobalSettings.getSettings(getContext()).isCalibrated()){
+                        Intent roastIntent = new Intent(context, RoastActivity.class);
+                        roastIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        roastIntent.putExtra("RoastId", roast.id);
+                        //intent.putExtras(extra);
+                        //startActivityForResult(intent, 0);
+                        finish();
+                        startActivity(roastIntent);
+                        overridePendingTransition(0,0); //0 for no animation
+                    }else{
+                        requestCalibration();
+                    }
                 }
             });
 
@@ -491,9 +503,10 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
+                        GlobalSettings.getSettings(getContext()).setCalibrated(true,getContext());
                         Intent intent = new Intent(getContext(), CameraCalibrationActivity.class);
                         startActivity(intent);
-
+                        overridePendingTransition(0,0); //0 for no animation
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
