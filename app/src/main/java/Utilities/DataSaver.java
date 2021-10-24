@@ -143,17 +143,43 @@ public class DataSaver {
             FileInputStream fis = new FileInputStream(file);
             InputStreamReader isr = new InputStreamReader(fis);
             BufferedReader reader = new BufferedReader(isr);
-            String metric = reader.readLine().split(":")[1];
-            String username = reader.readLine().split(":")[1];
-            String language = reader.readLine().split(":")[1];
-            String brightness = reader.readLine().split(":")[1];
-            String calibrated = reader.readLine().split(":")[1];
+            String metric="", username="", language="", brightness="", calibrated="";
+            String read=null;
 
-            settings.setMetric(metric.equals("true")?true:false, context);
-            settings.setUsername(username, context);
-            settings.setLanguage(GlobalSettings.Language.valueOf(language), context);
-            settings.setCameraBrightness(Float.parseFloat(brightness), context);
-            settings.setCalibrated(Boolean.parseBoolean(calibrated), context);
+            read = reader.readLine();
+            if(read!=null)
+                metric = read.split(":")[1];
+
+            read = null;
+            read = reader.readLine();
+            if (read != null)
+                username = read.split(":")[1];
+
+            read = null;
+            read = reader.readLine();
+            if (read != null)
+            language = read.split(":")[1];
+
+            read = null;
+            read = reader.readLine();
+            if (read != null)
+                brightness = read.split(":")[1];
+
+            read = null;
+            read = reader.readLine();
+            if (read != null)
+                calibrated = read.split(":")[1];
+
+            if (metric != null && metric != "")
+                settings.setMetric(Boolean.parseBoolean(metric), context);
+            if (username != null && username != "")
+                settings.setUsername(username, context);
+            if (language != null && language != "")
+                settings.setLanguage(GlobalSettings.Language.valueOf(language), context);
+            if (brightness != null && brightness != "")
+                settings.setCameraBrightness(Float.parseFloat(brightness), context);
+            if (calibrated != null && calibrated != "")
+                settings.setCalibrated(Boolean.parseBoolean(calibrated), context);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
