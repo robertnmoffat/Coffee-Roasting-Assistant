@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.roastingassistant.R;
+import com.example.roastingassistant.user_interface.menu.MenuOnClickListener;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -54,6 +55,9 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
         DatabaseHelper db = DatabaseHelper.getInstance(this.getApplicationContext());
         roasts = db.getAllRoasts();
         roastsAdded = new ArrayList<Roast>();
+
+        Button menuButton = findViewById(R.id.menuButton);
+        menuButton.setOnClickListener(new MenuOnClickListener(this));
 
         Intent intent = getIntent();
         int id = intent.getIntExtra("Id", -1);

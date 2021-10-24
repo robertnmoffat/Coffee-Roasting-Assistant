@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.roastingassistant.R;
+import com.example.roastingassistant.user_interface.menu.MenuOnClickListener;
 
 import org.w3c.dom.Text;
 
@@ -38,6 +39,9 @@ public class PreviousRoastActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_previous_roast);
+
+        Button menuButton = findViewById(R.id.menuButton);
+        menuButton.setOnClickListener(new MenuOnClickListener(this));
 
         activity = this;
 

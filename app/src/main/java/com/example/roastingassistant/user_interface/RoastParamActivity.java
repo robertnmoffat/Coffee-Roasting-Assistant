@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.roastingassistant.R;
+import com.example.roastingassistant.user_interface.menu.MenuOnClickListener;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -70,6 +71,9 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_roast_param);
+
+        Button menuButton = findViewById(R.id.menuButton);
+        menuButton.setOnClickListener(new MenuOnClickListener(this));
 
         context = this;
         checkpointsAdded = new ArrayList<Checkpoint>();

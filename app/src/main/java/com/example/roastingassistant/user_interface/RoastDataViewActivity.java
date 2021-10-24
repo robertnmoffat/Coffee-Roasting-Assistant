@@ -9,6 +9,7 @@ import android.os.Bundle;
 import com.androidplot.xy.LineAndPointFormatter;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYPlot;
+import com.example.roastingassistant.user_interface.menu.MenuOnClickListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -55,6 +56,9 @@ public class RoastDataViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_roast_data_view);
+
+        Button menuButton = findViewById(R.id.menuButton);
+        menuButton.setOnClickListener(new MenuOnClickListener(this));
 
         TextView title = findViewById(R.id.roastdataview_title_textview);
         Button doneButton = findViewById(R.id.roastdataview_done_button);

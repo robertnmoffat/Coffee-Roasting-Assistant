@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.example.roastingassistant.R;
+import com.example.roastingassistant.user_interface.menu.MenuOnClickListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,6 +43,9 @@ public class RemoteDataBrowserActivity extends AppCompatActivity implements Adap
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remote_data_browser);
+
+        Button menuButton = findViewById(R.id.menuButton);
+        menuButton.setOnClickListener(new MenuOnClickListener(this));
 
         buttons = new ArrayList<>();
 

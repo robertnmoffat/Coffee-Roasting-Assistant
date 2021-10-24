@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.roastingassistant.R;
+import com.example.roastingassistant.user_interface.menu.MenuOnClickListener;
 
 import Database.Bean;
 import Database.Blend;
@@ -31,6 +32,9 @@ public class BeanActivity extends AppCompatActivity implements HttpCallback{
         setContentView(R.layout.activity_bean);
 
         DatabaseHelper db = DatabaseHelper.getInstance(this.getApplicationContext());
+
+        Button menuButton = findViewById(R.id.menuButton);
+        menuButton.setOnClickListener(new MenuOnClickListener(this));
 
         Intent intent = getIntent();
         int id = intent.getIntExtra("Id",-1);

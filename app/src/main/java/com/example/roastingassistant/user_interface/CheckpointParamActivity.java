@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.example.roastingassistant.R;
+import com.example.roastingassistant.user_interface.menu.MenuOnClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,9 @@ public class CheckpointParamActivity extends AppCompatActivity implements Adapte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkpoint_param);
+
+        Button menuButton = findViewById(R.id.menuButton);
+        menuButton.setOnClickListener(new MenuOnClickListener(this));
 
         Spinner spinner = findViewById(R.id.checkpoint_trigger_spinner);
         List<String> categories = new ArrayList<String>();

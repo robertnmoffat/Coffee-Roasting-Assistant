@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.example.roastingassistant.R;
+import com.example.roastingassistant.user_interface.menu.MenuOnClickListener;
 import com.google.android.material.tabs.TabLayout;
 
 import Database.RoastRecord;
@@ -93,101 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         Button menuButton = findViewById(R.id.menuButton);
-        menuButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PopupMenu popup = new PopupMenu(getContext(), view);
-                MainActivity main = (MainActivity) getActivity();
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.settingsmenu_units:
-                                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        switch (which) {
-                                            case DialogInterface.BUTTON_POSITIVE:
-                                                GlobalSettings.getSettings(getContext()).setMetric(true, getContext());
-                                                Toast.makeText(getContext(), "Set to Metric.", Toast.LENGTH_SHORT).show();
-                                                break;
-
-                                            case DialogInterface.BUTTON_NEGATIVE:
-                                                GlobalSettings.getSettings(getContext()).setMetric(false, getContext());
-                                                Toast.makeText(getContext(), "Set to Standard.", Toast.LENGTH_SHORT).show();
-                                                break;
-                                        }
-                                    }
-                                };
-
-                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                                builder.setMessage("Which unit to use?").setPositiveButton("Metric", dialogClickListener)
-                                        .setNegativeButton("Standard", dialogClickListener).show();
-                                break;
-                            case R.id.settingsmenu_language:
-                                Toast.makeText(getContext(), "Only English is currently supported.", Toast.LENGTH_SHORT).show();
-                                break;
-                            case R.id.settingsmenu_username:
-                                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-
-                                alert.setTitle("Username");
-                                //alert.setMessage("Message");
-
-                                // Set an EditText view to get user input
-                                final EditText input = new EditText(getContext());
-                                alert.setView(input);
-
-                                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-                                        GlobalSettings.getSettings(getContext()).setUsername(input.getText().toString(), getContext());
-                                    }
-                                });
-
-                                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-                                        // Canceled.
-                                    }
-                                });
-
-                                alert.show();
-                                break;
-                            case R.id.settingsmenu_delDb:
-                                DialogInterface.OnClickListener delDialogClickListener = new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        switch (which) {
-                                            case DialogInterface.BUTTON_POSITIVE:
-                                                deleteDatabase("coffeeDatabase");
-                                                Toast.makeText(getContext(), "Database deleted.", Toast.LENGTH_SHORT).show();
-                                                finish();
-                                                startActivity(getIntent());
-                                                break;
-
-                                            case DialogInterface.BUTTON_NEGATIVE:
-                                                //No button clicked
-                                                break;
-                                        }
-                                    }
-                                };
-
-                                AlertDialog.Builder delBuilder = new AlertDialog.Builder(getContext());
-                                delBuilder.setMessage("Are you sure you wish to clear local database?").setPositiveButton("Yes", delDialogClickListener)
-                                        .setNegativeButton("No", delDialogClickListener).show();
-                                break;
-                            case R.id.settingsmenu_calibrate:
-                                Intent intent = new Intent(getContext(), CameraCalibrationActivity.class);
-                                startActivity(intent);
-                                break;
-                        }
-
-                        return false;//whether to consume the click message or send on to others
-                    }
-                });
-                MenuInflater inflater = popup.getMenuInflater();
-                inflater.inflate(R.menu.settings_menu, popup.getMenu());
-                popup.show();
-            }
-        });
+        menuButton.setOnClickListener(new MenuOnClickListener(this));
 
         /**
          * Thread meant for starting up the database so that the main thread doesn't have to potentially wait on it.
