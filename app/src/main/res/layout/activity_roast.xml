@@ -26,7 +26,8 @@
 
             <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp">
 
 
             <LinearLayout
@@ -35,7 +36,7 @@
                 android:layout_height="@dimen/roastactivity_camerapreview_height"
                 android:orientation="horizontal"
                 android:alpha="1"
-                android:layout_marginStart="10dp"/>
+                />
 
                 <View
                     android:id="@+id/roastactivity_highlight_view"

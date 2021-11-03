@@ -14,7 +14,7 @@ public class NeuralThread extends Thread {
     int calibrationIteration = 0;
     final int TOTAL_CALIBRATIONS = 6;
     int runCount = 0;
-    int[][] guesses = new int[3][10];
+    int[][] guesses = new int[3][11];
     SingleDimension[] outputSums = new SingleDimension[3];
 
     AbstractCamera roastActivity;
@@ -32,7 +32,7 @@ public class NeuralThread extends Thread {
 
         for(int i=0; i<outputSums.length; i++){
             outputSums[i] = new SingleDimension();
-            outputSums[i].values = new float[10];
+            outputSums[i].values = new float[11];
         }
 
         while(true) {
@@ -101,7 +101,7 @@ public class NeuralThread extends Thread {
 
                     int[] highestCount = new int[]{0,0,0};
                     int[] position = new int[]{-1,-1,-1};
-                    for(int i=0; i<10; i++){
+                    for(int i=0; i<11; i++){
                         for(int p=0; p<3; p++) {
                             if(outputSums[p].values[i]>highestOutput[p]){
                                 highestOutput[p] = outputSums[p].values[i];
@@ -121,6 +121,8 @@ public class NeuralThread extends Thread {
 
                             float nnTotal = getTotal(roastActivity.networkController);
                             roastActivity.guessText = "" + sumTemp;//temp+" sums: "+sumTemp+" total:"+nnTotal;//+" "+roastActivity.networkController.getErrorEstimate();
+                            if(highestOutputPos[0]==10||highestOutputPos[1]==10||highestOutputPos[2]==10)
+                                roastActivity.guessText="No number found.";
 
                             roastActivity.updateCurTemp(sumTemp);
                         }
@@ -129,7 +131,7 @@ public class NeuralThread extends Thread {
                         roastActivity.guessTextUpdated=true;
                     }
                     runCount=0;
-                    guesses = new int[3][10];
+                    guesses = new int[3][11];
                     clearOutputSums();
                 }else {
                     runCount++;
@@ -157,7 +159,7 @@ public class NeuralThread extends Thread {
 
     public float getTotal(NetworkController nController){
         float total = 0.0f;
-        for(int i=0; i<10; i++){
+        for(int i=0; i<11; i++){
             total+=nController.getOutput(i);
         }
         return total;
@@ -171,7 +173,7 @@ public class NeuralThread extends Thread {
 
     public void clearOutputSums(){
         for(int i=0; i<outputSums.length; i++){
-            outputSums[i].values = new float[10];
+            outputSums[i].values = new float[11];
         }
     }
 }

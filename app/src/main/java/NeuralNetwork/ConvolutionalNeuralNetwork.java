@@ -1,6 +1,7 @@
 package NeuralNetwork;
 
 public class ConvolutionalNeuralNetwork {
+    public int version;
     public Square input;
 
     public SquareLayer[] filterLayers;

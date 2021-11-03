@@ -49,20 +49,20 @@ public class NetworkFileLoader {
      */
     public static ConvolutionalNeuralNetwork loadNet(String pathString, AssetManager assets) throws IOException {
         ConvolutionalNeuralNetwork network = new ConvolutionalNeuralNetwork();
-        NetworkInitializer.InitializeNetwork(network);
 
 
         //Path path = Paths.get(pathString);
         //byte[] bytes = Files.readAllBytes(path);
         InputStream is = assets.open(pathString, AssetManager.ACCESS_BUFFER);
 
-        byte[] bytes = new byte[281177];
+        byte[] bytes = new byte[626688];//281177];
         int count = is.read(bytes);
         int byteOffset = 0;
 
         int version = (char)bytes[byteOffset++];
-//byte[] bytes = new byte[4];
-//int byteOffset = 0;
+
+        NetworkInitializer.InitializeNetwork(network, version);
+
 
         for (int l = 0; l < network.filterLayers[0].squares.length; l++)
         {

@@ -53,7 +53,7 @@ public class CameraCalibrationActivity extends AbstractCamera {
         setContentView(R.layout.activity_camera_calibration);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         calibrating = true;
-        brightness = 0.25f;
+        brightness = 0.0f;
         checkPermission();
 
         displayInfoPopup();
@@ -121,10 +121,13 @@ public class CameraCalibrationActivity extends AbstractCamera {
                         mid.setImageBitmap(imageMid);
                         ImageView right = findViewById(R.id.cameracalibrationactivity_rightimg_imageview);
                         right.setImageBitmap(imageRight);
-                        calibrationChoicesButtons[calibrationIteration].setText(guessText);
+                        if (guessText.equals("No number found."))
+                            calibrationChoicesButtons[calibrationIteration].setText("-");
+                        else
+                            calibrationChoicesButtons[calibrationIteration].setText(guessText);
                         brightnessLevels[calibrationIteration] = brightness;
-                        Log.d("Iteration", ""+brightness);
-                        brightness+=0.25;
+                        Log.d("Iteration", "" + brightness);
+                        brightness += 0.20;
                         calibrationIteration++;
                     }else if (calibrationIteration>=CALIBRATION_RESET){
                         brightness = 0.50f;

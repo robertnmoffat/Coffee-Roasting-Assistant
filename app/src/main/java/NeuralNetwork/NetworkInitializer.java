@@ -28,8 +28,8 @@ public class NetworkInitializer {
     static int secondDownsampleWidth = 5;
 
     static int hiddenLayerCount = 2;
-    static int firstHiddenLayerNeuronCount = 120;
-    static int secondHiddenLayerNeuronCount = 100;
+    static int firstHiddenLayerNeuronCount = 240;//120;
+    static int secondHiddenLayerNeuronCount = 200;//100;
 
     static int firstWeightCount = secondDownsampleWidth * secondDownsampleWidth * //amount of pixels per downsampled image
             secondConvolutionCount * //amount of downsampled images
@@ -38,6 +38,7 @@ public class NetworkInitializer {
     static int secondWeightCount = firstHiddenLayerNeuronCount * secondHiddenLayerNeuronCount;//amount of neurons in first layer multiplied by amount in second layer
 
     static int outputNeuronCount = 10;
+    static int outputNeuronCountV2 = 11;
 
     static int thirdWeightCount = secondHiddenLayerNeuronCount * outputNeuronCount;//amount of neurons in last layer multiplied by amount of output neurons
 
@@ -68,7 +69,15 @@ public class NetworkInitializer {
      * Initializes all of the structures of the network according to what is represented in the saved neural net.
      * @param network An initialized untrained neural network.
      */
-    public static void InitializeNetwork(ConvolutionalNeuralNetwork network){
+    public static void InitializeNetwork(ConvolutionalNeuralNetwork network, int version){
+        switch (version){
+            case 2:
+                outputNeuronCount = outputNeuronCountV2;
+                thirdWeightCount = secondHiddenLayerNeuronCount * outputNeuronCount;
+                break;
+        }
+        network.version = version;
+
         network.filterLayers = new SquareLayer[2];
         network.convolutedLayers = new SquareLayer[2];
         network.activatedConvolutedLayers = new SquareLayer[2];
