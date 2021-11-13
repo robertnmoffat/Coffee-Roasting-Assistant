@@ -100,8 +100,10 @@ public class RoastActivity extends AbstractCamera {
         if(testing){
             testTemps = new ArrayList<>();
             RoastRecord record = new RoastRecord();
-            record.filename="TestData";
-            record.filesizeBytes = 15040;
+            //record.filename="TestData";Ethiopia light Wed Nov 03 10:27:42 PDT 2021
+            record.filename = "Ethiopia light Wed Nov 03 10:27:42 PDT 2021";
+            //record.filesizeBytes = 15040;
+            record.filesizeBytes = 14624;
             DataSaver.loadRoastData(record, testTemps, new ArrayList<>(), this);
         }
 
@@ -228,7 +230,7 @@ public class RoastActivity extends AbstractCamera {
                     currentTime += (System.nanoTime()/1000000000.0f)-lastTime;
                     int mins = (int)(currentTime/60);
                     float secs = currentTime-(mins*60);
-                    String secString = String.format("%.1f", secs);
+                    String secString = String.format("%2.0f", secs);
                     timeString = ""+mins+":"+secString;
                     timeText.setText("Time:" + timeString);
                     lastTime = System.nanoTime()/1000000000.0f;
@@ -244,6 +246,10 @@ public class RoastActivity extends AbstractCamera {
 
                     //if((int)(currentTime/1000000000)%2==0) {
 
+                    if (turnedAround) {
+                           fixNine();
+
+                    }
                     recordSafeTemp();
 
                     if (testing) {
@@ -638,7 +644,7 @@ public class RoastActivity extends AbstractCamera {
         record.dateTime = Calendar.getInstance().getTime().toString();
         record.roastProfile = roast;
         record.filename = record.roastProfile.name+" "+record.dateTime;
-        record.filesizeBytes = (checkpointTemps.size()+safeTempsOverTime.size()+2)*Integer.BYTES;
+        record.setFilesizeBytes(checkpointTemps, safeTempsOverTime);
         record.id = db.addRoastRecord(record);
 
         record.endWeightPounds = 5.0f;
@@ -660,4 +666,39 @@ public class RoastActivity extends AbstractCamera {
     }
 
 
+    private void fixNine(){
+        if(tempsOverTime.size()<3)
+            return;
+
+        int lastTemp = tempsOverTime.get(tempsOverTime.size()-3);
+        int curTemp = tempsOverTime.get(tempsOverTime.size()-1);
+
+        int lastTempHundreds = lastTemp/100;
+        int lastTempTens = (lastTemp-lastTempHundreds*100)/10;
+        int lastTempOnes = (lastTemp - lastTempHundreds*100 - lastTempTens*10);
+
+        int curTempHundreds = curTemp/100;
+        int curTempTens = (curTemp-curTempHundreds*100)/10;
+        int curTempOnes = (curTemp - curTempHundreds*100 - curTempTens*10);
+
+
+        if(curTempTens==5){
+            if(lastTempTens==8||lastTempTens==9){
+                curTempTens=9;
+            }
+        }
+
+        if(curTempOnes==5){
+            if(lastTempOnes==8||lastTempOnes==9){
+                curTempOnes=9;
+            }
+        }
+
+
+        int newTemp =curTempHundreds*100 + curTempTens*10 + curTempOnes;
+        if(curTemp!=newTemp)
+            Log.d("","");
+        curTemp = newTemp;
+        tempsOverTime.set(tempsOverTime.size()-1, curTemp);
+    }
 }

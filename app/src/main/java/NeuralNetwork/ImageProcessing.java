@@ -18,13 +18,6 @@ public class ImageProcessing {
     public static Bitmap filterBitmap(Bitmap bitmap, float brightness) {
         float filterValue = 255 / 1;
 
-        Square filter = new Square();
-        filter.width = 3;
-        filter.values = new float[][]{{0,1,0},
-                {0,1,0},
-                {0,1,0}};
-
-
 
         for (int y = 0; y < bitmap.getHeight(); y++)
         {
@@ -111,10 +104,30 @@ public class ImageProcessing {
         return resizedBitmap;
     }
 
+    /**
+     * Translate passed bitmap onto a new one of the same size. Empty space filled with black.
+     * @param bm Bitmap to be translated
+     * @param horizontal How many pixels to translate horizontally
+     * @param vertical How many pixels to translate vertically
+     * @return New bitmap with bm translated to new position.
+     */
+    public static Bitmap translateBitmap(Bitmap bm, int horizontal, int vertical) {
+        Bitmap bmOverlay = Bitmap.createBitmap(bm.getWidth(), bm.getHeight(), Bitmap.Config.ARGB_8888);
+
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+
+        Canvas canvas = new Canvas(bmOverlay);
+        canvas.drawRect(0,0,bm.getWidth(),bm.getHeight(),paint);
+        canvas.drawBitmap(bm, horizontal, vertical, null);
+
+        return bmOverlay;
+    }
+
     public static void SaveImage(Bitmap finalBitmap, String number) {
         String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath();
         File myDir = new File(root + "/guessNums/"+number);
-        myDir.mkdirs();
+        myDir.mkdirs();Canvas canvas;
         File[] files = myDir.listFiles();
         int count = files==null?0:files.length;
 

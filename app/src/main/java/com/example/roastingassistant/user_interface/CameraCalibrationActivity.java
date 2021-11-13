@@ -39,7 +39,7 @@ import java.util.List;
 public class CameraCalibrationActivity extends AbstractCamera {
     int calibrationIteration = 0;
     final int TOTAL_CALIBRATIONS = 6;
-    final int CALIBRATION_RESET = 12;
+    final int CALIBRATION_RESET = 6;
 
     Button[] calibrationChoicesButtons = new Button[TOTAL_CALIBRATIONS];
     float[] brightnessLevels = new float[TOTAL_CALIBRATIONS];
@@ -70,18 +70,7 @@ public class CameraCalibrationActivity extends AbstractCamera {
         calibrationChoicesButtons[3] = findViewById(R.id.cameracalibrationactivity_output4_button);
         calibrationChoicesButtons[4] = findViewById(R.id.cameracalibrationactivity_output5_button);
         calibrationChoicesButtons[5] = findViewById(R.id.cameracalibrationactivity_output6_button);
-        for(int i=0; i<TOTAL_CALIBRATIONS; i++) {
-            final int pos = i;
-            brightnessLevels[i] = 0.0f;
-            calibrationChoicesButtons[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    GlobalSettings.getSettings(getContext()).setCameraBrightness(brightnessLevels[pos], getContext());
-                    Toast.makeText(getContext(), "brightness:"+brightnessLevels[pos],Toast.LENGTH_LONG).show();
-                    finish();
-                }
-            });
-        }
+
 
         Button zoomInButton = findViewById(R.id.cameracalibrationactivity_zoomin_button);
         zoomInButton.setOnClickListener(new View.OnClickListener() {
@@ -125,12 +114,24 @@ public class CameraCalibrationActivity extends AbstractCamera {
                             calibrationChoicesButtons[calibrationIteration].setText("-");
                         else
                             calibrationChoicesButtons[calibrationIteration].setText(guessText);
+
+                        final float finalBright = brightness;
+                        calibrationChoicesButtons[calibrationIteration].setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                GlobalSettings.getSettings(getContext()).setCameraBrightness(finalBright, getContext());
+                                Toast.makeText(getContext(), "brightness:"+finalBright,Toast.LENGTH_LONG).show();
+                                finish();
+                            }
+                        });
+
                         brightnessLevels[calibrationIteration] = brightness;
                         Log.d("Iteration", "" + brightness);
-                        brightness += 0.20;
+                        brightness += 0.10;
                         calibrationIteration++;
                     }else if (calibrationIteration>=CALIBRATION_RESET){
-                        brightness = 0.50f;
+                        if(brightness>=1.8)
+                            brightness = 0.0f;
                         calibrationIteration = 0;
                     }else{
                         calibrationIteration++;

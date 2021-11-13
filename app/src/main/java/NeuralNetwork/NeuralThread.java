@@ -16,6 +16,7 @@ public class NeuralThread extends Thread {
     int runCount = 0;
     int[][] guesses = new int[3][11];
     SingleDimension[] outputSums = new SingleDimension[3];
+    int lastGuess=0;
 
     AbstractCamera roastActivity;
 
@@ -62,11 +63,12 @@ public class NeuralThread extends Thread {
 
 
                 //bm = getBitmapSubsection(bm, bmLeft,bmTop,bmRight,bmBottom);
-                bm = Bitmap.createBitmap(bm, bmLeft-sideBuffer, bmBottom-topBuffer, width+sideBuffer+sideBuffer, height+topBuffer+topBuffer);//Add buffers twice to first counter the left and bottom buffer and hen to actual extend by that amount.
+                bm = Bitmap.createBitmap(bm, (int)((bmLeft-sideBuffer)*1.01), (int)((bmBottom-topBuffer)*1.01), width+sideBuffer+sideBuffer, height+topBuffer+topBuffer);//Add buffers twice to first counter the left and bottom buffer and hen to actual extend by that amount.
                 Bitmap left = Bitmap.createBitmap(bm, 0, 0, (int) third+sideBuffer+sideBuffer, height+topBuffer+topBuffer);;
                 Bitmap middle = Bitmap.createBitmap(bm, (int) (third), 0, (int) third+sideBuffer+sideBuffer, height+topBuffer+topBuffer);;
                 Bitmap right = Bitmap.createBitmap(bm, (int) (third * 2), 0, (int) (third+sideBuffer+sideBuffer), height+topBuffer+topBuffer);
                 int size = 64;
+
                 left = ImageProcessing.getResizedBitmap(left, size, size);
                 middle = ImageProcessing.getResizedBitmap(middle, size, size);
                 right = ImageProcessing.getResizedBitmap(right, size, size);
@@ -76,6 +78,64 @@ public class NeuralThread extends Thread {
                 left = ImageProcessing.filterBitmap(left, brightness);
                 middle = ImageProcessing.filterBitmap(middle, brightness);
                 right = ImageProcessing.filterBitmap(right, brightness);
+
+
+                int translationDistance = 2;
+                switch (runCount){
+                    case 1:
+                        left = ImageProcessing.translateBitmap(left, -translationDistance, 0);
+                        middle = ImageProcessing.translateBitmap(middle, -translationDistance, 0);
+                        right = ImageProcessing.translateBitmap(right, -translationDistance, 0);
+                        break;
+                    case 2:
+                        left = ImageProcessing.translateBitmap(left, translationDistance, 0);
+                        if (lastGuess != 9)
+                            middle = ImageProcessing.translateBitmap(middle, translationDistance, 0);
+                        right = ImageProcessing.translateBitmap(right, translationDistance, 0);
+                        break;
+                    case 3:
+                        left = ImageProcessing.translateBitmap(left, 0, -translationDistance);
+                        if (lastGuess != 9)
+                            middle = ImageProcessing.translateBitmap(middle, 0, -translationDistance);
+                        right = ImageProcessing.translateBitmap(right, 0, -translationDistance);
+                        break;
+                    case 4:
+                        left = ImageProcessing.translateBitmap(left, 0, translationDistance);
+                        if (lastGuess != 9)
+                            middle = ImageProcessing.translateBitmap(middle, 0, translationDistance);
+                        right = ImageProcessing.translateBitmap(right, 0, translationDistance);
+                        break;
+                    case 5:
+                        translationDistance += 1;
+                        left = ImageProcessing.translateBitmap(left, -translationDistance, 0);
+                        if (lastGuess != 9)
+                            middle = ImageProcessing.translateBitmap(middle, -translationDistance, 0);
+                        right = ImageProcessing.translateBitmap(right, -translationDistance, 0);
+                        break;
+                    case 6:
+                        translationDistance += 1;
+                        left = ImageProcessing.translateBitmap(left, translationDistance, 0);
+                        if (lastGuess != 9)
+                            middle = ImageProcessing.translateBitmap(middle, translationDistance, 0);
+                        right = ImageProcessing.translateBitmap(right, translationDistance, 0);
+                        break;
+                    case 7:
+                        translationDistance += 1;
+                        left = ImageProcessing.translateBitmap(left, 0, -translationDistance);
+                        if (lastGuess != 9)
+                            middle = ImageProcessing.translateBitmap(middle, 0, -translationDistance);
+                        right = ImageProcessing.translateBitmap(right, 0, -translationDistance);
+                        break;
+                    case 8:
+                        translationDistance += 1;
+                        left = ImageProcessing.translateBitmap(left, 0, translationDistance);
+                        if (lastGuess != 9)
+                            middle = ImageProcessing.translateBitmap(middle, 0, translationDistance);
+                        right = ImageProcessing.translateBitmap(right, 0, translationDistance);
+                        break;
+                }
+
+
                 roastActivity.networkController.setBitmap(left);
                 int leftGuess = roastActivity.networkController.getNumber();
                 guesses[0][leftGuess]++;
@@ -83,6 +143,7 @@ public class NeuralThread extends Thread {
 
                 roastActivity.networkController.setBitmap(middle);
                 int middleGuess = roastActivity.networkController.getNumber();
+                lastGuess = middleGuess;
                 guesses[1][middleGuess]++;
                 addOutputs(outputSums[1], roastActivity.networkController.network.outputs);
 
@@ -95,7 +156,7 @@ public class NeuralThread extends Thread {
                         Environment.DIRECTORY_PICTURES).getAbsolutePath();
 
 
-                if(runCount==6) {
+                if(runCount==8) {
                     float[] highestOutput = new float[]{-9999.0f,-9999.0f,-9999.0f};
                     int[] highestOutputPos = new int[]{-1,-1,-1};
 
@@ -121,10 +182,11 @@ public class NeuralThread extends Thread {
 
                             float nnTotal = getTotal(roastActivity.networkController);
                             roastActivity.guessText = "" + sumTemp;//temp+" sums: "+sumTemp+" total:"+nnTotal;//+" "+roastActivity.networkController.getErrorEstimate();
-                            if(highestOutputPos[0]==10||highestOutputPos[1]==10||highestOutputPos[2]==10)
-                                roastActivity.guessText="No number found.";
-
-                            roastActivity.updateCurTemp(sumTemp);
+                            if(highestOutputPos[0]==10||highestOutputPos[1]==10||highestOutputPos[2]==10) {
+                                roastActivity.guessText = "No number found.";
+                            }else {
+                                roastActivity.updateCurTemp(sumTemp);
+                            }
                         }
                         else
                             roastActivity.guessText = "no number";

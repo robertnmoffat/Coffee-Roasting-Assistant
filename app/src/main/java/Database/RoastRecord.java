@@ -1,5 +1,6 @@
 package Database;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -27,6 +28,10 @@ public class RoastRecord extends DbData{
         this.startWeightPounds = startWeightPounds;
         this.endWeightPounds = endWeightPounds;
         this.dateTime = Calendar.getInstance().getTime().toString();
+    }
+
+    public void setFilesizeBytes(ArrayList<Integer> checkpointTemps, ArrayList<Integer> safeTempsOverTime){
+        filesizeBytes = (checkpointTemps.size()+safeTempsOverTime.size()+2)*Integer.BYTES;
     }
 
 
