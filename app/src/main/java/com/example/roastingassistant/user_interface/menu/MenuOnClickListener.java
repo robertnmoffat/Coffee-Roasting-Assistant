@@ -12,10 +12,12 @@ import android.widget.Toast;
 import com.example.roastingassistant.R;
 import com.example.roastingassistant.user_interface.CameraCalibrationActivity;
 import com.example.roastingassistant.user_interface.MainActivity;
+import com.example.roastingassistant.user_interface.RoasterActivity;
 
 import Utilities.GlobalSettings;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.core.app.ShareCompat;
 
 public class MenuOnClickListener implements View.OnClickListener {
     Context context;
@@ -104,6 +106,11 @@ public class MenuOnClickListener implements View.OnClickListener {
                     case R.id.settingsmenu_calibrate:
                         Intent intent = new Intent(context, CameraCalibrationActivity.class);
                         context.startActivity(intent);
+                        break;
+
+                    case R.id.settingsmenu_setRoaster:
+                        Intent intent2 = new Intent(context, RoasterActivity.class);
+                        context.startActivity(intent2);
                         break;
                 }
 

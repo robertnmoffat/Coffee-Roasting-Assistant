@@ -13,11 +13,15 @@
         android:theme="@style/Theme.RoastingAssistant"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".user_interface.CameraCalibrationActivity"
-            android:label="@string/title_activity_camera_calibration"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="landscape"
+            android:name=".user_interface.RoasterActivity"
+            android:label="@string/title_activity_roaster"
             android:theme="@style/Theme.RoastingAssistant.NoActionBar"></activity>
+        <activity
+            android:name=".user_interface.CameraCalibrationActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/title_activity_camera_calibration"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.RoastingAssistant.NoActionBar" />
         <activity
             android:name=".user_interface.RoastDataViewActivity"
             android:label="@string/title_activity_roast_data_view"
@@ -82,13 +86,13 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
         <uses-library
             android:name="android.test.runner"
             android:required="false" />
         <uses-library
             android:name="android.test.base"
             android:required="false" />
-
         <uses-library
             android:name="android.test.mock"
             android:required="false" />
@@ -96,24 +100,21 @@
 
     <uses-feature android:name="android.hardware.type.watch" />
     <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:node="replace" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         tools:node="replace" />
-
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission-sdk-23
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:node="replace" />
-
     <uses-permission-sdk-23
         android:name="android.permission.READ_EXTERNAL_STORAGE"
+        tools:node="replace" />
+
+    <uses-permission-sdk-23
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:node="replace" />
 
 </manifest>

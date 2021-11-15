@@ -10,4 +10,6 @@
         android:title="Delete DB"/>
     <item android:id='@+id/settingsmenu_calibrate'
         android:title="Calibrate camera"/>
+    <item android:id='@+id/settingsmenu_setRoaster'
+        android:title="Set Roaster"/>
 </menu>
