@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
@@ -114,6 +115,12 @@ public class CameraCalibrationActivity extends AbstractCamera {
                             calibrationChoicesButtons[calibrationIteration].setText("-");
                         else
                             calibrationChoicesButtons[calibrationIteration].setText(guessText);
+
+                        calibrationChoicesButtons[calibrationIteration].setTextColor(Color.DKGRAY);
+                        if(calibrationIteration>0)
+                            calibrationChoicesButtons[calibrationIteration-1].setTextColor(Color.WHITE);
+                        else
+                            calibrationChoicesButtons[calibrationChoicesButtons.length-1].setTextColor(Color.WHITE);
 
                         final float finalBright = brightness;
                         calibrationChoicesButtons[calibrationIteration].setOnClickListener(new View.OnClickListener() {
