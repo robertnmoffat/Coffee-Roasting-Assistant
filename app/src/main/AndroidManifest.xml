@@ -14,8 +14,10 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".user_interface.RoasterActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_roaster"
-            android:theme="@style/Theme.RoastingAssistant.NoActionBar"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.RoastingAssistant.NoActionBar" />
         <activity
             android:name=".user_interface.CameraCalibrationActivity"
             android:configChanges="orientation|keyboardHidden"

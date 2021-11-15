@@ -16,7 +16,10 @@
             android:layout_height="0dp"
             android:layout_weight="0.10"
             android:orientation="horizontal"
-            android:background="@color/grayBack">
+            android:background="@color/grayBack"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+            <requestFocus/>
 
             <View
                 android:layout_width="match_parent"
@@ -122,8 +125,104 @@
                         android:gravity="end"
                         android:hint="Origin"
                         android:textColor="@color/lightGray"
-                        android:minLines="5"
+                        android:minLines="2"
                         android:textSize="20dp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:text="Brand"
+                        android:textSize="20dp"
+                        android:textColor="@color/white"/>
+                    <EditText
+                        android:id="@+id/roasteractivity_brand_edittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textSize="20dp"
+                        android:textColor="@color/lightGray"
+                        android:hint="Brand"
+                        android:gravity="end"
+                        android:layout_marginTop="10dp"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:text="Heating Type"
+                        android:textSize="20dp"
+                        android:textColor="@color/white"/>
+                    <EditText
+                        android:id="@+id/roasteractivity_heating_edittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textSize="20dp"
+                        android:textColor="@color/lightGray"
+                        android:hint="Heating Type"
+                        android:gravity="end"
+                        android:layout_marginTop="10dp"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:text="Capacity"
+                        android:textSize="20dp"
+                        android:textColor="@color/white"/>
+                    <EditText
+                        android:id="@+id/roasteractivity_capacity_edittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textSize="20dp"
+                        android:textColor="@color/lightGray"
+                        android:hint="Pounds"
+                        android:gravity="end"
+                        android:layout_marginTop="10dp"
+                        android:inputType="numberDecimal"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:text="Drum Speed"
+                        android:textSize="20dp"
+                        android:textColor="@color/white"/>
+                    <EditText
+                        android:id="@+id/roasteractivity_drumspeed_edittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textSize="20dp"
+                        android:textColor="@color/lightGray"
+                        android:hint="Drum Speed"
+                        android:gravity="end"
+                        android:layout_marginTop="10dp"
+                        android:inputType="numberDecimal"/>
                 </LinearLayout>
 
 

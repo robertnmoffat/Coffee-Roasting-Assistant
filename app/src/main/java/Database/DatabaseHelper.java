@@ -37,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_ROAST_CHECKPOINT = "roast_checkpoint";
     private static final String TABLE_BEAN = "bean";
     private static final String TABLE_ROAST_RECORD = "roast_record";
-    //private static final String TABLE_ROASTER = "roaster";
+    private static final String TABLE_ROASTER = "roaster";
     private static final String TABLE_FLAVOURS = "flavours";
     private static final String TABLE_FLAVOUR = "flavour";
 
@@ -94,12 +94,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //private static final String KEY_ROAST_RECORD_ROASTER_ID = "roaster_id";
 
     //---------roaster table columns------------
-//    private static final String KEY_ROASTER_ID = "roaster_id";
-//    private static final String KEY_ROASTER_NAME = "roaster_name";
-//    private static final String KEY_ROASTER_BRAND = "brand";
-//    private static final String KEY_ROASTER_CAPACITY_POUNDS = "capacity_pounds";
-//    private static final String KEY_ROASTER_HEATING_TYPE = "heating_type";
-//    private static final String KEY_ROASTER_DRUM_SPEED = "drum_speed";
+    private static final String KEY_ROASTER_ID = "roaster_id";
+    private static final String KEY_ROASTER_NAME = "roaster_name";
+    private static final String KEY_ROASTER_DESCRIPTION = "roaster_description";
+    private static final String KEY_ROASTER_BRAND = "brand";
+    private static final String KEY_ROASTER_CAPACITY_POUNDS = "capacity_pounds";
+    private static final String KEY_ROASTER_HEATING_TYPE = "heating_type";
+    private static final String KEY_ROASTER_DRUM_SPEED = "drum_speed";
 
     //---------flavours table columns------------
     private static final String KEY_FLAVOURS_BEAN_ID = "bean_id";
@@ -206,15 +207,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     //KEY_ROAST_RECORD_ROASTER_ID+" INTEGER REFERENCES "+KEY_ROASTER_ID+
                 ")";
 
-//        String CREATE_ROASTER_TABLE = "CREATE TABLE "+TABLE_ROASTER+
-//                "("+
-//                    KEY_ROASTER_ID+" INTEGER PRIMARY KEY,"+
-//                    KEY_ROASTER_NAME+" TEXT,"+
-//                    KEY_ROASTER_BRAND+" TEXT,"+
-//                    KEY_ROASTER_CAPACITY_POUNDS+" DECIMAL,"+
-//                    KEY_ROASTER_HEATING_TYPE+" TEXT,"+
-//                    KEY_ROASTER_DRUM_SPEED+" DECIMAL"+
-//                ")";
+        String CREATE_ROASTER_TABLE = "CREATE TABLE "+TABLE_ROASTER+
+                "("+
+                    KEY_ROASTER_ID+" INTEGER PRIMARY KEY,"+
+                    KEY_ROASTER_NAME+" TEXT,"+
+                    KEY_ROASTER_DESCRIPTION+" TEXT,"+
+                    KEY_ROASTER_BRAND+" TEXT,"+
+                    KEY_ROASTER_CAPACITY_POUNDS+" DECIMAL,"+
+                    KEY_ROASTER_HEATING_TYPE+" TEXT,"+
+                    KEY_ROASTER_DRUM_SPEED+" DECIMAL"+
+                ")";
 
         String CREATE_FLAVOURS_TABLE = "CREATE TABLE "+TABLE_FLAVOURS+
                 "("+
@@ -236,7 +238,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_ROAST_CHECKPOINT_TABLE);
         db.execSQL(CREATE_BEAN_TABLE);
         db.execSQL(CREATE_ROAST_RECORD_TABLE);
-        //db.execSQL(CREATE_ROASTER_TABLE);
+        db.execSQL(CREATE_ROASTER_TABLE);
         db.execSQL(CREATE_FLAVOURS_TABLE);
         db.execSQL(CREATE_FLAVOUR_TABLE);
 
@@ -253,7 +255,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS "+TABLE_ROAST_PROFILE);
             db.execSQL("DROP TABLE IF EXISTS "+TABLE_BEAN);
             db.execSQL("DROP TABLE IF EXISTS "+TABLE_ROAST_RECORD);
-            //db.execSQL("DROP TABLE IF EXISTS "+TABLE_ROASTER);
+            db.execSQL("DROP TABLE IF EXISTS "+TABLE_ROASTER);
             db.execSQL("DROP TABLE IF EXISTS "+TABLE_FLAVOURS);
             db.execSQL("DROP TABLE IF EXISTS "+TABLE_FLAVOUR);
 
@@ -299,6 +301,59 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return beanId;
     }
 
+    /**
+     * Add a roaster to database
+     * @param roaster roaster to add.
+     * @return
+     */
+    public int addRoaster(Roaster roaster){
+        Log.i("Database", "Adding roaster entry to database...");
+        //Create or open database for writing
+        SQLiteDatabase db = getWritableDatabase();
+        int roasterId=-1;
+
+        db.beginTransaction();
+        try{
+            ContentValues values = new ContentValues();
+            values.put(KEY_ROASTER_NAME, roaster.name);
+            values.put(KEY_ROASTER_DESCRIPTION, roaster.description);
+            values.put(KEY_ROASTER_BRAND, roaster.brand);
+            values.put(KEY_ROASTER_CAPACITY_POUNDS, roaster.capacityPounds);
+            values.put(KEY_ROASTER_DRUM_SPEED, roaster.drumSpeed);
+            values.put(KEY_ROASTER_HEATING_TYPE, roaster.heatingType);
+
+            roasterId = (int)db.insertOrThrow(TABLE_ROASTER, null, values);
+            db.setTransactionSuccessful();
+            Log.i("Database", "Roaster entry successfully added.");
+        }catch (Exception e){
+            Log.d("Database", "Error adding bean entry to database. "+e.getMessage());
+        }finally {
+            db.endTransaction();
+        }
+
+        return roasterId;
+    }
+
+
+
+
+    public void addRoastertable(){
+        SQLiteDatabase db = getWritableDatabase();
+
+        String CREATE_ROASTER_TABLE = "CREATE TABLE "+TABLE_ROASTER+
+                "("+
+                KEY_ROASTER_ID+" INTEGER PRIMARY KEY,"+
+                KEY_ROASTER_NAME+" TEXT,"+
+                KEY_ROASTER_DESCRIPTION+" TEXT,"+
+                KEY_ROASTER_BRAND+" TEXT,"+
+                KEY_ROASTER_CAPACITY_POUNDS+" DECIMAL,"+
+                KEY_ROASTER_HEATING_TYPE+" TEXT,"+
+                KEY_ROASTER_DRUM_SPEED+" DECIMAL"+
+                ")";
+
+        db.execSQL(CREATE_ROASTER_TABLE);
+    }
+
     public void updateRoastRecordWeights(RoastRecord record){
         Log.i("Database", "Updating roast_record weights in database...");
 
@@ -314,6 +369,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.endTransaction();
         db.close();
     }
+
+    public void updateRoaster(Roaster roaster){
+        Log.i("Database", "Updating roaster entry in database...");
+        //Create or open database for writing
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.beginTransaction();
+        try{
+            ContentValues values = new ContentValues();
+            values.put(KEY_ROASTER_NAME, roaster.name);
+            values.put(KEY_ROASTER_DESCRIPTION, roaster.description);
+            values.put(KEY_ROASTER_BRAND, roaster.brand);
+            values.put(KEY_ROASTER_CAPACITY_POUNDS, roaster.capacityPounds);
+            values.put(KEY_ROASTER_DRUM_SPEED, roaster.drumSpeed);
+            values.put(KEY_ROASTER_HEATING_TYPE, roaster.heatingType);
+
+            db.update(TABLE_ROASTER, values, KEY_ROASTER_ID+"="+roaster.id, null );
+            db.setTransactionSuccessful();
+            Log.i("Database", "Roaster entry successfully updated.");
+        }catch (Exception e){
+            Log.d("Database", "Error updating roaster entry to database. "+e.getMessage());
+        }finally {
+            db.endTransaction();
+            db.close();
+        }
+    }
+
 
     public int addRoastRecord(RoastRecord record){
         Log.i("Database", "Adding roast_record entry to database...");
@@ -1008,6 +1090,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return bean;
+    }
+
+    public Roaster getRoaster(int id){
+        Roaster roaster = new Roaster();
+
+        String ROASTER_SELECT_QUERY=
+                String.format("SELECT * FROM %s WHERE %s=%d", TABLE_ROASTER, KEY_ROASTER_ID, id);
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(ROASTER_SELECT_QUERY , null);
+        try{
+            if(cursor.moveToFirst()){
+                roaster.id = id;
+                roaster.name = cursor.getString(cursor.getColumnIndex(KEY_ROASTER_NAME));
+                roaster.brand = cursor.getString(cursor.getColumnIndex(KEY_ROASTER_BRAND));
+                roaster.capacityPounds = cursor.getFloat(cursor.getColumnIndex(KEY_ROASTER_CAPACITY_POUNDS));
+                roaster.heatingType= cursor.getString(cursor.getColumnIndex(KEY_ROASTER_HEATING_TYPE));
+                roaster.drumSpeed = cursor.getFloat(cursor.getColumnIndex(KEY_ROASTER_DRUM_SPEED));
+                roaster.description = cursor.getString(cursor.getColumnIndex(KEY_ROASTER_DESCRIPTION));
+            }
+        }catch (Exception e){
+            Log.d("Database", "Error retrieving roaster from database. "+e.getMessage());
+        }finally {
+            cursor.close();
+        }
+
+        return roaster;
     }
 
     public void triggerDbBuild(){
