@@ -22,7 +22,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_gravity="center"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="20dp"
+            android:weightSum="100">
 
             <FrameLayout
                 android:layout_width="wrap_content"
@@ -78,7 +79,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Current Temp:"
-                android:layout_weight="1"
+                android:layout_weight="30"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:textColor="@color/lightGray"
@@ -90,7 +91,8 @@
             <com.androidplot.xy.XYPlot
                 style="@style/APDefacto.Dark"
                 android:id="@+id/plot"
-                android:layout_width="320dp"
+                android:layout_width="0dp"
+                android:layout_weight="70"
                 android:layout_height="220dp"
                 android:layout_marginEnd="10dp"
                 app:title="Roast Temperature"
@@ -132,6 +134,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/time_text_string"
                 android:textColor="@color/lightGray"
+                android:textSize="20dp"
                 android:layout_gravity="center"/>
             <LinearLayout
                 android:id="@+id/roastactivity_checkpoint_linearlayout"
@@ -147,6 +150,7 @@
                     android:text="@string/next_checkpoint_button_string"
                     android:textColor="@color/lightGray"
                     android:layout_gravity="center"
+                    android:textSize="20dp"
                     />
 
             </LinearLayout>

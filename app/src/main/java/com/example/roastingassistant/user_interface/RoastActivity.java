@@ -181,22 +181,22 @@ public class RoastActivity extends AbstractCamera {
             public void onClick(View view) {
                 //EditText et = findViewById(R.id.roastactivity_num_edittext);
                 //String num = //et.getText().toString();
-                int leftint = curTemp/100;
-                int midint = (curTemp-(leftint*100))/10;
-                int rightint = (curTemp-(leftint*100)-(midint*10));
-                String leftNum = ""+leftint;//String.valueOf(num.charAt(0));
-                String midNum = ""+midint;//String.valueOf(num.charAt(1));
-                String rightNum = ""+rightint;//String.valueOf(num.charAt(2));
+//                int leftint = curTemp/100;
+//                int midint = (curTemp-(leftint*100))/10;
+//                int rightint = (curTemp-(leftint*100)-(midint*10));
+//                String leftNum = ""+leftint;//String.valueOf(num.charAt(0));
+//                String midNum = ""+midint;//String.valueOf(num.charAt(1));
+//                String rightNum = ""+rightint;//String.valueOf(num.charAt(2));
+//
+//                ImageProcessing.SaveImage(imageLeft, leftNum);
+//                ImageProcessing.SaveImage(imageMid, midNum);
+//                ImageProcessing.SaveImage(imageRight, rightNum);
 
-                ImageProcessing.SaveImage(imageLeft, leftNum);
-                ImageProcessing.SaveImage(imageMid, midNum);
-                ImageProcessing.SaveImage(imageRight, rightNum);
-
-//                if(currentCheckpoint>0){
-//                    checkpointTemps.remove(checkpointTemps.size()-1);
-//                    checkpointTemps.remove(checkpointTemps.size()-1);
-//                    currentCheckpoint-=1;
-//                }
+                if(currentCheckpoint>0){
+                    checkpointTemps.remove(checkpointTemps.size()-1);
+                    checkpointTemps.remove(checkpointTemps.size()-1);
+                    currentCheckpoint-=1;
+                }
             }
         });
 
