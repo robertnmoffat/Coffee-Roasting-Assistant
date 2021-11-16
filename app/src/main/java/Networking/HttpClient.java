@@ -356,6 +356,52 @@ public class HttpClient extends AsyncTask<Void, Void, String> {
         Log.d("Server", "Returned string: "+s);
     }
 
+    public void uploadBean(Bean bean){
+        String result;
+        result = postRequest(bean);
+        bean.serverId = getIdFromResult(result);
+    }
+
+    public void uploadRoast(Roast roast){
+        String result;
+        for (int i = 0; i < roast.checkpoints.size(); i++) {
+            Checkpoint curCheck = roast.checkpoints.get(i);
+            curCheck.minutes = 0;
+            curCheck.seconds = 0;
+            result = postRequest(curCheck);
+            curCheck.serverId = getIdFromResult(result);
+        }
+
+        uploadBean(roast.bean);
+
+        result = postRequest(roast);
+        roast.serverId = getIdFromResult(result);
+
+        for (int i = 0; i < roast.checkpoints.size(); i++) {
+            RoastCheckpointAssociation roastCheck = new RoastCheckpointAssociation();
+            roastCheck.roastId = roast.serverId;
+            roastCheck.checkpointId = roast.checkpoints.get(i).serverId;
+            postRequest(roastCheck);
+        }
+    }
+
+    public void uploadBlend(Blend blend){
+        String result;
+        for(int i=0; i<blend.roasts.size(); i++){
+            uploadRoast(blend.roasts.get(i));
+        }
+        result = postRequest(blend);
+        blend.serverId = getIdFromResult(result);
+
+        for(int i=0; i<blend.roasts.size(); i++){
+            RoastBlendAssociation rba = new RoastBlendAssociation();
+            rba.roast_profile_id = blend.roasts.get(i).serverId;
+            rba.blend_id = blend.serverId;
+            postRequest(rba);
+        }
+
+    }
+
     public String postRequest(DbData data){
         String result="";
         String inputLine;

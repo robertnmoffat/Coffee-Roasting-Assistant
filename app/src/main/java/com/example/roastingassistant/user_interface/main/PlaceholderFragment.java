@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.ContactsContract;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -19,6 +21,7 @@ import Database.Checkpoint;
 import Database.RoastCheckpointAssociation;
 import Networking.HttpClient;
 import Utilities.CommonFunctions;
+import Utilities.DataSaver;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
@@ -238,29 +241,29 @@ public class PlaceholderFragment extends Fragment {
 
                         return true;
                     case R.id.upload:
-                        Roast roast = DatabaseHelper.getInstance(getContext()).getRoast(currentLongHoldRoastId);
                         HttpClient client = new HttpClient();
                         String result;
+                        switch (selection) {
+                            case bean:
+                                Bean bean = DatabaseHelper.getInstance(getContext()).getBean(currentLongHoldRoastId);
+                                client.uploadBean(bean);
+                                break;
 
-                        for(int i=0; i<roast.checkpoints.size();i++){
-                            Checkpoint curCheck = roast.checkpoints.get(i);
-                            curCheck.minutes=0;
-                            curCheck.seconds=0;
-                            result = client.postRequest(curCheck);
-                            curCheck.serverId = client.getIdFromResult(result);
-                        }
-
-                        result = client.postRequest(roast.bean);
-                        roast.bean.serverId = client.getIdFromResult(result);
-
-                        result = client.postRequest(roast);
-                        roast.serverId = client.getIdFromResult(result);
-
-                        for(int i=0; i<roast.checkpoints.size();i++){
-                            RoastCheckpointAssociation roastCheck = new RoastCheckpointAssociation();
-                            roastCheck.roastId = roast.serverId;
-                            roastCheck.checkpointId = roast.checkpoints.get(i).serverId;
-                            client.postRequest(roastCheck);
+                            case roast:
+                                Roast roast = DatabaseHelper.getInstance(getContext()).getRoast(currentLongHoldRoastId);
+                                client.uploadRoast(roast);
+                                break;
+                            case blend:
+                                Blend blend = DatabaseHelper.getInstance(getContext()).getBlend(currentLongHoldRoastId);
+                                Thread thread = new Thread(){
+                                    @Override
+                                    public void run() {
+                                        super.run();
+                                        client.uploadBlend(blend);
+                                    }
+                                };
+                                thread.start();
+                                break;
                         }
 
                         return true;
