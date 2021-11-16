@@ -719,7 +719,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return record;
     }
 
-    public void deleteRoast(int id){
+    public void deleteRoast(int id) throws android.database.sqlite.SQLiteConstraintException{
         deleteCheckpoint(id);
         SQLiteDatabase db = getWritableDatabase();
 
@@ -741,7 +741,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void deleteBean(int id){
+    public void deleteRoastBlend(int id){
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.beginTransaction();
+        String WHERE_CLAUSE = KEY_ROAST_BLEND_BLENDID_FK+"="+id;
+        int rows = db.delete(TABLE_ROAST_BLEND, WHERE_CLAUSE, null);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+    }
+
+    public void deleteBlend(int id){
+        deleteRoastBlend(id);
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.beginTransaction();
+        String WHERE_CLAUSE = KEY_BLEND_ID+"="+id;
+        int rows = db.delete(TABLE_BLEND, WHERE_CLAUSE, null);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+    }
+
+    public void deleteBean(int id) throws android.database.sqlite.SQLiteConstraintException{
         //deleteCheckpoints(id);
 
         SQLiteDatabase db = getWritableDatabase();

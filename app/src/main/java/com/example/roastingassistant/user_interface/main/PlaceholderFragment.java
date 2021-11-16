@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import Database.Checkpoint;
 import Database.RoastCheckpointAssociation;
@@ -44,6 +45,12 @@ import Database.Roast;
  * A placeholder fragment containing a simple view.
  */
 public class PlaceholderFragment extends Fragment {
+    enum menuSelection{
+        roast,
+        bean,
+        blend
+    };
+
     private static final String ARG_SECTION_NUMBER = "section_number";
 
     private PageViewModel pageViewModel;
@@ -126,7 +133,7 @@ public class PlaceholderFragment extends Fragment {
                     public boolean onLongClick(View v) {
                         //Toast.makeText(getContext(), "long press!", Toast.LENGTH_SHORT).show();
                         currentLongHoldRoastId = roast.id;
-                        showMenu(v);
+                        showMenu(v, menuSelection.roast);
                         return true;
                     }
                 });
@@ -175,7 +182,7 @@ public class PlaceholderFragment extends Fragment {
         return main.getContext();
     }
 
-    public void showMenu(View v){
+    public void showMenu(View v, menuSelection selection){
         PopupMenu popup = new PopupMenu(getContext(), v);
         MainActivity main = (MainActivity) getActivity();
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -190,7 +197,28 @@ public class PlaceholderFragment extends Fragment {
                                     case DialogInterface.BUTTON_POSITIVE:
                                         LinearLayout ll = root.findViewById(R.id.linearLayout1);
                                         //if(dbType.equals("Roast"))
-                                            DatabaseHelper.getInstance(getContext()).deleteRoast(currentLongHoldRoastId);
+                                        switch (selection){
+                                            case roast:
+                                                try {
+                                                    DatabaseHelper.getInstance(getContext()).deleteRoast(currentLongHoldRoastId);
+                                                }catch (android.database.sqlite.SQLiteConstraintException e){
+                                                    Toast.makeText(getContext(), "Roast required for a blend.", Toast.LENGTH_SHORT).show();
+                                                    return;
+                                                }
+                                                break;
+                                            case bean:
+                                                try {
+                                                    DatabaseHelper.getInstance(getContext()).deleteBean(currentLongHoldRoastId);
+                                                }catch (android.database.sqlite.SQLiteConstraintException e){
+                                                    Toast.makeText(getContext(), "Bean required for a roast.", Toast.LENGTH_SHORT).show();
+                                                    return;
+                                                }
+                                                break;
+                                            case blend:
+                                                DatabaseHelper.getInstance(getContext()).deleteBlend(currentLongHoldRoastId);
+                                                break;
+                                        }
+
                                         //if(dbType.equals("Bean"))
                                         //    DatabaseHelper.getInstance(getContext()).deleteBean(currentLongHoldRoastId);
                                         MainActivity main = (MainActivity) getActivity();
@@ -274,6 +302,15 @@ public class PlaceholderFragment extends Fragment {
         ArrayList<Bean> beans = (ArrayList<Bean>) db.getAllBeans();
         for(Bean bean: beans){
             Button dbBeanButton = createMenuButton(root, bean.name, bean.origin);
+            dbBeanButton.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    //Toast.makeText(getContext(), "long press!", Toast.LENGTH_SHORT).show();
+                    currentLongHoldRoastId = bean.id;
+                    showMenu(v, menuSelection.bean);
+                    return true;
+                }
+            });
             dbBeanButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -323,6 +360,15 @@ public class PlaceholderFragment extends Fragment {
         if(blends!=null) {
             for (Blend blend : blends) {
                 Button blendButton = createMenuButton(root, blend.name, blend.description);
+                blendButton.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        //Toast.makeText(getContext(), "long press!", Toast.LENGTH_SHORT).show();
+                        currentLongHoldRoastId = blend.id;
+                        showMenu(v, menuSelection.blend);
+                        return true;
+                    }
+                });
                 blendButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
