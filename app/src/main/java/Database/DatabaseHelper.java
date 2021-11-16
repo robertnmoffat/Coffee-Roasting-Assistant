@@ -720,6 +720,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void deleteRoast(int id){
+        deleteCheckpoint(id);
         SQLiteDatabase db = getWritableDatabase();
 
 //        if(crCursor.moveToFirst()){
