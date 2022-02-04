@@ -71,15 +71,15 @@ public class NetworkPropagator {
             }
             net.outputs.values[i] += net.biases[2].values[i];
             //No bias in output layer
-            net.activatedOutputs.values[i] = net.outputs.values[i];//Copy over outputs so that softmax can be applied
+            net.activatedOutputs.values[i] = (float)sigmoid(net.outputs.values[i]);//Copy over outputs so that softmax can be applied
         }
         //softMax(ref net.activatedOutputs);
 
         int highestPos = -1;
         float highestVal = Float.MIN_VALUE;
-        for (int i=0; i<net.outputs.values.length; i++) {
-            if (net.outputs.values[i] > highestVal) {
-                highestVal = net.outputs.values[i];
+        for (int i=0; i<net.activatedOutputs.values.length; i++) {
+            if (net.activatedOutputs.values[i] > highestVal) {
+                highestVal = net.activatedOutputs.values[i];
                 highestPos = i;
             }
         }

@@ -81,7 +81,11 @@ public class DatabaseTest {
         Thread.sleep(1000);
     }
 
-
+    public void DBT05() throws InterruptedException {
+        Thread.sleep(1000);
+        onView(withId(R.id.DBT05button)).perform(click());
+        Thread.sleep(1000);
+    }
 
 
 }

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.ContactsContract;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -129,6 +130,7 @@ public class PlaceholderFragment extends Fragment {
         DatabaseHelper db = DatabaseHelper.getInstance(getContext().getApplicationContext());
         ArrayList<Roast> roasts = (ArrayList<Roast>) db.getAllRoastsForButtons();
         if(roasts!=null) {
+            boolean first = true;
             for (Roast roast : roasts) {
                 Button viewRoastButton = createMenuButton(root, roast.name, roast.roastLevel+" "+roast.dropTemp);
                 viewRoastButton.setOnLongClickListener(new View.OnLongClickListener() {
@@ -147,6 +149,10 @@ public class PlaceholderFragment extends Fragment {
                         main.startActivity(RoastParamActivity.class, new Intent().putExtra("Mode", RoastParamActivity.mode.viewing).putExtra("Id", roast.id));
                     }
                 });
+                //if(first)
+                    viewRoastButton.setId(R.id.test_roast_id);
+                int i = viewRoastButton.getId();
+                first=false;
                 ll.addView(viewRoastButton);
             }
         }
@@ -326,7 +332,7 @@ public class PlaceholderFragment extends Fragment {
 
         //----Create and add button for browsing network data
         Button dataBrowserButton = createMenuButton(root, "Download Beans", "");
-        dataBrowserButton.setId(R.id.roast_remotedata_button);
+        dataBrowserButton.setId(R.id.bean_remotedata_button);
         dataBrowserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -387,7 +393,7 @@ public class PlaceholderFragment extends Fragment {
 
         //----Create and add button for browsing network data
         Button dataBrowserButton = createMenuButton(root, "Download Blends", "");
-        dataBrowserButton.setId(R.id.roast_remotedata_button);
+        dataBrowserButton.setId(R.id.blend_remotedata_button);
         dataBrowserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -424,6 +430,7 @@ public class PlaceholderFragment extends Fragment {
         btnTag.setBackgroundColor(getResources().getColor(R.color.lightGray));
         btnTag.setMinHeight(eightydp+eightydp);
         btnTag.setBackground(this.getResources().getDrawable(R.drawable.round_shape_btn));
+        Log.e("TEST",btnTag.getText().toString());
         //btnTag.setId("1");
         return btnTag;
     }

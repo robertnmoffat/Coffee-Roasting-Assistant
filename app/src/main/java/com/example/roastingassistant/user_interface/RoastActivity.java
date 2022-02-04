@@ -54,6 +54,7 @@ import androidx.core.app.ActivityCompat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class RoastActivity extends AbstractCamera {
     boolean testing = false;
@@ -96,6 +97,7 @@ public class RoastActivity extends AbstractCamera {
         player = MediaPlayer.create(this,
                 R.raw.ring);
 
+        curTemp = new AtomicInteger();
 
         if(testing){
             testTemps = new ArrayList<>();
@@ -254,8 +256,8 @@ public class RoastActivity extends AbstractCamera {
 
                     if (testing) {
                         if(testPos<testTemps.size()) {
-                            curTemp = testTemps.get(testPos);
-                            guessText=""+curTemp;
+                            curTemp.set(testTemps.get(testPos));
+                            guessText=""+curTemp.get();
                             guessTextUpdated=true;
                             tempsOverTime.add(testTemps.get(testPos-1));
                             tempsOverTime.add(testTemps.get(testPos));
@@ -263,7 +265,7 @@ public class RoastActivity extends AbstractCamera {
                         }
                     } else {
                         tempsOverTime.add((int) currentTime);
-                        tempsOverTime.add(curTemp);
+                        tempsOverTime.add(curTemp.get());
                     }
 
                     if(lastSafeTemp()<190){
@@ -329,7 +331,7 @@ public class RoastActivity extends AbstractCamera {
     public int lastSafeTemp(){
         if(safeTempsOverTime.size()>0)
             return safeTempsOverTime.get(safeTempsOverTime.size()-1);
-        return curTemp;
+        return curTemp.get();
     }
 
     public void triggerCheckpoint(){
@@ -610,7 +612,7 @@ public class RoastActivity extends AbstractCamera {
 
         lastTemp = newTemp;
         if(tempDif<20)
-            curTemp = newTemp;
+            curTemp.set(newTemp);
     }
 
     public void promptForSave(){

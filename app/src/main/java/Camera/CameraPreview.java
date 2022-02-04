@@ -6,16 +6,23 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+/**
+ *
+ */
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder mHolder;
-    private Camera mCamera;   public CameraPreview(Context context, Camera camera) {
+    private Camera mCamera;
+
+    public CameraPreview(Context context, Camera camera) {
         super(context);
         mCamera = camera;
         mHolder = getHolder();
         mHolder.addCallback(this);
         // deprecated setting, but required on Android versions prior to 3.0
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-    }   public void surfaceCreated(SurfaceHolder holder) {
+    }
+
+    public void surfaceCreated(SurfaceHolder holder) {
         try {
             // create the surface and start camera preview
             if (mCamera == null) {
@@ -25,11 +32,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         } catch (IOException e) {
             Log.d(VIEW_LOG_TAG, "Error setting camera preview: " + e.getMessage());
         }
-    }   public void refreshCamera(Camera camera) {
-        //camera.lock();
+    }
+
+    public void refreshCamera(Camera camera) {
         if (mHolder.getSurface() == null) {
             // preview surface does not exist
-            //camera.unlock();
             return;
         }
         // stop preview before making changes
@@ -48,15 +55,20 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         } catch (Exception e) {
             Log.d(VIEW_LOG_TAG, "Error starting camera preview: " + e.getMessage());
         }
-        //camera.unlock();
 
-    }   public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
+    }
+
+    public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         // If your preview can change or rotate, take care of those events here.
         // Make sure to stop the preview before resizing or reformatting it.
         refreshCamera(mCamera);
-    }   public void setCamera(Camera camera) {
+    }
+
+    public void setCamera(Camera camera) {
         //method to set a camera instance
         mCamera = camera;
-    }   @Override
+    }
+
+    @Override
     public void surfaceDestroyed(SurfaceHolder holder) {   }
 }

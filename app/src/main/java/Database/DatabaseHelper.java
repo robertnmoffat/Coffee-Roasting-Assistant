@@ -122,7 +122,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public static synchronized DatabaseHelper getInstance(Context context){
         if(dbInstance==null){
-            dbInstance = new DatabaseHelper(context.getApplicationContext());
+            dbInstance = new DatabaseHelper(context);
         }
         return dbInstance;
     }
@@ -258,6 +258,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS "+TABLE_ROASTER);
             db.execSQL("DROP TABLE IF EXISTS "+TABLE_FLAVOURS);
             db.execSQL("DROP TABLE IF EXISTS "+TABLE_FLAVOUR);
+            db.execSQL("DROP TABLE IF EXISTS "+TABLE_ROAST_BLEND);
 
 
             onCreate(db);
@@ -1143,7 +1144,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return roaster;
     }
 
-    public void triggerDbBuild(){
-        getReadableDatabase();
-    }
 }

@@ -36,6 +36,7 @@ import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CameraCalibrationActivity extends AbstractCamera {
     int calibrationIteration = 0;
@@ -55,6 +56,7 @@ public class CameraCalibrationActivity extends AbstractCamera {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         calibrating = true;
         brightness = 0.0f;
+        curTemp = new AtomicInteger();
         checkPermission();
 
         displayInfoPopup();
@@ -272,6 +274,7 @@ public class CameraCalibrationActivity extends AbstractCamera {
         mPicture = getPictureCallback();
         mPreview.refreshCamera(mCamera);
 
+        //Start camera thread
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -361,7 +364,7 @@ public class CameraCalibrationActivity extends AbstractCamera {
 
         lastTemp = newTemp;
         if(tempDif<20)
-            curTemp = newTemp;
+            curTemp.set(newTemp);
     }
 
     public void displayInfoPopup(){

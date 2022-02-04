@@ -5,11 +5,16 @@
     <item name="fragment_button_2" type="id"/>
 
     <item name="roast_remotedata_button" type="id"/>
+    <item name="bean_remotedata_button" type="id"/>
+    <item name="blend_remotedata_button" type="id"/>
+
     <item name="roast_roastdata_button" type="id"/>
     <item name="menu_viewroast_button" type="id"/>
 
     <item name="databrowser_openRoast_button" type="id"/>
 
     <item name="roastparamactivity_startroast_button" type="id"/>
+
+    <item name="test_roast_id" type="id"/>
 
 </resources>

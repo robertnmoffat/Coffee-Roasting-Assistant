@@ -26,6 +26,7 @@ import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import NeuralNetwork.NetworkController;
 import NeuralNetwork.NeuralThread;
@@ -35,9 +36,12 @@ import androidx.core.app.ActivityCompat;
 
 import Camera.CameraPreview;
 
+/**
+ * Class to be extended by any activities utilizing the camera hardware.
+ */
 public abstract class AbstractCamera extends AppCompatActivity {
     protected float brightness = 0.75f;
-    public boolean calibrating = false;
+    public boolean calibrating = false;//If being used by the CameraCalibration class
 
     protected Camera mCamera;
     protected CameraPreview mPreview;
@@ -45,7 +49,7 @@ public abstract class AbstractCamera extends AppCompatActivity {
 
 
     protected TextView tempText;
-    public int curTemp;
+    public AtomicInteger curTemp;
     protected int lastTemp;
 
     LinearLayout checkpointsLayout;
@@ -70,8 +74,16 @@ public abstract class AbstractCamera extends AppCompatActivity {
      */
     public abstract Bitmap getCameraBitmap();
 
+    /**
+     * Method called by the NeuralThread to update temperature in the activity.
+     * @param temp Updated temperature
+     */
     public abstract void updateCurTemp(int temp);
 
+    /**
+     * For neuralThread to access the brightness setting from the activity to be used in image preprocessing.
+     * @return The brightness value
+     */
     public float getBrightness(){
         return brightness;
     }

@@ -19,17 +19,33 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ShareCompat;
 
+/**
+ * Handles clicking on menu items on the dropdown settings menu.
+ */
 public class MenuOnClickListener implements View.OnClickListener {
     Context context;
 
+    /**
+     * Constructor
+     * @param context reference to the calling Activity's context.
+     */
     public MenuOnClickListener(Context context){
         this.context = context;
     }
 
+    /**
+     * When the menu is clicked, inflates menu view and sets up onClickListener.
+     * @param view
+     */
     @Override
     public void onClick(View view) {
         PopupMenu popup = new PopupMenu(context, view);
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            /**
+             * Handles when one of the menu options are clicked.
+             * @param item Item clicked
+             * @return Whether to consume the click message or send it on to OS
+             */
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {

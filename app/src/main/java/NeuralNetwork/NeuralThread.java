@@ -137,7 +137,11 @@ public class NeuralThread extends Thread {
 
 
                 roastActivity.networkController.setBitmap(left);
+                //long startTime = System.nanoTime();
                 int leftGuess = roastActivity.networkController.getNumber();
+                //long endTime = System.nanoTime();
+
+                //long MethodeDuration = (endTime - startTime);
                 guesses[0][leftGuess]++;
                 addOutputs(outputSums[0], roastActivity.networkController.network.outputs);
 

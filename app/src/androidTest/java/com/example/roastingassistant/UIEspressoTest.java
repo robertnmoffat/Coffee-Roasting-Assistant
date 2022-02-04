@@ -1,5 +1,6 @@
 package com.example.roastingassistant;
 
+import android.text.Html;
 import android.util.Log;
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
@@ -11,6 +12,8 @@ import com.google.android.material.textfield.TextInputLayout;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import Database.Roast;
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
@@ -27,6 +30,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static androidx.test.espresso.matcher.ViewMatchers.withSubstring;
+import static androidx.test.espresso.matcher.ViewMatchers.withTagKey;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
@@ -72,7 +76,7 @@ public class UIEspressoTest {
     @Test
     public void openMenuDropdown(){
         Log.i("Test UIT05", "Testing opening dropdown settings menu...");
-        onView(withId(R.id.menuSpinner)).perform(click());
+        onView(withId(R.id.menuButton)).perform(click());
     }
 
     @Test
@@ -90,17 +94,39 @@ public class UIEspressoTest {
         onView(withId(R.id.beanactivity_process_edittext)).perform(click()).perform(typeText("natural"), closeSoftKeyboard());
         onView(withId(R.id.beanactivity_farm_edittext)).perform(click()).perform(typeText("Anei S.N."), closeSoftKeyboard());
         onView(withId(R.id.beanactivity_add_button)).perform(click());
+        Thread.sleep(1000);
     }
 
     @Test
     public void createNewRoastEntry() throws InterruptedException {
         Log.i("Test UIT07", "Testing filling out and adding new roast entry...");
+        onView(withId(R.id.view_pager)).perform(swipeLeft());
+        Thread.sleep(1000);
+        onView(withId(R.id.fragment_button_1)).perform(click());
+        Thread.sleep(1000);
+
+        onView(withId(R.id.beanactivity_name_edittext)).perform(click()).perform(typeText("Colombian Supremo"), closeSoftKeyboard());
+        onView(withId(R.id.beanactivity_origin_edittext)).perform(click()).perform(typeText("Colombia"), closeSoftKeyboard());
+        onView(withId(R.id.beanactivity_drymethod_edittext)).perform(click()).perform(typeText("Sun"), closeSoftKeyboard());
+        onView(withId(R.id.beanactivity_flavour_edittext)).perform(click()).perform(typeText("chocolate, honey, nutty"), closeSoftKeyboard());
+        onView(withId(R.id.beanactivity_process_edittext)).perform(click()).perform(typeText("natural"), closeSoftKeyboard());
+        onView(withId(R.id.beanactivity_farm_edittext)).perform(click()).perform(typeText("Anei S.N."), closeSoftKeyboard());
+        onView(withId(R.id.beanactivity_add_button)).perform(click());
+        Thread.sleep(1000);
+
+        //Swipt right
+        onView(withId(R.id.view_pager)).perform(swipeRight());
+        onView(withId(R.id.fragment_button_0)).check(matches(isDisplayed()));
+        Thread.sleep(1000);
+
         onView(withId(R.id.fragment_button_0)).perform(click());
         Thread.sleep(1000);
 
         onView(withId(R.id.roastparamactivity_name_edittext)).perform(click()).perform(typeText("Med Colombian"),closeSoftKeyboard());
         onView(withId(R.id.roastparamactivity_bean_spinner)).perform(click());
-        onData(allOf(is(instanceOf(String.class)), is("Beans"))).perform(click());
+        Thread.sleep(1000);
+        //onView(allOf(withId(R.id.roastparamactivity_bean_spinner), withText("Colombian Supremo"))).perform(click());
+        //onData(allOf(is(instanceOf(String.class)), is("Colombian Supremo"))).perform(click());
         onView(withId(R.id.roastparamactivity_roastlevel_edittext)).perform(click()).perform(typeText("Medium"),closeSoftKeyboard());
         onView(withId(R.id.roastparamactivity_droptemp_edittext)).perform(click()).perform(typeText("430"),closeSoftKeyboard());
         onView(withId(R.id.roastparamactivity_scrollview)).perform(swipeUp());
@@ -115,6 +141,7 @@ public class UIEspressoTest {
         onView(withId(R.id.checkpoint_add_button)).perform(click());
 
         onView(withId(R.id.roastparamactivity_add_button)).perform(click());
+        Thread.sleep(1000);
     }
 
     @Test
@@ -139,7 +166,7 @@ public class UIEspressoTest {
         onView(withId(R.id.view_pager)).perform(swipeUp());
         onView(withId(R.id.roast_remotedata_button)).perform(click());
         Thread.sleep(1000);
-        onView(withId(R.id.databrowser_openRoast_button)).perform(click());
+        onView(withText("ROAST: SUMATRA")).perform(click());
         Thread.sleep(1000);
         onView(withId(R.id.roastparamactivity_add_button));
         Thread.sleep(1000);
@@ -149,7 +176,8 @@ public class UIEspressoTest {
     @Test
     public void testOpenRoastingActivity() throws InterruptedException {
         Log.i("Test UIT10", "Testing opening roast activity...");
-        onView(withId(R.id.menu_viewroast_button)).perform(click());
+        Thread.sleep(1000);
+        onView(withId(R.id.test_roast_id)).perform(click());
         Thread.sleep(1000);
         onView(withId(R.id.roastparamactivity_startroast_button)).perform(click());
         Thread.sleep(1000);
