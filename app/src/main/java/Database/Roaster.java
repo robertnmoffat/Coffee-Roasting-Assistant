@@ -3,7 +3,9 @@ package Database;
 import java.util.HashMap;
 
 
-
+/**
+ * Class containing information about a coffee roasting machine.
+ */
 public class Roaster extends DbData{
     public int id=0;
     public String name;
@@ -13,7 +15,9 @@ public class Roaster extends DbData{
     public String heatingType;
     public float drumSpeed;
 
-
+    /**
+     * Create blank Roaster object.
+     */
     public Roaster() {
         id = 0;
         name = "";
@@ -24,8 +28,10 @@ public class Roaster extends DbData{
         drumSpeed = 0.0f;
     }
 
-
-
+    /**
+     * Represent Roaster information in the form of a HashMap.
+     * @return Roaster information HashMap
+     */
     @Override
     public HashMap<String, String> toMap() {
         //TODO if needed for server

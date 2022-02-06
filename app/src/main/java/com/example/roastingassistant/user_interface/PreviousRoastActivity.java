@@ -25,6 +25,9 @@ import Database.RoastRecord;
 import Utilities.CoffeeSpreadsheet;
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * Activity for viewing a list of stored previous roast data
+ */
 public class PreviousRoastActivity extends AppCompatActivity {
 
     private TextView mTextView;
@@ -46,7 +49,7 @@ public class PreviousRoastActivity extends AppCompatActivity {
         activity = this;
 
         Intent intent = getIntent();
-        returnResult = intent.getBooleanExtra("returnResult", false);
+        returnResult = intent.getBooleanExtra("returnResult", false);//if selecting a second roast for overlay
 
         Button doneButton = findViewById(R.id.previousroast_done_button);
         Button exportButton = findViewById(R.id.previousroast_export_button);
@@ -59,6 +62,7 @@ public class PreviousRoastActivity extends AppCompatActivity {
             return;
         }
 
+        //Add a button to represent each stored roast record
         for(RoastRecord record: records){
             addButton(record);
         }
@@ -69,6 +73,8 @@ public class PreviousRoastActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        //Export roasts to xml spreadsheet
         exportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,10 +86,18 @@ public class PreviousRoastActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * get activity context for anonymous inner class
+     * @return
+     */
     public Context getContext(){
         return this;
     }
 
+    /**
+     * Add button representing a previous roast
+     * @param record
+     */
     public void addButton(RoastRecord record){
         Button button = new Button(this);
 

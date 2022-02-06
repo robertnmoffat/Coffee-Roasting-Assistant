@@ -20,12 +20,16 @@ import Database.DatabaseHelper;
 import Networking.HttpClient;
 
 /**
- * Activity for displaying and handling alterations on different un-roasted green bean's information.
+ * Activity for displaying and editing different un-roasted green bean information.
  */
 public class BeanActivity extends AppCompatActivity implements HttpCallback{
     boolean viewing = false;
     HttpClient client;
 
+    /**
+     * Sets up the activity.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,19 +42,18 @@ public class BeanActivity extends AppCompatActivity implements HttpCallback{
 
         Intent intent = getIntent();
         int id = intent.getIntExtra("Id",-1);
-        if(id!=-1&&id!=0){
+        if(id!=-1&&id!=0){//If there is an id value in the intent then it is to be viewed.
             viewing = true;
-            Bean bean = db.getBean(id);
+            Bean bean = db.getBean(id);//get the bean from the database using the id in the intent.
             setupForViewing(bean);
         }
         int serverId = intent.getIntExtra("serverId",-1);
-        if(serverId!=-1&&serverId!=0){
-            //viewing = true;
+        if(serverId!=-1&&serverId!=0){//If there is a serverId value in the intent it is to be downloaded from the server
             client = new HttpClient();
             client.idToGet = serverId;
             client.functionToPerform = HttpClient.HttpFunction.getBean;
             client.setLoadedCallback(this);
-            client.execute();
+            client.execute();//execute the passed function request and use this as a callback to return the bean value.
         }
 
         Button roastAddButton = findViewById(R.id.beanactivity_add_button);
@@ -60,6 +63,7 @@ public class BeanActivity extends AppCompatActivity implements HttpCallback{
             @Override
             public void onClick(View v) {
                 if(!viewing) {
+                    //Transfer all bean information to bean object to be added to database
                     Bean bean = new Bean();
                     bean.name = ((EditText) findViewById(R.id.beanactivity_name_edittext)).getText().toString();
                     bean.origin = ((EditText) findViewById(R.id.beanactivity_origin_edittext)).getText().toString();
@@ -77,6 +81,10 @@ public class BeanActivity extends AppCompatActivity implements HttpCallback{
         });
     }
 
+    /**
+     * Transfers a Bean objects information to the UI elements
+     * @param bean bean to be viewed
+     */
     private void setupForViewing(Bean bean) {
         EditText nameET = findViewById(R.id.beanactivity_name_edittext);
         nameET.setText(bean.name);
@@ -98,10 +106,17 @@ public class BeanActivity extends AppCompatActivity implements HttpCallback{
         flavoursET.setEnabled(false);
     }
 
+    /**
+     * Get the context of this activity. (For inner anonymous classes to reference)
+     * @return context
+     */
     public Context getContext(){
         return this;
     }
 
+    /**
+     * Loads data once it has finished download from the server.
+     */
     @Override
     public void onDataLoaded() {
         runOnUiThread(new Runnable() {

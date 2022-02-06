@@ -34,19 +34,23 @@ import Database.Roast;
 import Networking.HttpClient;
 
 /**
- * Activity for displaying and handling alterations on different coffee blend information.
- * Main functionality is to add different roasts and the percentage the blend is made up of each roast.
+ * Activity for displaying and editing different coffee blend information.
+ * Main functionality is to tie different roasts together.
  */
 public class BlendActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, HttpCallback {
     ArrayList<Roast> roasts;
     ArrayList<Roast> roastsAdded;
     int roastSelected = 0;
 
-    boolean viewing = false;
+    boolean viewing = false;//if viewing a previously saved blend rather than creating a new one
 
     HttpClient client;
     int serverId=0;
 
+    /**
+     * Sets up the activity
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,6 +121,10 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
         setupSpinner(spinner, categories);
     }
 
+    /**
+     * Download blend entry
+     * @param serverId ID of he blend on the server
+     */
     public void setupForDownloading(int serverId) {
         client = new HttpClient();
         client.idToGet = serverId;
@@ -125,6 +133,10 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
         client.execute();
     }
 
+    /**
+     * Transfers Blend object information to UI
+     * @param blend the blend to be loaded into the ui
+     */
     public void setupForViewing(Blend blend) {
         EditText nameET = findViewById(R.id.blend_name_edittext);
         nameET.setText(blend.name);
@@ -144,8 +156,8 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
     /**
      * Connects a Spinner View with the List of names to attach to it's dropdown menu.
      *
-     * @param spinner
-     * @param itemNames
+     * @param spinner the spinner
+     * @param itemNames list of names contained in the spinner element
      */
     public void setupSpinner(Spinner spinner, List<String> itemNames) {
         //spinner click listener
@@ -160,10 +172,10 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
     /**
      * Called when an item has been selected from the dropdown menu.
      *
-     * @param parent
-     * @param view
-     * @param position
-     * @param id
+     * @param parent ignored
+     * @param view ignored
+     * @param position ignored
+     * @param id id of the selected roast
      */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -176,6 +188,10 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
 
     }
 
+    /**
+     * Adds a selected roast to the UI. This includes remove button and name/description.
+     * @param roast Roast to add to UI
+     */
     public void createRoastUI(Roast roast) {
         String name = roast.name;
         String description = roast.roastLevel + " " + roast.dropTemp;
@@ -227,6 +243,10 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
 
     }
 
+    /**
+     * Copy blend information from the UI into a new blend Blend object.
+     * @return New Blend object containing UI information.
+     */
     public Blend getBlendFromActivity() {
         Blend blend = new Blend();
         blend.name = ((EditText) findViewById(R.id.blend_name_edittext)).getText().toString();
@@ -236,10 +256,17 @@ public class BlendActivity extends AppCompatActivity implements AdapterView.OnIt
         return blend;
     }
 
+    /**
+     * Get the context of this activity. (For inner anonymous classes to reference)
+     * @return the context
+     */
     public Context getContext() {
         return this;
     }
 
+    /**
+     * Handles filling in UI elements once data has been downloaded from the server.
+     */
     @Override
     public void onDataLoaded() {
         runOnUiThread(new Runnable() {

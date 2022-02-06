@@ -32,7 +32,10 @@ import Database.DbData;
 import Database.Roast;
 import Networking.HttpClient;
 
-public class RemoteDataBrowserActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, HttpCallback {
+/**
+ * Activity for viewing data stored on the server
+ */
+public class RemoteDataBrowserActivity extends AppCompatActivity implements HttpCallback {
     LinearLayout layout;
     HttpClient client;
     Spinner filterSpinner;
@@ -56,7 +59,7 @@ public class RemoteDataBrowserActivity extends AppCompatActivity implements Adap
             StrictMode.setThreadPolicy(policy);
         }
         Intent intent = getIntent();
-        String viewType = intent.getStringExtra("ViewType");
+        String viewType = intent.getStringExtra("ViewType");//Which type of data is being browsed
 
         layout = findViewById(R.id.databrowser_data_layout);
 
@@ -75,7 +78,6 @@ public class RemoteDataBrowserActivity extends AppCompatActivity implements Adap
 
         }
         client.setLoadedCallback(this);
-        //client.layout = layout;
         client.execute();
 
         EditText searchText = findViewById(R.id.databrowser_search_edittext);
@@ -87,8 +89,6 @@ public class RemoteDataBrowserActivity extends AppCompatActivity implements Adap
             }
         });
 
-        //setupSpinner();
-
         Button doneButton = findViewById(R.id.databrowser_done_button);
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,26 +98,9 @@ public class RemoteDataBrowserActivity extends AppCompatActivity implements Adap
         });
     }
 
-
     /**
-     * Connect the passed Spinner with the itemNames array
+     * Clears all data buttons. Used before applying a search filter
      */
-    public void setupSpinner(){
-        List<String> itemNames = new ArrayList<String>();
-        itemNames.add("None");
-        itemNames.add("Roasts");
-        itemNames.add("Beans");
-        itemNames.add("Blends");
-        //spinner click listener
-        filterSpinner = findViewById(R.id.databrowser_filter_spinner);
-        filterSpinner.setOnItemSelectedListener(this);
-        //adaptor for categories and spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_textview, itemNames);
-        //drop down layout style
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        filterSpinner.setAdapter(dataAdapter);
-    }
-
     public void clearButtons(){
         for (Button button:
              buttons) {
@@ -125,6 +108,10 @@ public class RemoteDataBrowserActivity extends AppCompatActivity implements Adap
         }
     }
 
+    /**
+     * Only add buttons that contain a search string. Not case sensitive.
+     * @param string Search string
+     */
     public void applyButtonFilter(String string){
         clearButtons();
 
@@ -134,7 +121,10 @@ public class RemoteDataBrowserActivity extends AppCompatActivity implements Adap
         }
     }
 
-
+    /**
+     * Adds a button representing a server data table
+     * @param data
+     */
     public void addButton(DbData data){
         Button button = new Button(this);
         switch (data.typeName){
@@ -196,33 +186,19 @@ public class RemoteDataBrowserActivity extends AppCompatActivity implements Adap
         layout.addView(button);
         buttons.add(button);
     }
+
+    /**
+     * get activity context for anonymous inner classes
+     * @return
+     */
     public Context getContext(){
         return this;
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if(client.dbData==null)
-            return;
-        //TODO: all this stuff
-        layout.removeAllViews();
-
-        String filterText = filterSpinner.getSelectedItem().toString();
-        filterText = filterText.toLowerCase();
-        filterText = filterText.substring(0, filterText.length()-1);
-        for(DbData data: client.dbData){
-            if(data.typeName!=filterText){
-                //((ViewGroup) layout).removeView(checkDescription);
-            }
-        }
-        //((ViewGroup) textAndButton).removeView(checkDescription);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
-
+    /**
+     * Called when the data has been downloaded from the server.
+     * Updates UI based on the downloaded data.
+     */
     @Override
     public void onDataLoaded() {
         runOnUiThread(new Runnable() {

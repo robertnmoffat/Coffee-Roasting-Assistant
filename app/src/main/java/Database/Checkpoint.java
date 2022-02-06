@@ -11,7 +11,11 @@ import java.util.HashMap;
 
 import Utilities.ObjectToStringConverter;
 
+/**
+ * Class representing a checkpoint during a coffee roast.
+ */
 public class Checkpoint extends DbData implements Serializable {
+    //Different checkpoint trigger types.
     public enum trig{
         Temperature,
         Time,
@@ -25,6 +29,9 @@ public class Checkpoint extends DbData implements Serializable {
     public int minutes;
     public int seconds;
 
+    /**
+     * Creates a blank Checkpoint object.
+     */
     public Checkpoint(){
         typeName = "checkpoint";
         id=0;
@@ -35,6 +42,11 @@ public class Checkpoint extends DbData implements Serializable {
         seconds=0;
     }
 
+    /**
+     * Creates a Checkpoint object according to a JSON object.
+     * @param json JSON object containing Checkpoint data
+     * @throws JSONException
+     */
     public Checkpoint(JSONObject json) throws JSONException {
         typeName = "checkpoint";
         id=0;
@@ -47,10 +59,18 @@ public class Checkpoint extends DbData implements Serializable {
         seconds=allSeconds-minutes*60;
     }
 
+    /**
+     * Adds minutes and seconds together as total seconds.
+     * @return Total time in seconds.
+     */
     public int timeTotalInSeconds(){
         return minutes*60+seconds;
     };
 
+    /**
+     * Create HashMap representing the Checkpoint object.
+     * @return HashMap representing the Checkpoint
+     */
     public HashMap<String, String> toMap(){
         HashMap<String, String> map = new HashMap<>();
         map.put("name", name);

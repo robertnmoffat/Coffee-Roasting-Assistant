@@ -9,6 +9,9 @@ import java.util.HashMap;
 
 import Utilities.ObjectToStringConverter;
 
+/**
+ * Class containing raw coffee bean information.
+ */
 public class Bean extends DbData implements Serializable  {
     public int id;
     public String origin;
@@ -21,6 +24,9 @@ public class Bean extends DbData implements Serializable  {
     public String acidity;
     public float pricePerPound;
 
+    /**
+     * Creates a blank bean object.
+     */
     public Bean(){
         typeName = "bean";
         id = 0;
@@ -37,6 +43,11 @@ public class Bean extends DbData implements Serializable  {
         pricePerPound=0.0f;
     }
 
+    /**
+     * Creates a bean object according to a JSON object representing it.
+     * @param json
+     * @throws JSONException
+     */
     public Bean(JSONObject json) throws JSONException {
         typeName = "bean";
         id = 0;
@@ -53,6 +64,10 @@ public class Bean extends DbData implements Serializable  {
         pricePerPound=Float.parseFloat(json.getString("bean_price_per_pound"));
     }
 
+    /**
+     * Represent bean information in the form of a HashMap.
+     * @return bean information HashMap
+     */
     public HashMap<String, String> toMap(){
         HashMap<String, String> map = new HashMap<>();
         map.put("name", name);

@@ -22,6 +22,9 @@ import java.util.List;
 
 import kotlinx.coroutines.DispatchedKt;
 
+/**
+ * Singleton class handling all database interactions.
+ */
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static DatabaseHelper dbInstance;
 
@@ -110,6 +113,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_FLAVOUR_ID = "id";
     private static final String KEY_FLAVOUR_DESCRIPTION = "description";
 
+    /**
+     * Singleton so private constructor. Only instantiated by self.
+     * @param context Activity context
+     */
     private DatabaseHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -117,7 +124,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /**
      * Function for accessing the database. handles creation of new DatabaseHelper so that there is only one copy.
      * Makes DatabaseHelper a singleton.
-     * @param context
+     * @param context Activity context
      * @return copy of the one DatabaseHelper object.
      */
     public static synchronized DatabaseHelper getInstance(Context context){
@@ -245,6 +252,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.i("Database", "Database created.");
     }
 
+    /**
+     * Called when database structure is updated.
+     * Drops tables so that it can be recreated.
+     * @param db
+     * @param oldVersion
+     * @param newVersion
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if(oldVersion!=newVersion){
@@ -268,7 +282,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * Add a Bean object to the database.
-     * @param bean object to be added to the database.
+     * @param bean bean object to be added to the database.
+     * @return id of bean insertion. -1 if not successful.
      */
     public int addBean(Bean bean){
         Log.i("Database", "Adding bean entry to database...");
@@ -305,7 +320,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /**
      * Add a roaster to database
      * @param roaster roaster to add.
-     * @return
+     * @return id of inserted roaster. -1 if not successful.
      */
     public int addRoaster(Roaster roaster){
         Log.i("Database", "Adding roaster entry to database...");
@@ -335,26 +350,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return roasterId;
     }
 
-
-
-
-    public void addRoastertable(){
-        SQLiteDatabase db = getWritableDatabase();
-
-        String CREATE_ROASTER_TABLE = "CREATE TABLE "+TABLE_ROASTER+
-                "("+
-                KEY_ROASTER_ID+" INTEGER PRIMARY KEY,"+
-                KEY_ROASTER_NAME+" TEXT,"+
-                KEY_ROASTER_DESCRIPTION+" TEXT,"+
-                KEY_ROASTER_BRAND+" TEXT,"+
-                KEY_ROASTER_CAPACITY_POUNDS+" DECIMAL,"+
-                KEY_ROASTER_HEATING_TYPE+" TEXT,"+
-                KEY_ROASTER_DRUM_SPEED+" DECIMAL"+
-                ")";
-
-        db.execSQL(CREATE_ROASTER_TABLE);
-    }
-
+    /**
+     * Updates the bean weights of a roast in the database.
+     * @param record RoastRecord object containing the updated weights
+     */
     public void updateRoastRecordWeights(RoastRecord record){
         Log.i("Database", "Updating roast_record weights in database...");
 
@@ -371,6 +370,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    /**
+     * Update roaster table with passed roaster object.
+     * @param roaster object representing roaster table entry
+     */
     public void updateRoaster(Roaster roaster){
         Log.i("Database", "Updating roaster entry in database...");
         //Create or open database for writing
@@ -397,7 +400,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-
+    /**
+     * Add roast record to database.
+     * @param record record to be added
+     * @return id of added record. -1 if not successful.
+     */
     public int addRoastRecord(RoastRecord record){
         Log.i("Database", "Adding roast_record entry to database...");
 
@@ -425,6 +432,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return (int)recordId;
     }
 
+    /**
+     * Add roast checkpoint to database.
+     * @param checkpoint to be added
+     * @return id of added checkpoint. -1 if not successful.
+     */
     public int addCheckpoint(Checkpoint checkpoint){
         Log.i("Database", "Adding checkpoint entry to database...");
         //Create or open database for writing
@@ -457,6 +469,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return (int)checkpointId;
     }
 
+    /**
+     * Add coffee roast to database
+     * @param roast to be added
+     * @return id of roast in db. -1 if not successful.
+     */
     public int addRoast(Roast roast){
         Log.i("Database", "Adding roast entry to database...");
         //Create or open database for writing
@@ -508,6 +525,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return roastId;
     }
 
+    /**
+     * Add blend to database
+     * @param blend to be added
+     * @return id of blend in db. -1 if not successful.
+     */
     public int addBlend(Blend blend){
         Log.i("Database", "Adding blend entry to database...");
         int blendId = -1;
@@ -555,6 +577,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return blendId;
     }
 
+    /**
+     * Get all coffee blend information stored in db
+     * @return all the blends in db. null if not found
+     */
     public ArrayList<Blend> getAllBlends(){
         ArrayList<Blend> blends = new ArrayList<Blend>();
 
@@ -596,6 +622,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return blends;
     }
 
+    /**
+     * get specific coffee blend in database
+     * @param id id of blend in db
+     * @return object representing the table entry. null if not found
+     */
     public Blend getBlend(int id){
         Blend blend = new Blend();
 
@@ -641,6 +672,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return blend;
     }
 
+    /**
+     * Get array of all roast records in the db
+     * @return all the roast records in db. null if not found
+     */
     public ArrayList<RoastRecord> getAllRoastRecords(){
         ArrayList<RoastRecord> records = new ArrayList<>();
 
@@ -669,6 +704,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return records;
     }
 
+    /**
+     * get individual roast record
+     * @param id id of roast record desired
+     * @return object representing the roast record. null if not found.
+     */
     public RoastRecord getRoastRecord(int id){
         RoastRecord record = new RoastRecord();
 
@@ -720,6 +760,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return record;
     }
 
+    /**
+     * Deletes a roast entry with the passed id.
+     * @param id id of entry to be deleted.
+     * @throws android.database.sqlite.SQLiteConstraintException
+     */
     public void deleteRoast(int id) throws android.database.sqlite.SQLiteConstraintException{
         deleteCheckpoint(id);
         SQLiteDatabase db = getWritableDatabase();
@@ -742,6 +787,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    /**
+     * Deletes a roast blend junction table with the passed id.
+     * @param id id of entry to be deleted.
+     */
     public void deleteRoastBlend(int id){
         SQLiteDatabase db = getWritableDatabase();
 
@@ -753,6 +802,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    /**
+     * Deletes a blend table with the passed id.
+     * @param id id of entry to be deleted.
+     */
     public void deleteBlend(int id){
         deleteRoastBlend(id);
         SQLiteDatabase db = getWritableDatabase();
@@ -765,6 +818,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    /**
+     * Deletes a bean entry at the passed id.
+     * @param id id of entry to be deleted.
+     * @throws android.database.sqlite.SQLiteConstraintException
+     */
     public void deleteBean(int id) throws android.database.sqlite.SQLiteConstraintException{
         //deleteCheckpoints(id);
 
@@ -778,6 +836,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    /**
+     * Deletes a checkpoint entry at the passed id.
+     * @param id id of entry to be deleted.
+     */
     public void deleteCheckpoint(int id){
         SQLiteDatabase db = getWritableDatabase();
 
@@ -789,6 +851,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    /**
+     * Get a roast entry at the passed id
+     * @param id id of roast entry
+     * @return Roast object representing the table entry. null if not found.
+     */
     public Roast getRoast(int id){
         Roast roast = new Roast();
         int checkpointCount;
@@ -843,6 +910,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return roast;
     }
 
+    /**
+     * Checks if a checkpoint already exists in database and returns the id where it is found.
+     * @param checkpoint checkpoint to be searched for
+     * @return id of found checkpoint. -1 if not found.
+     */
     public int getCheckpoint(Checkpoint checkpoint){
         String CHECKPOINT_SELECT_QUERY =
                 String.format("SELECT * FROM %s WHERE (%s='%s' AND %s='%s' AND %s=%s AND %s=%s)", TABLE_ROAST_CHECKPOINT, KEY_ROAST_CHECKPOINT_NAME, checkpoint.name, KEY_ROAST_CHECKPOINT_TRIGGER, checkpoint.trigger.toString(), KEY_ROAST_CHECKPOINT_TEMPERATURE, ""+checkpoint.temperature, KEY_ROAST_CHECKPOINT_TIME, ""+checkpoint.timeTotalInSeconds());
@@ -868,6 +940,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return -1;
     }
 
+    /**
+     * Get checkpoint entry at passed id.
+     * @param id id of desired entry.
+     * @return Checkpoint object representing entry
+     */
     public Checkpoint getCheckpoint(int id){
         Checkpoint checkpoint = new Checkpoint();
 
@@ -905,7 +982,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Get ArrayList of Roasts with only id, name, roastlevel and droptemp filled in for UI buttons. Id will be used to get full roast information when button is pressed.
+     * Get ArrayList of Roasts with only information relevant to UI buttons.
+     * Contains id, name, roastlevel and droptemp filled in for UI buttons. ID will be used to get full roast information when button is pressed.
      * @return ArrayList of partially filled in Roasts for UI buttons.
      */
     public ArrayList<Roast> getAllRoastsForButtons(){
@@ -940,6 +1018,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return roasts;
     }
 
+    /**
+     * Get ArrayList with all roast entries.
+     * @return ArrayList of Roast objects representing roast table data.
+     */
     public ArrayList<Roast> getAllRoasts(){
         Log.d("Database", "Getting all roast entries in database...");
         ArrayList<Roast> roasts = new ArrayList<Roast>();
@@ -1059,6 +1141,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return beans;
     }
 
+    /**
+     * Get ArrayList of all checkpoint entries in db
+     * @return all checkpoint entries
+     */
     public List<Checkpoint> getAllCheckpoints(){
         List<Checkpoint> checkpoints = new ArrayList<Checkpoint>();
 
@@ -1086,6 +1172,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return checkpoints;
     }
 
+    /**
+     * Get specific bean entry at id
+     * @param id id of entry
+     * @return Bean object representing db entry
+     */
     public Bean getBean(int id){
         Bean bean = new Bean();
 
@@ -1117,6 +1208,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return bean;
     }
 
+    /**
+     * Get roaster entry at id
+     * @param id id of entry
+     * @return Roaster object representing db entry
+     */
     public Roaster getRoaster(int id){
         Roaster roaster = new Roaster();
 

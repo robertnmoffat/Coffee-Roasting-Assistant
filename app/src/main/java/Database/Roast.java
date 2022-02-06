@@ -11,6 +11,9 @@ import java.util.List;
 import Database.Bean;
 import Database.Checkpoint;
 
+/**
+ * Class containing information pertaining to a coffee roast.
+ */
 public class Roast extends DbData implements Serializable {
     public int id;
     public Bean bean;
@@ -20,6 +23,9 @@ public class Roast extends DbData implements Serializable {
     public String flavour;
     public List<Checkpoint> checkpoints;
 
+    /**
+     * Create a blank roast object.
+     */
     public Roast(){
         typeName = "roast";
         id=0;
@@ -32,6 +38,11 @@ public class Roast extends DbData implements Serializable {
         checkpoints = new ArrayList<Checkpoint>();
     }
 
+    /**
+     * Create a roast according to passed JSON object.
+     * @param json JSON object containing roast information
+     * @throws JSONException
+     */
     public Roast(JSONObject json) throws JSONException {
         typeName = "roast";
         id=0;
@@ -45,8 +56,10 @@ public class Roast extends DbData implements Serializable {
         checkpoints = new ArrayList<Checkpoint>();
     }
 
-
-
+    /**
+     * Represent roast information in the form of a HashMap.
+     * @return roast information HashMap
+     */
     @Override
     public HashMap<String, String> toMap() {
         HashMap<String, String> map = new HashMap<>();

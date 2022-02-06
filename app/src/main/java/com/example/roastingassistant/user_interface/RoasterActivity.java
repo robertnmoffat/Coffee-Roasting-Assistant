@@ -18,6 +18,9 @@ import android.widget.Toast;
 
 import com.example.roastingassistant.R;
 
+/**
+ * Activity for saving information on the users roasting machine.
+ */
 public class RoasterActivity extends AppCompatActivity {
     boolean updateDb = false;
     int id = 0;
@@ -34,8 +37,15 @@ public class RoasterActivity extends AppCompatActivity {
             id = roaster.id;
         }
 
-
         Button button = findViewById(R.id.roasteractivity_update_button);
+        setupUpdateButton(button);
+    }
+
+    /**
+     * Copy UI fields into Roaster object and pass it to DB to be added.
+     * @param button Update button
+     */
+    private void setupUpdateButton(Button button){
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -68,6 +78,10 @@ public class RoasterActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Set UI elements with passed Roaster object's information.
+     * @param roaster Roaster information
+     */
     public void setViews(Roaster roaster){
         ((EditText)findViewById(R.id.roasteractivity_name_edittext)).setText(roaster.name);
         ((EditText)findViewById(R.id.roasteractivity_details_edittext)).setText(roaster.description);
@@ -77,6 +91,10 @@ public class RoasterActivity extends AppCompatActivity {
         ((EditText)findViewById(R.id.roasteractivity_drumspeed_edittext)).setText(""+roaster.drumSpeed);
     }
 
+    /**
+     * get activity context for anonymous inner classes.
+     * @return
+     */
     public Context getContext(){
         return this;
     }

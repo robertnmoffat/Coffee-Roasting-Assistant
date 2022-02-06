@@ -45,8 +45,6 @@ public abstract class AbstractCamera extends AppCompatActivity {
 
     protected Camera mCamera;
     protected CameraPreview mPreview;
-    protected Camera.PictureCallback mPicture;
-
 
     protected TextView tempText;
     public AtomicInteger curTemp;

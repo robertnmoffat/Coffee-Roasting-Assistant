@@ -38,6 +38,9 @@ import com.gun0912.tedpermission.TedPermission;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Activity for calibrating the brightness setting used in the image recognition
+ */
 public class CameraCalibrationActivity extends AbstractCamera {
     int calibrationIteration = 0;
     final int TOTAL_CALIBRATIONS = 6;
@@ -98,6 +101,7 @@ public class CameraCalibrationActivity extends AbstractCamera {
         int delay = 500; //milliseconds
 
 
+        //Start handler to iterate through brightness settings and update buttons
         h.postDelayed(new Runnable(){
             public void run(){
                 if(guessTextUpdated){
@@ -156,14 +160,17 @@ public class CameraCalibrationActivity extends AbstractCamera {
             }
         }, delay);
 
+        //Check camera hardware permission and start camera
+        checkPermission();
+
         //Start thread to run the image detection neural network.
         NeuralThread thread = new NeuralThread(this);
         thread.start();
-
-
-        checkPermission();
     }
 
+    /**
+     * Release camera hardware when paused.
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -183,13 +190,20 @@ public class CameraCalibrationActivity extends AbstractCamera {
         }
     }
 
+    /**
+     * Get the context of this activity. (For inner anonymous classes to reference)
+     * @return the context
+     */
     public Context getContext(){
         return this;
     }
 
+    /**
+     * Check camera hardware permission is granted.
+     * If it is, set up the camera preview.
+     */
     private void checkPermission(){
         PermissionListener permissionListener = new PermissionListener(){
-
             @Override
             public void onPermissionGranted() {
                 setupPreview();
@@ -249,6 +263,11 @@ public class CameraCalibrationActivity extends AbstractCamera {
         return zoom;
     }
 
+    /**
+     * Access camera hardware and get preview from it.
+     * Start a handler to constantly check if the current image has been used up.
+     * If it has, convert a new one from camera bytes to bitmap.
+     */
     private void setupPreview(){
         mCamera = Camera.open();
         mPreview = new CameraPreview(getBaseContext(), mCamera);
@@ -269,9 +288,7 @@ public class CameraCalibrationActivity extends AbstractCamera {
 
 
         cameraPreview.addView(mPreview);
-        //mCamera.setDisplayOrientation(90);
         mCamera.startPreview();
-        mPicture = getPictureCallback();
         mPreview.refreshCamera(mCamera);
 
         //Start camera thread
@@ -291,36 +308,20 @@ public class CameraCalibrationActivity extends AbstractCamera {
                         Allocation bmData = renderScriptNV21ToRGBA8888(getContext(), r.width, r.height, bytes);
                         bmData.copyTo(cameraBitmap);
                         camera.addCallbackBuffer(bytes);
-                        //camera.unlock();
                         cameraImageLoaded = true;
-
-                        //mPreview.refreshCamera(mCamera);
                     }
                 });
-
-                //.refreshCamera(mCamera);
             }
         }, 100);
     }
 
-    private Camera.PictureCallback getPictureCallback(){
-        return new Camera.PictureCallback(){
-
-            @Override
-            public void onPictureTaken(byte[] bytes, Camera camera) {
-                cameraData = bytes;
-                mPreview.refreshCamera(mCamera);
-            }
-        };
-    }
-
     /**
      * Function for acquiring bitmap from camera preview.
-     * @param context
-     * @param width
-     * @param height
-     * @param nv21
-     * @return
+     * @param context activity context
+     * @param width desired width
+     * @param height desired height
+     * @param nv21 camera image byte array
+     * @return Image allocation
      */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public Allocation renderScriptNV21ToRGBA8888(Context context, int width, int height, byte[] nv21) {
@@ -340,25 +341,38 @@ public class CameraCalibrationActivity extends AbstractCamera {
         return out;
     }
 
+    /**
+     * Reconnect the camera hardware
+     */
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onRestart() {
+        super.onRestart();
 
+        checkPermission();
     }
 
+    /**
+     * Release camera hardware
+     */
     @Override
     protected void onStop() {
         super.onStop();
         releaseCamera();
     }
 
+    /**
+     * Release camera hardware
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
         releaseCamera();
     }
 
-
+    /**
+     * Update the current temperature value.
+     * @param newTemp new temperature value
+     */
     public void updateCurTemp(int newTemp){
         int tempDif = Math.abs((newTemp-lastTemp));
 
@@ -367,6 +381,9 @@ public class CameraCalibrationActivity extends AbstractCamera {
             curTemp.set(newTemp);
     }
 
+    /**
+     * Notify user to align camera with roaster when activity is started.
+     */
     public void displayInfoPopup(){
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override

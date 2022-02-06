@@ -43,14 +43,17 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class for viewing an individual roast's data which is saved to disk
+ */
 public class RoastDataViewActivity extends AppCompatActivity {
     RoastRecord record;
     ArrayList<Integer> temps;
     ArrayList<Integer> checkpoints;
 
-    XYPlot plot;
+    XYPlot plot;//UI graph plot
 
-    int OVERLAY_REQUEST = 1;
+    int OVERLAY_REQUEST = 1;//request tag for callback
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,9 +144,7 @@ public class RoastDataViewActivity extends AppCompatActivity {
             checkDescription.setText(checkpoint.name + " \n\t" + "Time: " + timeString+ " \n\t" + "Temp: " + tempString);
 
             checkDescription.setTextColor(getResources().getColor(R.color.white));
-            //checkDescription.setBackgroundColor(getResources().getColor(R.color.grayBack));
             checkDescription.setTextSize(CommonFunctions.dp(8, getResources()));
-            //checkDescription.setGravity(Gravity.RIGHT);
             layout.addView(checkDescription);
         }
 
@@ -162,10 +163,21 @@ public class RoastDataViewActivity extends AppCompatActivity {
         layout.addView(overlayButton);
     }
 
+    /**
+     * Get activity context for anonymous inner classes
+     * @return
+     */
     public Context getContext() {
         return this;
     }
 
+    /**
+     * Called after selecting a second roast to overlay on the temperature graph.
+     * Loads that roast's data from DB and adds it to graph.
+     * @param requestCode should be OVERLAY_REQUEST
+     * @param resultCode should be RESULT_OK
+     * @param data intent containing DB ID of roast to be overlaid
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -185,35 +197,43 @@ public class RoastDataViewActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Called if an invalid record ID is provided or it is not found in the DB.
+     * Closes activity.
+     */
     public void notFound(){
         Toast.makeText(this, "Roast record not found.", Toast.LENGTH_SHORT).show();
         finish();
     }
 
+    /**
+     * Creates graph with the temp and checkpoint data from the selected roast.
+     */
     public void setupGraph(){
         SimpleXYSeries series = new SimpleXYSeries("Temp");
         series.setModel(temps, SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED);
-        //plot.addSeries(series, new LineAndPointFormatter());//new BarFormatter(Color.rgb(0, 200, 0), Color.rgb(0, 80, 0)));
 
         SimpleXYSeries checkpointSeries = new SimpleXYSeries("Checkpoints");
         checkpointSeries.setModel(checkpoints, SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED);
-        //plot.addSeries(checkpoints, new LineAndPointFormatter());
 
-        plot.addSeries(series, new LineAndPointFormatter(Color.YELLOW, null, null, null));//new BarFormatter(Color.rgb(0, 200, 0), Color.rgb(0, 80, 0)));
+        plot.addSeries(series, new LineAndPointFormatter(Color.YELLOW, null, null, null));
         LineAndPointFormatter checkpointFormatter =new LineAndPointFormatter(null, Color.GREEN, null, null);
         checkpointFormatter.getVertexPaint().setStrokeWidth(30);
         plot.addSeries(checkpointSeries, checkpointFormatter);
         plot.redraw();
     }
 
+    /**
+     * For adding a second roast's data to the graph.
+     * @param temps temp ArrayList to be displayed
+     * @param checkpoints checkpoint ArrayList to be displayed
+     */
     public void setupGraphOverlay(ArrayList<Integer> temps, ArrayList<Integer> checkpoints){
         SimpleXYSeries series = new SimpleXYSeries("Temp");
         series.setModel(temps, SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED);
-        //plot.addSeries(series, new LineAndPointFormatter());//new BarFormatter(Color.rgb(0, 200, 0), Color.rgb(0, 80, 0)));
 
         SimpleXYSeries checkpointSeries = new SimpleXYSeries("Checkpoints");
         checkpointSeries.setModel(checkpoints, SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED);
-        //plot.addSeries(checkpoints, new LineAndPointFormatter());
 
         plot.addSeries(series, new LineAndPointFormatter(Color.BLUE, null, null, null));//new BarFormatter(Color.rgb(0, 200, 0), Color.rgb(0, 80, 0)));
         LineAndPointFormatter checkpointFormatter =new LineAndPointFormatter(null, Color.RED, null, null);

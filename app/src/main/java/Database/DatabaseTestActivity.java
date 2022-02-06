@@ -10,6 +10,9 @@ import android.widget.Button;
 
 import com.example.roastingassistant.R;
 
+/**
+ * Activity used in testing to gain access to the database.
+ */
 public class DatabaseTestActivity extends AppCompatActivity {
 
     @Override
@@ -57,16 +60,26 @@ public class DatabaseTestActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Starts database.
+     * @return
+     */
     public DatabaseHelper createDB(){
         DatabaseHelper db = DatabaseHelper.getInstance(this.getApplicationContext());
         return db;
     }
 
+    /**
+     * DBT01: Create database and generate tables.
+     */
     public void dbT01(){
         Log.d("Database", "Running test DBT01...");
-        //DatabaseHelper db = DatabaseHelper.getInstance(this.getApplicationContext());
-        //db.triggerDbBuild();
+        DatabaseHelper db = DatabaseHelper.getInstance(this.getApplicationContext());
     }
+
+    /**
+     * DBT02: Add new bean entry in database.
+     */
     public void dbT02(){
         Log.d("Database", "Running test DBT02...");
         DatabaseHelper db = DatabaseHelper.getInstance(this.getApplicationContext());
@@ -79,6 +92,10 @@ public class DatabaseTestActivity extends AppCompatActivity {
         bean.farm = "Anei S.N.";
         db.addBean(bean);
     }
+
+    /**
+     * DBT03: Add new Roast entry to database.
+     */
     public void dbT03(){
         Log.d("Database", "Running test DBT03...");
         DatabaseHelper db = DatabaseHelper.getInstance(this);
@@ -105,6 +122,10 @@ public class DatabaseTestActivity extends AppCompatActivity {
         db.addRoast(roast);
         Log.d("","");
     }
+
+    /**
+     * DBT04: Add new Blend entry to database.
+     */
     public void dbT04(){
         Log.d("Database", "Running test DBT04...");
         DatabaseHelper db = DatabaseHelper.getInstance(this.getApplicationContext());
@@ -138,6 +159,9 @@ public class DatabaseTestActivity extends AppCompatActivity {
         Log.d("jkl","jkl");
     }
 
+    /**
+     * DDBT05: Add new Roaster entry to database.
+     */
     public void dbT05(){
         Log.d("Database", "Running test DBT04...");
         DatabaseHelper db = DatabaseHelper.getInstance(this.getApplicationContext());

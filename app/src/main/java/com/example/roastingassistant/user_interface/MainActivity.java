@@ -150,12 +150,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
-
-
-
-
     private void copyInputStreamToFile(InputStream inputStream, File file)
             throws IOException {
 
@@ -179,14 +173,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
-
-
-
-
-
-
+    /**
+     * Handles result of requesting write permission
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){
             case REQUEST:
@@ -203,19 +195,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        Log.d("Database", "MainActivity resumed.");
-
-
-    }
-
-    public Context getActivity() {
-        return this;
-    }
-
+    /**
+     * Starts the RoastParamActivity
+     */
     public void startRoastParamActivity() {
         Intent intent = new Intent(this, RoastParamActivity.class);
         intent.putExtra("Mode", RoastParamActivity.mode.adding);
@@ -224,6 +206,9 @@ public class MainActivity extends AppCompatActivity {
         overridePendingTransition(0, 0); //0 for no animation
     }
 
+    /**
+     * Starts the BeanActivity
+     */
     public void startBeanViewActivity() {
         Intent intent = new Intent(this, BeanActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -231,6 +216,10 @@ public class MainActivity extends AppCompatActivity {
         overridePendingTransition(0, 0); //0 for no animation
     }
 
+    /**
+     * Starts the bean activity for viewing a database bean entry.
+     * @param id database id of the desired bean
+     */
     public void startBeanViewActivity(int id) {
         Intent intent = new Intent(this, BeanActivity.class).putExtra("Id", id);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -238,13 +227,10 @@ public class MainActivity extends AppCompatActivity {
         overridePendingTransition(0, 0); //0 for no animation
     }
 
-    public void startBlendViewActivity() {
-        Intent intent = new Intent(this, BlendActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        startActivityForResult(intent, 0);
-        overridePendingTransition(0, 0); //0 for no animation
-    }
-
+    /**
+     * Starts any activity that doesn't require parameters
+     * @param c The activity
+     */
     public void startActivity(Class c) {
         Intent intent = new Intent(this, c);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -252,6 +238,11 @@ public class MainActivity extends AppCompatActivity {
         overridePendingTransition(0, 0); //0 for no animation
     }
 
+    /**
+     * Starts any activity with pre-setup intent
+     * @param c the class to be started
+     * @param extra the intent with extras for the activity to be started
+     */
     public void startActivity(Class c, Intent extra) {
         Intent intent = new Intent(this, c);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -260,6 +251,10 @@ public class MainActivity extends AppCompatActivity {
         overridePendingTransition(0, 0); //0 for no animation
     }
 
+    /**
+     * Get activity context for anonymous inner classes
+     * @return the context
+     */
     public Context getContext() {
         return this;
     }

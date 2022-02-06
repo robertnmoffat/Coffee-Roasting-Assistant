@@ -56,6 +56,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Activity from which roasting takes place.
+ */
 public class RoastActivity extends AbstractCamera {
     boolean testing = false;
     int testPos=1;
@@ -85,9 +88,6 @@ public class RoastActivity extends AbstractCamera {
     Roast roast;
     int currentCheckpoint = 0;
 
-    SoundPool soundPool;
-    int soundEffect1, soundEffect2;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,9 +102,7 @@ public class RoastActivity extends AbstractCamera {
         if(testing){
             testTemps = new ArrayList<>();
             RoastRecord record = new RoastRecord();
-            //record.filename="TestData";Ethiopia light Wed Nov 03 10:27:42 PDT 2021
             record.filename = "Ethiopia light Wed Nov 03 10:27:42 PDT 2021";
-            //record.filesizeBytes = 15040;
             record.filesizeBytes = 14624;
             DataSaver.loadRoastData(record, testTemps, new ArrayList<>(), this);
         }
@@ -181,19 +179,6 @@ public class RoastActivity extends AbstractCamera {
         undoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //EditText et = findViewById(R.id.roastactivity_num_edittext);
-                //String num = //et.getText().toString();
-//                int leftint = curTemp/100;
-//                int midint = (curTemp-(leftint*100))/10;
-//                int rightint = (curTemp-(leftint*100)-(midint*10));
-//                String leftNum = ""+leftint;//String.valueOf(num.charAt(0));
-//                String midNum = ""+midint;//String.valueOf(num.charAt(1));
-//                String rightNum = ""+rightint;//String.valueOf(num.charAt(2));
-//
-//                ImageProcessing.SaveImage(imageLeft, leftNum);
-//                ImageProcessing.SaveImage(imageMid, midNum);
-//                ImageProcessing.SaveImage(imageRight, rightNum);
-
                 if(currentCheckpoint>0){
                     checkpointTemps.remove(checkpointTemps.size()-1);
                     checkpointTemps.remove(checkpointTemps.size()-1);
@@ -238,19 +223,9 @@ public class RoastActivity extends AbstractCamera {
                     lastTime = System.nanoTime()/1000000000.0f;
 
                     String num = guessText;
-                    //String leftNum = String.valueOf(num.charAt(0));
-                    //String midNum = String.valueOf(num.charAt(1));
-                    //String rightNum = String.valueOf(num.charAt(2));
-
-                    //ImageProcessing.SaveImage(imageLeft, leftNum);
-                    //ImageProcessing.SaveImage(imageMid, midNum);
-                    //ImageProcessing.SaveImage(imageRight, rightNum);
-
-                    //if((int)(currentTime/1000000000)%2==0) {
 
                     if (turnedAround) {
-                           fixNine();
-
+                        fixNine();
                     }
                     recordSafeTemp();
 
@@ -309,10 +284,6 @@ public class RoastActivity extends AbstractCamera {
                     checkpointFormatter.getVertexPaint().setStrokeWidth(30);
                     plot.addSeries(checkpoints, checkpointFormatter);
                     plot.redraw();
-                    //graphView.addTemp(testTemp);
-                    //}
-                    //if(tempsOverTime.size()<(int)(currentTime/1000000000))
-                    //tempsOverTime.add(guessInt);
                 }
                 h.postDelayed(this, delay);
             }
@@ -328,54 +299,46 @@ public class RoastActivity extends AbstractCamera {
 
     }
 
+    /**
+     * Gets the last temperature value in the array of temperature values.
+     * @return last temperature value
+     */
     public int lastSafeTemp(){
         if(safeTempsOverTime.size()>0)
             return safeTempsOverTime.get(safeTempsOverTime.size()-1);
         return curTemp.get();
     }
 
+    /**
+     * Trigger the next roasting checkpoint
+     */
     public void triggerCheckpoint(){
-        checkpointWarned = false;
-        if(currentCheckpoint<roast.checkpoints.size()) {
+        checkpointWarned = false;//reset checkpoint warning sound effect
+        if(currentCheckpoint<roast.checkpoints.size()) {//if there are still checkpoints to trigger
             checkpointTemps.add((int) currentTime);
-            if(safeTempsOverTime.size()!=0)
+            if(safeTempsOverTime.size()!=0)//If there is a temperature to save
                 checkpointTemps.add(safeTempsOverTime.get(safeTempsOverTime.size() - 1));
             else
-                checkpointTemps.add(0);
+                checkpointTemps.add(0);//if no temp to save, just add zero
         }
         currentCheckpoint++;
         if(currentCheckpoint<roast.checkpoints.size()) {
             updateCheckpointText();
         }else{
-            checkpointText.setText("Roast complete.");
+            checkpointText.setText("Roast complete.");//if all checkpoints have been triggered, the roast is complete.
         }
     }
 
+    /**
+     * Ensures that only filtered temps are added to the safeTempsOverTime array.
+     */
     public void recordSafeTemp(){
         safeTempsOverTime = DataCleaner.medianFilter(tempsOverTime, 100);
-
-
-//        int avgLen = 10;
-//        if(tempsOverTime.size()-avgLen-1>0) {
-//            float tempAvg = 0.0f;
-//
-//            for(int i=0; i<avgLen; i++){
-//                tempAvg+=(float)tempsOverTime.get(tempsOverTime.size() - avgLen+i)-tempsOverTime.get(tempsOverTime.size() - avgLen+i-1);
-//            }
-//            tempAvg/=(float)tempsOverTime.size();
-//            int curTempVel = (curTemp - tempsOverTime.get(tempsOverTime.size() - 1));
-//            Log.d("tempVelocity", " avg:"+tempAvg+" cur:" + curTempVel);
-//
-//            if(Math.abs(curTempVel)<5&&Math.sqrt(tempAvg*tempAvg)<3){
-//                safeTempsOverTime = DataCleaner.medianFilter(tempsOverTime, 100);
-////                safeTempsOverTime.add((int)currentTime);
-////                safeTempsOverTime.add(curTemp);
-//            }else{
-//                Log.d("tempVelocity", "SKIPPED");
-//            }
-//        }
     }
 
+    /**
+     * Updates the checkpoint text based on the type of the next checkpoint.
+     */
     public void updateCheckpointText(){
         boolean isMetric = GlobalSettings.getSettings(this).isMetric();
         char c = isMetric?'C':'F';
@@ -395,9 +358,9 @@ public class RoastActivity extends AbstractCamera {
         }
     }
 
-
-
-
+    /**
+     * Release camera
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -417,10 +380,17 @@ public class RoastActivity extends AbstractCamera {
         }
     }
 
+    /**
+     * Get activity context for anonymous inner class
+     * @return this context
+     */
     public Context getContext(){
         return this;
     }
 
+    /**
+     * Checks camera permission, and sets up preview if granted.
+     */
     private void checkPermission(){
         PermissionListener permissionListener = new PermissionListener(){
 
@@ -505,7 +475,6 @@ public class RoastActivity extends AbstractCamera {
         cameraPreview.addView(mPreview);
         //mCamera.setDisplayOrientation(90);
         mCamera.startPreview();
-        mPicture = getPictureCallback();
         mPreview.refreshCamera(mCamera);
 
         new Handler().postDelayed(new Runnable() {
@@ -534,17 +503,6 @@ public class RoastActivity extends AbstractCamera {
                 //.refreshCamera(mCamera);
             }
         }, 100);
-    }
-
-    private Camera.PictureCallback getPictureCallback(){
-        return new Camera.PictureCallback(){
-
-            @Override
-            public void onPictureTaken(byte[] bytes, Camera camera) {
-                cameraData = bytes;
-                mPreview.refreshCamera(mCamera);
-            }
-        };
     }
 
     /**
@@ -588,25 +546,38 @@ public class RoastActivity extends AbstractCamera {
         return out;
     }
 
+    /**
+     * Restarts camera
+     */
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onRestart() {
+        super.onRestart();
 
+        checkPermission();
     }
 
+    /**
+     * Releases camera
+     */
     @Override
     protected void onStop() {
         super.onStop();
         releaseCamera();
     }
 
+    /**
+     * Releases camera
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
         releaseCamera();
     }
 
-
+    /**
+     * Updates the temperature if there isn't a large difference from the last.
+     * @param newTemp
+     */
     public void updateCurTemp(int newTemp){
         int tempDif = Math.abs((newTemp-lastTemp));
 
@@ -615,6 +586,9 @@ public class RoastActivity extends AbstractCamera {
             curTemp.set(newTemp);
     }
 
+    /**
+     * Ask user through popup if they would like to save the current roast data.
+     */
     public void promptForSave(){
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
@@ -637,6 +611,9 @@ public class RoastActivity extends AbstractCamera {
                 .setNegativeButton("No", dialogClickListener).show();
     }
 
+    /**
+     * Creates a RoastRecord object, adds it to database, then saves roast data to disk.
+     */
     public void saveRoast(){
         DatabaseHelper db = DatabaseHelper.getInstance(getContext());
         RoastRecord record = new RoastRecord();
@@ -649,25 +626,17 @@ public class RoastActivity extends AbstractCamera {
         record.setFilesizeBytes(checkpointTemps, safeTempsOverTime);
         record.id = db.addRoastRecord(record);
 
-        record.endWeightPounds = 5.0f;
-        db.updateRoastRecordWeights(record);
-
         Log.d("Database", "RoastRecord added with id:"+record.id);
         RoastRecord recordReturned = db.getRoastRecord(record.id);
         Log.d("Database", "RoastRecord returned: "+recordReturned.name);
 
 
         DataSaver.saveRoastData(record, safeTempsOverTime, checkpointTemps, getContext());
-        String[] filenames = getContext().fileList();
-        for(int i=0;i<filenames.length;i++) {
-            Log.d("FileIO", "" + filenames[i]);
-        }
-        ArrayList<Integer> temps = new ArrayList<>();
-        ArrayList<Integer> checks = new ArrayList<>();
-        DataSaver.loadRoastData(record, temps, checks, getContext());
     }
 
-
+    /**
+     * Attempts to fix miss-recognized 9's as 5's
+     */
     private void fixNine(){
         if(tempsOverTime.size()<3)
             return;

@@ -133,12 +133,23 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
 
     }
 
+    /**
+     * Copy UI information into a new Roast object.
+     * @return Roast object with UI information
+     */
     public Roast getRoast(){
         Roast roast = new Roast();
         roast.name = ((EditText)findViewById(R.id.roastparamactivity_name_edittext)).getText().toString();
         roast.bean = beans.get(beanSpinnerSelection-1);
         roast.roastLevel = ((EditText)findViewById(R.id.roastparamactivity_roastlevel_edittext)).getText().toString();
-        //TODO: roast.charge_temp
+        String chargeText = ((EditText)findViewById(R.id.roastparamactivity_chargetemp_edittext)).getText().toString();
+        int charge = 0;
+        try {
+            charge = Integer.parseInt(chargeText);
+        }catch(java.lang.NumberFormatException e){
+            charge = 0;
+        }
+        roast.chargeTemp = charge;
         String dropText = ((EditText)findViewById(R.id.roastparamactivity_droptemp_edittext)).getText().toString();
         int temp=0;
         try {
@@ -147,7 +158,7 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
             temp = 0;
         }
         roast.dropTemp = temp;
-        //TODO: roast.flavour
+        roast.flavour = ((EditText)findViewById(R.id.roastparamactivity_flavour_edittext)).getText().toString();
         roast.checkpoints = new ArrayList<>(checkpointsAdded);
 
         return roast;
@@ -173,8 +184,8 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
 
     /**
      * Adds a checkpoint display for the user.
-     * @param name
-     * @param description
+     * @param name the name of the checkpoint
+     * @param description description of the checkpoint
      */
     public void createCheckPoint(String name, String description, int arrayPos){
         LinearLayout checkLayout = findViewById(R.id.roastparamactivity_checkpoints_layout);
@@ -224,6 +235,9 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         checkLayout.addView(textAndButton);
     }
 
+    /**
+     * Setup click listener which starts an activity to enter checkpoint information.
+     */
     public void setupCheckpoints(){
         //-------Handle clicks on the button for adding new roast checkpoints to the current roast.
         Button addCheckpointButton = findViewById(R.id.roastparamactivity_add_checkpoint_button);
@@ -246,6 +260,10 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         });
     }
 
+    /**
+     * Setup spinner containing previously used checkpoints in the database.
+     * so that user doesn't need to fill out already created checkpoints a second time.
+     */
     public void setupAndLoadSpinners(){
         Spinner spinner = findViewById(R.id.roastparamactivity_bean_spinner);
         //set spinner drop down elements
@@ -298,7 +316,8 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         if(GlobalSettings.getSettings(this).isMetric()){
             temp = CommonFunctions.standardTempToMetric(temp);
         }
-        dropEd.setText(""+temp+c);
+        String dropTempStr = ""+temp+c;
+        dropEd.setText(dropTempStr);
         dropEd.setEnabled(false);
 
         Button downloadButton = findViewById(R.id.roastparamactivity_add_button);
@@ -377,8 +396,8 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
 
     /**
      * Connect the passed Spinner with the itemNames array
-     * @param spinner
-     * @param itemNames
+     * @param spinner spinner to add the item names to
+     * @param itemNames the item names
      */
     public void setupSpinner(Spinner spinner, List<String> itemNames){
         //spinner click listener
@@ -444,6 +463,10 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         }
     }
 
+    /**
+     * Add passed Checkpoint object to array and display it on UI
+     * @param checkpoint checkpoint object to be added and displayed
+     */
     private void addCheckPoint(Checkpoint checkpoint) {
         String tempString = CommonFunctions.formatTempString(checkpoint.temperature, this);
 
@@ -469,10 +492,17 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         }
     }
 
+    /**
+     * Get activity context for anonymous inner classes.
+     * @return
+     */
     public Context getContext(){
         return this;
     }
 
+    /**
+     * Called when viewing a roast on the server and it has been loaded.
+     */
     @Override
     public void onDataLoaded() {
         runOnUiThread(new Runnable() {
@@ -505,6 +535,9 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
         });
     }
 
+    /**
+     * Prompt user if they would like to calibrate the recognition before roasting.
+     */
     public void requestCalibration(){
         Roast roast = roastToRoast;
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -522,8 +555,6 @@ public class RoastParamActivity extends AppCompatActivity implements AdapterView
                         Intent roastIntent = new Intent(context, RoastActivity.class);
                         roastIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                         roastIntent.putExtra("RoastId", roast.id);
-                        //intent.putExtras(extra);
-                        //startActivityForResult(intent, 0);
                         finish();
                         startActivity(roastIntent);
                         overridePendingTransition(0,0); //0 for no animation

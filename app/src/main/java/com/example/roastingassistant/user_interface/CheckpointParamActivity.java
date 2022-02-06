@@ -69,7 +69,7 @@ public class CheckpointParamActivity extends AppCompatActivity implements Adapte
 
     /**
      * Creates and returns a checkpoint based on the current fields.
-     * @return
+     * @return the checkpoint
      */
     Checkpoint createCheckpoint(){
         Checkpoint check = new Checkpoint();
@@ -92,7 +92,13 @@ public class CheckpointParamActivity extends AppCompatActivity implements Adapte
         return check;
     }
 
-
+    /**
+     * Handles trigger selection from UI spinner
+     * @param parent unused
+     * @param view unused
+     * @param position trigger selected
+     * @param id unused
+     */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         currentTrigger = Checkpoint.trig.values()[position];
@@ -103,6 +109,10 @@ public class CheckpointParamActivity extends AppCompatActivity implements Adapte
 
     }
 
+    /**
+     * Get activity context for anonymous inner class
+     * @return the context
+     */
     public Context getContext(){
         return this;
     }
