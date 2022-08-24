@@ -3,9 +3,12 @@
 and hobby coffee roasting. The app stores information relevant to the user’s specific roast profiles.
 It is set up with the roaster’s temperature readout display centered on the app’s camera display
 where the app then uses image recognition to automate temperature data collection during a
-roasting session. This information is graphed and can be viewed as it changes, as well as reloaded at
-any time by the user. These graphs can be overlayed to compare changes in bean quality or to
-visualize the outcome of changing roasting parameters.
+roasting session. This information is graphed and can be viewed as it changes, as well as reloaded after 
+completion at any time by the user. These graphs can be overlayed to compare changes in bean quality or 
+to visualize the outcome of changing roasting parameters.
+
+![alt text](https://github.com/robertnmoffat/Coffee-Roasting-Assistant/blob/master/RoastingAssistant_Roast.png)
+
 ## Essential Problems
 The problems which this project aimed to solve are:
 <ul>
@@ -17,14 +20,10 @@ The problems which this project aimed to solve are:
 </ul>
 
 ## Image Recognition Neural Network
-&emsp;  The image recognition in this project was to be done in one of two ways. Firstly, attempting to
-design an image recognition system from scratch creating a convolutional neural network using no
-external libraries. If this was not achievable the project was to fall back on a premade image
-recognition or machine learning library. Regardless of which option would be used it would provide
-an excellent learning opportunity to dive into the intricate details of how convolutional neural
-networks functioned. Fortunately, I was able to develop a functional system which provided an
-acceptably accurate recognition and data recording, and so no external image recognition or
-machine learning libraries were utilized.<br>
+&emsp;  This project provided an excellent learning opportunity to dive into the intricate 
+details of how convolutional neural networks functioned. Fortunately, I was able to develop 
+a functional system which provided an acceptably accurate recognition and data recording, 
+and so no external image recognition or machine learning libraries were utilized.<br>
 &emsp;  The image recognition system in this project involves two separate programs: a 
 <a href="https://github.com/robertnmoffat/ConvolutionNeuralNetworkTrainer">desktop program</a> 
 to be used in development to train image recognition models written in C#, and the main Android
