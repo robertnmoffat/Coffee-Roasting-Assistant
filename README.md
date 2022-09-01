@@ -6,6 +6,7 @@ where the app then uses image recognition to automate temperature data collectio
 roasting session. This information is graphed and can be viewed as it changes, as well as reloaded after 
 completion at any time by the user. These graphs can be overlayed to compare changes in bean quality or 
 to visualize the outcome of changing roasting parameters.
+The full practicum paper can be viewed <a href="https://github.com/robertnmoffat/Coffee-Roasting-Assistant/blob/master/PracticumReport.pdf">Here</a>.
 
 ![alt text](https://github.com/robertnmoffat/Coffee-Roasting-Assistant/blob/master/RoastingAssistant_Roast.png)
 
