@@ -9,7 +9,6 @@ const router = express.Router();
 const app = express();
 const port = 3000;
 
-const url = 'mongodb://localhost';
 const dbName = 'CoffeeDB';
 
 
